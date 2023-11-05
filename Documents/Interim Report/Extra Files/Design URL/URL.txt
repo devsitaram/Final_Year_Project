@@ -3,3 +3,6 @@ https://lucid.app/lucidchart/1e66ceed-cf3d-4d33-abce-7d04adea8f63/edit?invitatio
 
 // use case diagram
 https://app.diagrams.net/
+
+// ERD
+https://app.diagrams.net/
