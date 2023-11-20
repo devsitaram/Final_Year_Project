@@ -26,10 +26,12 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavHostController
 import coil.compose.AsyncImage
-import com.donation.fda.ui.theme.primaryColor
+import com.donation.fda.theme.primaryColor
 import com.donation.fda.presentation.components.TextView
-import com.donation.fda.ui.theme.white
+import com.donation.fda.presentation.ui.navigations.NavScreen
+import com.donation.fda.theme.white
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.HorizontalPagerIndicator
@@ -39,7 +41,7 @@ import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalPagerApi::class)
 @Composable
-fun IntroSliderScreen() {
+fun IntroSliderViewScreen(navController: NavHostController) {
 
     val context = LocalContext.current
     val pagerState = rememberPagerState()
@@ -76,7 +78,9 @@ fun IntroSliderScreen() {
                     AsyncImage(
                         model = list[currentPage].image,
                         contentDescription = null,
-                        modifier = Modifier.fillMaxWidth().padding(20.dp)
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(20.dp)
                     )
 
                     TextView(
@@ -91,13 +95,18 @@ fun IntroSliderScreen() {
                         color = Color.Gray,
                         textAlign = TextAlign.Center,
                         modifier = Modifier
-                            .fillMaxWidth().padding(12.dp)
+                            .fillMaxWidth()
+                            .padding(12.dp)
                     )
                 }
             }
         }
 
-        HorizontalPagerIndicator(pagerState = pagerState, modifier = Modifier.padding(vertical = 26.dp), activeColor = primaryColor)
+        HorizontalPagerIndicator(
+            pagerState = pagerState,
+            modifier = Modifier.padding(vertical = 26.dp),
+            activeColor = primaryColor
+        )
 
         Row(
             verticalAlignment = Alignment.CenterVertically,
@@ -109,8 +118,10 @@ fun IntroSliderScreen() {
             if (isSkipVisible.value) {
                 Button(
                     onClick = {
-                        scope.launch {
-                            pagerState.animateScrollToPage(pagerState.currentPage + 1)
+                        navController.navigate(NavScreen.WelcomePage.route){
+                            popUpTo(NavScreen.IntroSliderPage.route){
+                                inclusive = true
+                            }
                         }
                     },
                     colors = ButtonDefaults.buttonColors(
@@ -160,9 +171,12 @@ fun IntroSliderScreen() {
             if (isContinues.value) {
                 Button(
                     onClick = {
-                        // Navigate to the login screen
-//                        navController.navigate("login")
-                        Toast.makeText(context, "complete", Toast.LENGTH_SHORT).show()
+                        // Navigate to the welcome screen
+                      navController.navigate(NavScreen.WelcomePage.route){
+                            popUpTo(NavScreen.IntroSliderPage.route){
+                                inclusive = true
+                            }
+                        }
                     },
                     colors = ButtonDefaults.buttonColors(
                         containerColor = primaryColor,

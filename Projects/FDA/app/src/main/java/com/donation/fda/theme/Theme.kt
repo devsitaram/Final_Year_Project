@@ -1,4 +1,4 @@
-package com.donation.fda.ui.theme
+package com.donation.fda.theme
 
 import android.app.Activity
 import android.os.Build

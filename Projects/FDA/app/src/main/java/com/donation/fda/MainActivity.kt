@@ -7,8 +7,9 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.ui.Modifier
-import com.donation.fda.presentation.ui.IntroSliderScreen
-import com.donation.fda.ui.theme.FDATheme
+import androidx.navigation.compose.rememberNavController
+import com.donation.fda.presentation.ui.navigations.NavigationViewScreen
+import com.donation.fda.theme.FDATheme
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -22,7 +23,8 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    IntroSliderScreen()
+                    val navController = rememberNavController()
+                    NavigationViewScreen(navController)
                 }
             }
         }

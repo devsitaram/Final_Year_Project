@@ -1,4 +1,4 @@
-package com.donation.fda.ui.theme
+package com.donation.fda.theme
 
 import androidx.compose.material3.Typography
 import androidx.compose.ui.text.TextStyle

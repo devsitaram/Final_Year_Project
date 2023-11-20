@@ -1,6 +1,7 @@
 package com.donation.fda.presentation.components
 
 import android.annotation.SuppressLint
+import android.graphics.ColorSpace
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
@@ -80,8 +81,8 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import coil.compose.AsyncImage
 import coil.compose.AsyncImagePainter
-import com.donation.fda.ui.theme.pink
-import com.donation.fda.ui.theme.white
+import com.donation.fda.theme.pink
+import com.donation.fda.theme.white
 import com.record.fda.R
 
 /**
@@ -157,7 +158,7 @@ fun ClickableTextView(
 fun ButtonView(
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
-    btnColor: ButtonColors = ButtonDefaults.buttonColors(),
+    colors: ButtonColors = ButtonDefaults.buttonColors(),
     text: String,
     textStyle: TextStyle = TextStyle(),
     enabled: Boolean = true,
@@ -169,7 +170,7 @@ fun ButtonView(
     Button(
         onClick = { onClick() },
         modifier = modifier,
-        colors = btnColor,
+        colors = colors,
         enabled = enabled,
         shape = shape,
         elevation = elevation,
@@ -517,7 +518,7 @@ fun MessageDialogBox(
             ) {
                 ButtonView(
                     onClick = { onDismiss() },
-                    btnColor = ButtonDefaults.buttonColors(color),
+                    colors = ButtonDefaults.buttonColors(color),
                     text = btnText.toString(),
                     textStyle = TextStyle(
                         fontSize = 15.sp,
@@ -548,7 +549,7 @@ fun ButtonAppBar(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 PainterImageView(
-                    painter = painterResource(id = R.mipmap.first),
+                    painter = painterResource(id = R.mipmap.img_distribute_food),
                     modifier = Modifier.size(40.dp),
                     contentDescription = null
                 )
