@@ -26,8 +26,12 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.BottomSheetScaffold
 import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material.Icon
+import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.rememberBottomSheetScaffoldState
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -95,7 +99,7 @@ fun WelcomeViewScreen() {
                         .fillMaxWidth()
                         .background(Color.LightGray)
                 ) {
-                    CountryList(
+                    UserList(
                         onClickAction = {
                             scope.launch {
                                 if (scaffoldState.bottomSheetState.isExpanded) {
@@ -129,8 +133,7 @@ fun WelcomeViewScreen() {
 }
 
 @Composable
-fun CountryList(onClickAction: () -> Unit = {}) {
-    var context = LocalContext.current
+fun UserList(onClickAction: () -> Unit = {}) {
     var userList = listOf(
         UserList(
             logo = painterResource(id = R.mipmap.img_ngo_logo),
@@ -158,13 +161,23 @@ fun CountryList(onClickAction: () -> Unit = {}) {
             .padding(20.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        // Show button to hide bottom sheet
+        Row(modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.Center) {
+            IconButton(
+                onClick = { onClickAction() },
+                modifier = Modifier.size(50.dp)
+            ) {
+                Icon(imageVector = Icons.Default.KeyboardArrowDown, contentDescription = null)
+            }
+        }
+
         TextView(
             text = "Register your details",
             style = MaterialTheme.typography.h5,
             color = Color.DarkGray,
             textAlign = TextAlign.Center,
-            modifier = Modifier.fillMaxWidth().padding(bottom = 10.dp)
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(bottom = 10.dp)
         )
 
         // Display user list using LazyColumn
@@ -183,7 +196,9 @@ fun CountryList(onClickAction: () -> Unit = {}) {
                     horizontalAlignment = Alignment.CenterHorizontally,
                     verticalArrangement = Arrangement.Center
                 ) {
-                    Card(modifier = Modifier.wrapContentSize().size(140.dp), shape = ShapeDefaults.Large) {
+                    Card(modifier = Modifier
+                        .wrapContentSize()
+                        .size(140.dp), shape = ShapeDefaults.Large) {
                         Image(
                             painter = user.logo,
                             contentDescription = null,

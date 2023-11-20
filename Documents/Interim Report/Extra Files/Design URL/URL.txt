@@ -14,6 +14,8 @@ https://app.diagrams.net/
 https://app.diagrams.net/
 https://app.diagrams.net/#
 
+// Activity diagram
+https://app.diagrams.net/#G1Hyvijd6dAttnshp2zxXyDuFyGB75zy5m
 
 // Wireframe
 https://balsamiq.cloud/sobckjs/pzi0en3/r0F33
