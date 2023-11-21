@@ -10,17 +10,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="7a542fa3-5384-4501-98df-17be50c62556" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/donation/fda/MainActivity.kt" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/donation/fda/MainActivity.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/donation/fda/data/common/ClientInterceptors.kt" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/donation/fda/data/common/ClientInterceptors.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/donation/fda/data/common/Constants.kt" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/donation/fda/data/common/Constants.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/donation/fda/data/common/util/Validators.kt" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/donation/fda/data/common/util/Validators.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/donation/fda/presentation/ui/LoginScreen.kt" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/donation/fda/presentation/ui/LoginScreen.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/donation/fda/presentation/ui/RegisterScreen.kt" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/donation/fda/presentation/ui/RegisterScreen.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/donation/fda/presentation/ui/WelcomeScreen.kt" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/donation/fda/presentation/ui/WelcomeScreen.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/donation/fda/presentation/ui/navigations/NavHost.kt" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/donation/fda/presentation/ui/navigations/NavHost.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/donation/fda/presentation/ui/navigations/ScreenRoute.kt" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/donation/fda/presentation/ui/navigations/ScreenRoute.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/donation/fda/presentation/ui/util/Componentes.kt" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/donation/fda/presentation/ui/util/Componentes.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../Documents/Interim Report/Interim Report.docx" beforeDir="false" afterPath="$PROJECT_DIR$/../../Documents/Interim Report/Interim Report.docx" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
