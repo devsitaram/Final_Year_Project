@@ -1,5 +1,7 @@
 package com.donation.fda.presentation.ui
 
+import android.content.Context
+import android.content.SharedPreferences
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -59,6 +61,12 @@ import kotlinx.coroutines.launch
 fun WelcomeViewScreen(navController: NavHostController) {
 
     val context = LocalContext.current
+
+    // sharedPreferences
+    val sharedPreferences = context.getSharedPreferences("food_donation_preferences", Context.MODE_PRIVATE)
+    val editor = sharedPreferences.edit()
+    editor.putString("installToken", "success").apply()
+
     val scope = rememberCoroutineScope()
     val scaffoldState = rememberBottomSheetScaffoldState()
 
@@ -102,7 +110,8 @@ fun WelcomeViewScreen(navController: NavHostController) {
                                 }
                             }
                         },
-                        navController = navController
+                        navController = navController,
+                        editor = editor
                     )
                 }
             }
@@ -135,7 +144,7 @@ fun WelcomeViewScreen(navController: NavHostController) {
 }
 
 @Composable
-fun UserList(onClickAction: () -> Unit = {}, navController: NavHostController) {
+fun UserList(onClickAction: () -> Unit = {}, navController: NavHostController, editor: SharedPreferences.Editor) {
     var userList = listOf(
         UserList(
             logo = painterResource(id = R.mipmap.img_donor),
@@ -205,6 +214,8 @@ fun UserList(onClickAction: () -> Unit = {}, navController: NavHostController) {
                             navController.navigate("Login/${user.userType}"){
                                 popUpTo(NavScreen.WelcomePage.route){
                                     inclusive = true
+                                    // save in user type
+                                    editor.putString("userTypes", user.userType).apply()
                                 }
                             }
                         }

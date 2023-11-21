@@ -32,8 +32,11 @@ import com.donation.fda.presentation.ui.WelcomeViewScreen
 import com.donation.fda.theme.pink
 
 @Composable
-fun NavigationViewScreen(navController: NavHostController) {
-    NavHost(navController = navController, startDestination = NavScreen.LoginPage.route) {
+fun NavigationViewScreen(getInstallDevice: String?, navController: NavHostController) {
+    NavHost(
+        navController = navController,
+        startDestination = if (getInstallDevice.isNullOrEmpty()) NavScreen.IntroSliderPage.route else NavScreen.LoginPage.route
+    ) {
         composable(NavScreen.IntroSliderPage.route) {
             IntroSliderViewScreen(navController)
         }

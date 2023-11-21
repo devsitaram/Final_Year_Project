@@ -1,5 +1,7 @@
 package com.donation.fda.presentation.ui
 
+import android.content.Context
+import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -18,6 +20,7 @@ import androidx.compose.material.icons.filled.LockOpen
 import androidx.compose.material.icons.filled.PersonOutline
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -25,17 +28,21 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
+import com.donation.fda.data.common.ClientInterceptors
 import com.donation.fda.presentation.ui.navigations.NavScreen
 import com.donation.fda.presentation.ui.util.ButtonView
 import com.donation.fda.presentation.ui.util.CheckboxComponent
 import com.donation.fda.presentation.ui.util.DividerWithText
 import com.donation.fda.presentation.ui.util.InputTextFieldView
+import com.donation.fda.presentation.ui.util.MessageDialogBox
 import com.donation.fda.presentation.ui.util.PasswordTextFieldView
 import com.donation.fda.presentation.ui.util.TextButtonView
 import com.donation.fda.presentation.ui.util.TextView
@@ -47,12 +54,45 @@ import com.record.fda.R
 @Composable
 fun LoginViewScreen(userTypes: String?, navController: NavHostController) {
 
-    val userTypes by remember { mutableStateOf(userTypes ?: "Donor") }
+    val context = LocalContext.current
 
-    var username by remember { mutableStateOf("") }
-    var password by remember { mutableStateOf("") }
+    val getSharedPreferences = ClientInterceptors(context)
+    val getUserType = getSharedPreferences.userTypes()
+
+    val users by remember { mutableStateOf(if (userTypes == null || userTypes == "{user_types}") getUserType else userTypes) }
 
     var checkedState by remember { mutableStateOf(true) }
+    var isInvalidUser by remember { mutableStateOf(false) }
+
+    var email by remember { mutableStateOf("") }
+    var emailEmptyValue by remember { mutableStateOf(false) }
+    val isEmailEmpty by remember { derivedStateOf { email.isEmpty() } }
+
+    var password by remember { mutableStateOf("") }
+    var passwordEmptyValue by remember { mutableStateOf(false) }
+    val isPasswordEmpty by remember { derivedStateOf { password.isEmpty() } }
+
+    val onClickLogin: () -> Unit = {
+        emailEmptyValue = isEmailEmpty
+        passwordEmptyValue = isPasswordEmpty
+        if (!isEmailEmpty && !isPasswordEmpty) {
+
+            // call viewmodel function
+            // add access token
+//            LogInViewModel.getLoginUserAuth(email, password)
+//            if (userLoginResult.data?.success == true) {
+//                navController.navigate(NavScreen.DashboardPage.route) {
+//                    popUpTo(NavScreen.LoginPage.route) {
+//                        inclusive = true
+//                        val editor = sharedPreferences.edit()
+//                        editor.putString("accessToken", "${userLoginResult.data.result?.accessToken}").apply()
+//                    }
+//                }
+//            } else {
+//                isInvalidUser = true
+//            }
+        }
+    }
 
     Column(
         modifier = Modifier
@@ -92,19 +132,22 @@ fun LoginViewScreen(userTypes: String?, navController: NavHostController) {
                 modifier = Modifier.size(150.dp)
             )
             TextView(
-                text = if (checkedState) userTypes.toString() else "User",
+                text = if (checkedState) users.toString() else "User",
                 fontSize = 18.sp,
                 fontWeight = FontWeight.SemiBold,
+                fontStyle = FontStyle.Italic,
                 modifier = Modifier.padding(top = 10.dp)
             )
         }
 
         InputTextFieldView(
-            value = username,
-            onValueChange = { username = it },
+            value = email,
+            onValueChange = { email = it },
             leadingIcon = { VectorIconView(imageVector = Icons.Default.PersonOutline) },
-            label = "Username",
-            placeholder = "Enter username",
+            label = "Email",
+            placeholder = "Enter email",
+            isEmptyValue = emailEmptyValue,
+            errorColor = Color.Red,
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(8.dp)
@@ -115,7 +158,9 @@ fun LoginViewScreen(userTypes: String?, navController: NavHostController) {
             onValueChange = { password = it },
             leadingIcon = { VectorIconView(imageVector = Icons.Default.LockOpen) },
             label = "Password",
-            placeholder= "Enter password",
+            placeholder = "Enter password",
+            isEmptyValue = passwordEmptyValue,
+            errorColor = Color.Red,
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(8.dp)
@@ -140,7 +185,10 @@ fun LoginViewScreen(userTypes: String?, navController: NavHostController) {
         }
 
         ButtonView(
-            onClick = { }, text = "Log In",
+            onClick = {
+                onClickLogin()
+            },
+            text = "Log In",
             colors = ButtonDefaults.buttonColors(
                 containerColor = primaryColor,
             ),
@@ -193,6 +241,18 @@ fun LoginViewScreen(userTypes: String?, navController: NavHostController) {
                 modifier = Modifier.clickable { navController.navigate(NavScreen.RegisterPage.route) }
             )
         }
+    }
+
+    if (isInvalidUser) {
+        MessageDialogBox(
+            title = "Error",
+            descriptions = "Your username or password is invalid. Please try to again or click on Forgot Your Password? below.",
+            onDismiss = {
+                isInvalidUser = false
+            },
+            btnText = "Okay",
+            color = Color.Red
+        )
     }
 }
 

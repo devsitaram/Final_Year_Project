@@ -225,13 +225,13 @@ fun InputTextFieldView(
     modifier: Modifier = Modifier,
     placeholder: String? = null,
     textStyle: TextStyle = TextStyle.Default,
-    isEmpty: Boolean = false,
-    isInvalidError: Boolean = false,
+    isEmptyValue: Boolean = false,
+    isInvalidValue: Boolean = false,
     singleLine: Boolean = true,
     maxLines: Int = 1,
     keyboardOptions: KeyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
     shape: Shape = ShapeDefaults.Medium,
-    errorMessage: Boolean? = null,
+    errorValue: Boolean? = null,
     invalidMessage: String? = null,
     errorColor: Color = Color.Unspecified
 ) {
@@ -260,17 +260,17 @@ fun InputTextFieldView(
             singleLine = singleLine,
             maxLines = maxLines,
             shape = shape,
-            isError = (isEmpty || isInvalidError),
+            isError = (isEmptyValue || isInvalidValue),
             modifier = modifier
         )
-        if (isEmpty) {
+        if (isEmptyValue) {
             TextView(
-                text = errorMessage.toString(),
+                text = "The $label is empty!",
                 style = TextStyle(color = errorColor),
                 modifier = Modifier.padding(start = 5.dp, top = 2.dp)
             )
         }
-        if (isInvalidError) {
+        if (isInvalidValue) {
             TextView(
                 text = invalidMessage.toString(),
                 style = TextStyle(color = errorColor),
@@ -294,7 +294,7 @@ fun PasswordTextFieldView(
     modifier: Modifier = Modifier,
     placeholder: String? = null,
     textStyle: TextStyle = TextStyle.Default,
-    isEmpty: Boolean = false,
+    isEmptyValue: Boolean = false,
     isError: Boolean = false,
     singleLine: Boolean = true,
     maxLines: Int = 1,
@@ -305,7 +305,7 @@ fun PasswordTextFieldView(
 ) {
     val passwordVisibility = remember { mutableStateOf(false) }
     var color by remember { mutableStateOf(primaryColor) }
-    color = if (isEmpty) {
+    color = if (isEmptyValue) {
         errorColor
     } else {
         primaryColor
@@ -339,27 +339,27 @@ fun PasswordTextFieldView(
             ) {
                 VectorIconView(
                     imageVector = if (passwordVisibility.value) Icons.Default.Visibility else Icons.Default.VisibilityOff,
-                    tint = if (isEmpty || isError) Color.Red else primaryColor
+                    tint = if (isEmptyValue || isError) Color.Red else primaryColor
                 )
             }
         },
-        isError = (isEmpty || isError),
+        isError = (isEmptyValue || isError),
         visualTransformation = if (passwordVisibility.value) VisualTransformation.None else PasswordVisualTransformation(),
         modifier = modifier,
     )
 
-    if (isEmpty) {
+    if (isEmptyValue) {
         TextView(
-            text = "The field is empty!",
+            text = "The $label is empty!",
             style = TextStyle(color = errorColor, textAlign = TextAlign.Start),
-            modifier = Modifier.padding(start = 5.dp, top = 2.dp)
+            modifier = Modifier.fillMaxWidth().padding(start = 8.dp, top = 1.dp)
         )
     }
     if (isError) {
         TextView(
             text = errorMessage.toString(),
             style = TextStyle(color = errorColor),
-            modifier = Modifier.padding(start = 5.dp, top = 2.dp)
+            modifier = Modifier.fillMaxWidth().padding(start = 8.dp, top = 1.dp)
         )
     }
 }

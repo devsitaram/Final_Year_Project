@@ -1,34 +1,25 @@
 package com.donation.fda.presentation.ui
 
 import android.widget.Toast
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.DropdownMenu
 import androidx.compose.material.Surface
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.LockOpen
-import androidx.compose.material.icons.filled.PersonOutline
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExposedDropdownMenuBox
 import androidx.compose.material3.ExposedDropdownMenuDefaults
 import androidx.compose.material.OutlinedTextField
-import androidx.compose.material.icons.filled.ArrowDropDown
-import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
@@ -37,7 +28,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
@@ -49,15 +39,12 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
+import com.donation.fda.presentation.ui.navigations.NavScreen
 import com.donation.fda.presentation.ui.util.ButtonView
-import com.donation.fda.presentation.ui.util.CheckboxComponent
 import com.donation.fda.presentation.ui.util.DividerWithText
 import com.donation.fda.presentation.ui.util.InputTextFieldView
 import com.donation.fda.presentation.ui.util.PasswordTextFieldView
-import com.donation.fda.presentation.ui.util.TextButtonView
 import com.donation.fda.presentation.ui.util.TextView
-import com.donation.fda.presentation.ui.util.VectorIconView
-import com.donation.fda.presentation.ui.navigations.NavScreen
 import com.donation.fda.presentation.ui.util.ImageViewPainter
 import com.donation.fda.theme.primaryColor
 import com.donation.fda.theme.white
@@ -73,24 +60,32 @@ fun RegisterViewScreen(navController: NavHostController) {
 
     // dropdown items variable initialize
     val users = arrayOf("Donor", "Volunteer", "Farmer", "NGOs")
-    // state of the menu
     var expanded by remember { mutableStateOf(false) }
-    // remember the selected item
     var selectedText by remember { mutableStateOf(users[0]) }
 
     // text fields variable initialize
     var name by remember { mutableStateOf("") }
-    var nameErrorMessage by remember { mutableStateOf(false) }
-    var nameEmptyMessage by remember { mutableStateOf(false) }
+    var nameErrorValue by remember { mutableStateOf(false) }
+    var nameEmptyValue by remember { mutableStateOf(false) }
     val isNameEmpty by remember { derivedStateOf { name.isEmpty() } }
 
     var email by remember { mutableStateOf("") }
-    var emailErrorMessage by remember { mutableStateOf(false) }
-    var emailEmptyMessage by remember { mutableStateOf(false) }
+    var emailErrorValue by remember { mutableStateOf(false) }
+    var emailEmptyValue by remember { mutableStateOf(false) }
     val isEmailEmpty by remember { derivedStateOf { email.isEmpty() } }
 
+    var phoneNum by remember { mutableStateOf("") }
+    var phoneNumErrorValue by remember { mutableStateOf(false) }
+    var phoneNumEmptyValue by remember { mutableStateOf(false) }
+    val isPhoneNumEmpty by remember { derivedStateOf { phoneNum.isEmpty() } }
+
+    var dob by remember { mutableStateOf("") }
+    var dobErrorValue by remember { mutableStateOf(false) }
+    var dobEmptyValue by remember { mutableStateOf(false) }
+    val isDobEmpty by remember { derivedStateOf { dob.isEmpty() } }
+
     var password by remember { mutableStateOf("") }
-    var passwordEmptyMessage by remember { mutableStateOf(false) }
+    var passwordEmptyValue by remember { mutableStateOf(false) }
     val isPasswordEmpty by remember {
         derivedStateOf {
             password.isEmpty()
@@ -99,9 +94,11 @@ fun RegisterViewScreen(navController: NavHostController) {
 
     // register button onClickAction
     val onClickAction = {
-        nameEmptyMessage = isNameEmpty // name error message
-        emailEmptyMessage = isEmailEmpty // email error message
-        passwordEmptyMessage = isPasswordEmpty // password error message
+        nameEmptyValue = isNameEmpty // name error message
+        emailEmptyValue = isEmailEmpty // email error message
+        phoneNumEmptyValue = isPhoneNumEmpty // email error message
+        dobEmptyValue = isDobEmpty // dob error message
+        passwordEmptyValue = isPasswordEmpty // password error message
 
         if (!isNameEmpty && !isEmailEmpty && !isPasswordEmpty) {
 //            val isSuccess = registerViewModel.registerDetails(name, email, password, context)
@@ -129,7 +126,7 @@ fun RegisterViewScreen(navController: NavHostController) {
             TextView(
                 text = "Register your details on FREE!",
                 style = TextStyle(
-                    fontSize = 24.sp,
+                    fontSize = 20.sp,
                     fontWeight = FontWeight.Bold,
                     fontFamily = FontFamily.SansSerif,
                     color = Color.Black,
@@ -178,10 +175,11 @@ fun RegisterViewScreen(navController: NavHostController) {
                 value = name,
                 onValueChange = { name = it },
                 label = "Username",
-                placeholder = "Enter your name",
-                isEmpty = nameEmptyMessage,
-                errorMessage = nameErrorMessage,
+                placeholder = "Enter full name",
+                isEmptyValue = nameEmptyValue,
+                errorValue = nameErrorValue,
                 invalidMessage = "Enter the valid username",
+                errorColor = Color.Red,
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(5.dp)
@@ -191,36 +189,39 @@ fun RegisterViewScreen(navController: NavHostController) {
                 value = email,
                 onValueChange = { email = it },
                 label = "Email",
-                placeholder = "Enter your email",
-                isEmpty = emailEmptyMessage,
-                errorMessage = emailErrorMessage,
+                placeholder = "Enter email address",
+                isEmptyValue = emailEmptyValue,
+                errorValue = emailErrorValue,
                 invalidMessage = "Enter the valid email address",
+                errorColor = Color.Red,
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(5.dp)
             )
 
             InputTextFieldView(
-                value = name,
-                onValueChange = { name = it },
+                value = phoneNum,
+                onValueChange = { phoneNum = it },
                 label = "Phone Number",
-                placeholder = "Enter your phone",
-                isEmpty = nameEmptyMessage,
-                errorMessage = nameErrorMessage,
+                placeholder = "Enter phone no",
+                isEmptyValue = phoneNumEmptyValue,
+                errorValue = phoneNumErrorValue,
                 invalidMessage = "Enter the valid phone number",
+                errorColor = Color.Red,
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(5.dp)
             )
 
             InputTextFieldView(
-                value = name,
-                onValueChange = { name = it },
+                value = dob,
+                onValueChange = { dob = it },
                 label = "Date of Birth",
-                placeholder = "Enter your DOB",
-                isEmpty = nameEmptyMessage,
-                errorMessage = nameErrorMessage,
+                placeholder = "Enter DOB",
+                isEmptyValue = dobEmptyValue,
+                errorValue = dobErrorValue,
                 invalidMessage = "Enter the valid DOB",
+                errorColor = Color.Red,
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(5.dp)
@@ -230,8 +231,9 @@ fun RegisterViewScreen(navController: NavHostController) {
                 value = password,
                 onValueChange = { password = it },
                 label = "Password",
-                placeholder = "Enter your password",
-                isEmpty = passwordEmptyMessage,
+                placeholder = "Enter password",
+                isEmptyValue = passwordEmptyValue,
+                errorColor = Color.Red,
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(5.dp)
@@ -245,6 +247,9 @@ fun RegisterViewScreen(navController: NavHostController) {
                     fontSize = 16.sp,
                     color = white,
                     fontWeight = FontWeight.SemiBold
+                ),
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = primaryColor,
                 ),
                 modifier = Modifier
                     .fillMaxWidth()
@@ -289,7 +294,7 @@ fun RegisterViewScreen(navController: NavHostController) {
                     modifier = Modifier
                         .wrapContentWidth()
                         .clickable {
-                            navController.navigate("Login/${selectedText}")
+                            navController.navigate(NavScreen.LoginPage.route) // "Login/${selectedText}"
                         },
                     text = "Login Now",
                     color = primaryColor,

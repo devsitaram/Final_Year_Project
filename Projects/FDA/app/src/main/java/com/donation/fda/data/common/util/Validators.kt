@@ -1,4 +1,4 @@
-package com.edu.socialmediallogin.data.common.util
+package com.donation.fda.data.common.util
 
 object Validators {
     // check the username validation

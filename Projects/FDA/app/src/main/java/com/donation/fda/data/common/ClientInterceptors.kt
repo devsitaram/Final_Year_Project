@@ -5,9 +5,11 @@ import okhttp3.Interceptor
 import okhttp3.Response
 
 class ClientInterceptors(private val context: Context) : Interceptor {
+
+    private val sharedPreferences = context.getSharedPreferences("food_donation_preferences", Context.MODE_PRIVATE)
+
     override fun intercept(chain: Interceptor.Chain): Response {
 
-        val sharedPreferences = context.getSharedPreferences("social_media_preferences", Context.MODE_PRIVATE)
         val token = sharedPreferences.getString("accessToken", "")
 
         val request = chain.request().newBuilder()
@@ -15,5 +17,13 @@ class ClientInterceptors(private val context: Context) : Interceptor {
             .build()
 
         return chain.proceed(request)
+    }
+
+    fun installApp(): String? {
+        return sharedPreferences.getString("installToken", "")
+    }
+
+    fun userTypes(): String? {
+        return sharedPreferences.getString("userTypes", "")
     }
 }

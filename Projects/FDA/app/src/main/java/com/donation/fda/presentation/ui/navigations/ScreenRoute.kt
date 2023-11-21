@@ -13,6 +13,8 @@ sealed class NavScreen(val route: String) {
     object WelcomePage: NavScreen("Welcome")
     object LoginPage: NavScreen("Login/{$USER_TYPES}")
     object RegisterPage: NavScreen("Register")
+    object ForgotPasswordPage: NavScreen("ForgotPassword")
+    object DashboardPage: NavScreen("Dashboard")
 }
 
 sealed class BtnNavScreen(var icon: ImageVector, val route: String) {
