@@ -16,11 +16,9 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentSize
-import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
@@ -33,31 +31,25 @@ import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.rememberBottomSheetScaffoldState
-import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.ShapeDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavHostController
 import com.donation.fda.presentation.components.ButtonView
-import com.donation.fda.presentation.components.InputTextFieldView
 import com.donation.fda.presentation.components.TextView
+import com.donation.fda.presentation.ui.navigations.NavScreen
 import com.donation.fda.theme.primaryColor
 import com.donation.fda.theme.white
 import com.record.fda.R
@@ -65,8 +57,9 @@ import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun WelcomeViewScreen() {
+fun WelcomeViewScreen(navController: NavHostController) {
 
+    val context = LocalContext.current
     val scope = rememberCoroutineScope()
     val scaffoldState = rememberBottomSheetScaffoldState()
 
@@ -103,12 +96,14 @@ fun WelcomeViewScreen() {
                         onClickAction = {
                             scope.launch {
                                 if (scaffoldState.bottomSheetState.isExpanded) {
+                                    // navigate to register page
                                     scaffoldState.bottomSheetState.collapse()
                                 } else {
                                     scaffoldState.bottomSheetState.expand()
                                 }
                             }
-                        }
+                        },
+                        navController = navController
                     )
                 }
             }
@@ -123,8 +118,14 @@ fun WelcomeViewScreen() {
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 // Action button
-                WelcomeViewScreen(
-                    signInOnClick = { },
+                WelcomeView(
+                    signInOnClick = {
+                        navController.navigate(NavScreen.LoginPage.route) {
+                            popUpTo(NavScreen.WelcomePage.route){
+                                inclusive = true
+                            }
+                        }
+                    },
                     signUponClick = { signUponClick() }
                 )
             }
@@ -133,7 +134,7 @@ fun WelcomeViewScreen() {
 }
 
 @Composable
-fun UserList(onClickAction: () -> Unit = {}) {
+fun UserList(onClickAction: () -> Unit = {}, navController: NavHostController) {
     var userList = listOf(
         UserList(
             logo = painterResource(id = R.mipmap.img_ngo_logo),
@@ -161,12 +162,21 @@ fun UserList(onClickAction: () -> Unit = {}) {
             .padding(20.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Row(modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.Center) {
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.Center
+        ) {
             IconButton(
                 onClick = { onClickAction() },
-                modifier = Modifier.size(50.dp)
+                modifier = Modifier.wrapContentSize()
             ) {
-                Icon(imageVector = Icons.Default.KeyboardArrowDown, contentDescription = null)
+                Icon(
+                    imageVector = Icons.Default.KeyboardArrowDown,
+                    contentDescription = null,
+                    modifier = Modifier.size(40.dp),
+                    tint = Color.Gray
+                )
             }
         }
 
@@ -191,14 +201,21 @@ fun UserList(onClickAction: () -> Unit = {}) {
                         .fillMaxWidth()
                         .clickable {
                             onClickAction()
+                            navController.navigate(NavScreen.RegisterPage.route){
+                                popUpTo(NavScreen.WelcomePage.route){
+                                    inclusive = true
+                                }
+                            }
                         }
                         .padding(vertical = 10.dp, horizontal = 15.dp),
                     horizontalAlignment = Alignment.CenterHorizontally,
                     verticalArrangement = Arrangement.Center
                 ) {
-                    Card(modifier = Modifier
-                        .wrapContentSize()
-                        .size(140.dp), shape = ShapeDefaults.Large) {
+                    Card(
+                        modifier = Modifier
+                            .wrapContentSize()
+                            .size(140.dp), shape = ShapeDefaults.Large
+                    ) {
                         Image(
                             painter = user.logo,
                             contentDescription = null,
@@ -214,7 +231,7 @@ fun UserList(onClickAction: () -> Unit = {}) {
 }
 
 @Composable
-fun WelcomeViewScreen(signInOnClick: () -> Unit, signUponClick: () -> Unit) {
+fun WelcomeView(signInOnClick: () -> Unit, signUponClick: () -> Unit) {
     Column(
         modifier = Modifier
             .fillMaxSize()

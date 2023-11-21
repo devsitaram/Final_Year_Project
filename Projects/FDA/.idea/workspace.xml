@@ -10,15 +10,19 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="7a542fa3-5384-4501-98df-17be50c62556" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/app/src/main/java/com/donation/fda/presentation/ui/LoginScreen.kt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/src/main/java/com/donation/fda/presentation/ui/RegisterScreen.kt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/donation/fda/presentation/components/Componentes.kt" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/donation/fda/presentation/components/Componentes.kt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/src/main/java/com/donation/fda/presentation/ui/WelcomeScreen.kt" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/donation/fda/presentation/ui/WelcomeScreen.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/donation/fda/presentation/ui/navigations/NavHost.kt" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/donation/fda/presentation/ui/navigations/NavHost.kt" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
-  <component name="ExecutionTargetManager" SELECTED_TARGET="device_and_snapshot_combo_box_target[adb-AE9260223E4002039-lZVR2a._adb-tls-connect._tcp]" />
+  <component name="ExecutionTargetManager" SELECTED_TARGET="device_and_snapshot_combo_box_target[AE9260223E4002039]" />
   <component name="ExternalProjectsData">
     <projectState path="$PROJECT_DIR$">
       <ProjectState />
@@ -66,7 +70,7 @@
     "RunOnceActivity.cidr.known.project.marker": "true",
     "cidr.known.project.marker": "true",
     "last_directory_selection": "C:/Desktop/FDA/app/src/main/res/mipmap-hdpi",
-    "last_opened_file_path": "C:/Documents/Final Years/Final Year Project (FYP)/Projects/FDA/app/src/main/java/com/donation/fda/presentation/ui/navigations",
+    "last_opened_file_path": "D:/FYP Hepls apps/SocialMedialLogin",
     "settings.editor.selected.configurable": "AndroidSdkUpdater"
   }
 }]]></component>

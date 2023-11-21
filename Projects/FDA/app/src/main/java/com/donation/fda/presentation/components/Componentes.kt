@@ -19,6 +19,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.text.ClickableText
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.text.selection.TextSelectionColors
 import androidx.compose.material.Badge
 import androidx.compose.material.BadgedBox
 import androidx.compose.material.BottomNavigationItem
@@ -41,11 +42,15 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.CheckboxColors
 import androidx.compose.material3.CheckboxDefaults
+import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.IconButtonColors
+import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ShapeDefaults
 import androidx.compose.material3.TextButton
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -82,6 +87,7 @@ import androidx.navigation.NavHostController
 import coil.compose.AsyncImage
 import coil.compose.AsyncImagePainter
 import com.donation.fda.theme.pink
+import com.donation.fda.theme.primaryColor
 import com.donation.fda.theme.white
 import com.record.fda.R
 
@@ -190,7 +196,7 @@ fun TextButtonView(
     textStyle: TextStyle = TextStyle.Default,
     enabled: Boolean = true,
     shape: Shape = MaterialTheme.shapes.small,
-    btnColors: ButtonColors = ButtonDefaults.buttonColors(),
+    colors: ButtonColors = ButtonDefaults.buttonColors(),
     elevation: ButtonElevation? = null,
     border: BorderStroke? = null,
     contentPadding: PaddingValues = PaddingValues(0.dp),
@@ -200,7 +206,7 @@ fun TextButtonView(
         modifier = modifier,
         enabled = enabled,
         shape = shape,
-        colors = btnColors,
+        colors = colors,
         elevation = elevation,
         border = border,
         contentPadding = contentPadding,
@@ -278,6 +284,7 @@ fun InputTextFieldView(
 }
 
 // password input text fields
+@OptIn(ExperimentalMaterial3Api::class)
 @SuppressLint("ModifierParameter")
 @Composable
 fun PasswordTextFieldView(
@@ -300,11 +307,11 @@ fun PasswordTextFieldView(
     errorColor: Color = Color.Unspecified,
 ) {
     val passwordVisibility = remember { mutableStateOf(false) }
-    var color by remember { mutableStateOf(Color.Transparent) }
+    var color by remember { mutableStateOf(primaryColor) }
     color = if (isEmpty) {
         errorColor
     } else {
-        Color.Transparent
+        primaryColor
     }
     OutlinedTextField(
         value = value,
@@ -331,11 +338,11 @@ fun PasswordTextFieldView(
         leadingIcon = leadingIcon,
         trailingIcon = {
             IconButton(
-                onClick = { passwordVisibility.value = !passwordVisibility.value }
+                onClick = { passwordVisibility.value = !passwordVisibility.value },
             ) {
                 VectorIconView(
                     imageVector = if (passwordVisibility.value) Icons.Default.Visibility else Icons.Default.VisibilityOff,
-                    tint = if (isEmpty || isError) Color.Red else Color.Black
+                    tint = if (isEmpty || isError) Color.Red else primaryColor
                 )
             }
         },
@@ -363,24 +370,24 @@ fun PasswordTextFieldView(
 @Composable
 fun CheckboxComponent(
     modifier: Modifier = Modifier,
-    enabled: Boolean = false,
+    enabled: Boolean = true,
     colors: CheckboxColors = CheckboxDefaults.colors(),
+    checkedState: Boolean, // Remove the remember here
+    onClick: (Boolean) -> Unit // Update the onClick lambda to pass the Boolean
 ) {
-    var checkedState by remember { mutableStateOf(false) }
     Row(
         modifier = modifier,
         verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.Start,
     ) {
         Checkbox(
             checked = checkedState,
-            onCheckedChange = { checkedState = it },
+            onCheckedChange = { onClick(it) }, // Pass the updated value to the onClick lambda
             modifier = Modifier,
             enabled = enabled,
             colors = colors,
         )
-        TextView(
-            text = if (checkedState) "Remember" else "Remember Me"
-        )
+        TextView(text = if (checkedState) "Remember" else "Remember Me")
     }
 }
 
@@ -703,3 +710,16 @@ fun ButtonAppBar(
 //        }
 //    }
 // }
+
+@Composable
+fun DividerWithText(text: String, modifier: Modifier= Modifier) {
+    Row(
+        modifier = modifier,
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Divider(modifier = Modifier.width(140.dp))
+        Text(text = text, color = Color.Gray)
+        Divider(modifier = Modifier.width(140.dp))
+    }
+}

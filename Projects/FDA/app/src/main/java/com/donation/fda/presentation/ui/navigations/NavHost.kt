@@ -23,20 +23,25 @@ import androidx.navigation.compose.rememberNavController
 import com.donation.fda.presentation.components.TextView
 import com.donation.fda.presentation.components.VectorIconView
 import com.donation.fda.presentation.ui.IntroSliderViewScreen
+import com.donation.fda.presentation.ui.LoginViewScreen
+import com.donation.fda.presentation.ui.RegisterViewScreen
 import com.donation.fda.presentation.ui.WelcomeViewScreen
 import com.donation.fda.theme.pink
 
 @Composable
 fun NavigationViewScreen(navController: NavHostController) {
-    NavHost(navController = navController, startDestination = NavScreen.IntroSliderPage.route) {
+    NavHost(navController = navController, startDestination = NavScreen.WelcomePage.route) {
         composable(NavScreen.IntroSliderPage.route) {
             IntroSliderViewScreen(navController)
         }
         composable(NavScreen.WelcomePage.route) {
-            WelcomeViewScreen()
+            WelcomeViewScreen(navController)
         }
         composable(NavScreen.LoginPage.route) {
-            // login page
+            LoginViewScreen(navController)
+        }
+        composable(NavScreen.RegisterPage.route) {
+            RegisterViewScreen(navController)
         }
     }
 }
