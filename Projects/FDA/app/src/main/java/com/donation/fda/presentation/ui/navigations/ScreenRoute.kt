@@ -6,11 +6,12 @@ import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.PersonOutline
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.ui.graphics.vector.ImageVector
+import com.donation.fda.data.common.Constants.USER_TYPES
 
 sealed class NavScreen(val route: String) {
     object IntroSliderPage: NavScreen("IntroSlider")
     object WelcomePage: NavScreen("Welcome")
-    object LoginPage: NavScreen("Login")
+    object LoginPage: NavScreen("Login/{$USER_TYPES}")
     object RegisterPage: NavScreen("Register")
 }
 

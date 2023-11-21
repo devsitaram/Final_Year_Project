@@ -16,12 +16,15 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import com.donation.fda.presentation.components.TextView
-import com.donation.fda.presentation.components.VectorIconView
+import androidx.navigation.navArgument
+import com.donation.fda.data.common.Constants.USER_TYPES
+import com.donation.fda.presentation.ui.util.TextView
+import com.donation.fda.presentation.ui.util.VectorIconView
 import com.donation.fda.presentation.ui.IntroSliderViewScreen
 import com.donation.fda.presentation.ui.LoginViewScreen
 import com.donation.fda.presentation.ui.RegisterViewScreen
@@ -30,19 +33,43 @@ import com.donation.fda.theme.pink
 
 @Composable
 fun NavigationViewScreen(navController: NavHostController) {
-    NavHost(navController = navController, startDestination = NavScreen.WelcomePage.route) {
+    NavHost(navController = navController, startDestination = NavScreen.LoginPage.route) {
         composable(NavScreen.IntroSliderPage.route) {
             IntroSliderViewScreen(navController)
         }
         composable(NavScreen.WelcomePage.route) {
             WelcomeViewScreen(navController)
         }
-        composable(NavScreen.LoginPage.route) {
-            LoginViewScreen(navController)
+//        composable(NavScreen.LoginPage.route) {
+//            LoginViewScreen(navController)
+//        }
+        composable(
+            route = NavScreen.LoginPage.route,
+            arguments = listOf(
+                navArgument(name = USER_TYPES) {
+                    type = NavType.StringType
+                }
+            )
+        ) { navBackStackEntry ->
+            val userType = navBackStackEntry.arguments?.getString(USER_TYPES)
+            LoginViewScreen(userType, navController)
         }
+
         composable(NavScreen.RegisterPage.route) {
             RegisterViewScreen(navController)
         }
+
+//        composable(
+//            route = NavScreen.RegisterPage.route,
+//            arguments = listOf(
+//                navArgument(name = USER_TYPES) {
+//                    type = NavType.StringType
+//                }
+//            )
+//        ) { navBackStackEntry ->
+//            val userType = navBackStackEntry.arguments?.getString(USER_TYPES)
+//            RegisterViewScreen(userType, navController)
+//        }
     }
 }
 

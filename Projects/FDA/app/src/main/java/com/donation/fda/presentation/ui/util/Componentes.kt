@@ -1,9 +1,9 @@
-package com.donation.fda.presentation.components
+package com.donation.fda.presentation.ui.util
 
 import android.annotation.SuppressLint
-import android.graphics.ColorSpace
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -17,9 +17,9 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.text.ClickableText
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.foundation.text.selection.TextSelectionColors
 import androidx.compose.material.Badge
 import androidx.compose.material.BadgedBox
 import androidx.compose.material.BottomNavigationItem
@@ -45,12 +45,9 @@ import androidx.compose.material3.CheckboxDefaults
 import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.IconButtonColors
-import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ShapeDefaults
 import androidx.compose.material3.TextButton
-import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -234,7 +231,7 @@ fun InputTextFieldView(
     maxLines: Int = 1,
     keyboardOptions: KeyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
     shape: Shape = ShapeDefaults.Medium,
-    errorMessage: String? = null,
+    errorMessage: Boolean? = null,
     invalidMessage: String? = null,
     errorColor: Color = Color.Unspecified
 ) {
@@ -574,6 +571,7 @@ fun ButtonAppBar(
                     /**navController.navigate(ScreenList.SearchScreen.route)*/
                     /**navController.navigate(ScreenList.SearchScreen.route)*/
                     /**navController.navigate(ScreenList.SearchScreen.route)*/
+                    /**navController.navigate(ScreenList.SearchScreen.route)*/
                     VectorIconView(
                         imageVector = Icons.Default.Search,
                         tint = Color.Gray,
@@ -722,4 +720,15 @@ fun DividerWithText(text: String, modifier: Modifier= Modifier) {
         Text(text = text, color = Color.Gray)
         Divider(modifier = Modifier.width(140.dp))
     }
+}
+
+@Composable
+fun ImageViewPainter(painterImage: Painter) {
+    Image(
+        painter = painterImage,
+        contentDescription = null,
+        modifier = Modifier
+            .background(color = Color.White)
+            .wrapContentWidth(),
+    )
 }

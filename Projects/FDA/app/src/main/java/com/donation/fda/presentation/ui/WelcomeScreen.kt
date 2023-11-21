@@ -1,6 +1,5 @@
 package com.donation.fda.presentation.ui
 
-import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -47,8 +46,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
-import com.donation.fda.presentation.components.ButtonView
-import com.donation.fda.presentation.components.TextView
+import com.donation.fda.presentation.ui.util.ButtonView
+import com.donation.fda.presentation.ui.util.TextView
 import com.donation.fda.presentation.ui.navigations.NavScreen
 import com.donation.fda.theme.primaryColor
 import com.donation.fda.theme.white
@@ -64,7 +63,7 @@ fun WelcomeViewScreen(navController: NavHostController) {
     val scaffoldState = rememberBottomSheetScaffoldState()
 
     // checkbox action
-    val signUponClick: () -> Unit = {
+    val signInOnClick: () -> Unit = {
         scope.launch {
             if (scaffoldState.bottomSheetState.isExpanded) {
                 scaffoldState.bottomSheetState.collapse()
@@ -120,13 +119,15 @@ fun WelcomeViewScreen(navController: NavHostController) {
                 // Action button
                 WelcomeView(
                     signInOnClick = {
-                        navController.navigate(NavScreen.LoginPage.route) {
+                        signInOnClick()
+                    },
+                    signUponClick = {
+                        navController.navigate(NavScreen.RegisterPage.route) {
                             popUpTo(NavScreen.WelcomePage.route){
                                 inclusive = true
                             }
                         }
-                    },
-                    signUponClick = { signUponClick() }
+                    }
                 )
             }
         }
@@ -137,20 +138,20 @@ fun WelcomeViewScreen(navController: NavHostController) {
 fun UserList(onClickAction: () -> Unit = {}, navController: NavHostController) {
     var userList = listOf(
         UserList(
-            logo = painterResource(id = R.mipmap.img_ngo_logo),
-            userType = "NOGs"
-        ),
-        UserList(
-            logo = painterResource(id = R.mipmap.img_volunteer),
-            userType = "Volunteers"
-        ),
-        UserList(
             logo = painterResource(id = R.mipmap.img_donor),
             userType = "Donors"
         ),
         UserList(
             logo = painterResource(id = R.mipmap.img_farmer),
             userType = "Farmers"
+        ),
+        UserList(
+            logo = painterResource(id = R.mipmap.img_volunteer),
+            userType = "Volunteers"
+        ),
+        UserList(
+            logo = painterResource(id = R.mipmap.img_ngo_logo),
+            userType = "NOGs"
         )
     )
 
@@ -181,7 +182,7 @@ fun UserList(onClickAction: () -> Unit = {}, navController: NavHostController) {
         }
 
         TextView(
-            text = "Register your details",
+            text = "Login Your Account",
             style = MaterialTheme.typography.h5,
             color = Color.DarkGray,
             textAlign = TextAlign.Center,
@@ -201,7 +202,7 @@ fun UserList(onClickAction: () -> Unit = {}, navController: NavHostController) {
                         .fillMaxWidth()
                         .clickable {
                             onClickAction()
-                            navController.navigate(NavScreen.RegisterPage.route){
+                            navController.navigate("Login/${user.userType}"){
                                 popUpTo(NavScreen.WelcomePage.route){
                                     inclusive = true
                                 }

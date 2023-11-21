@@ -1,6 +1,5 @@
 package com.donation.fda.presentation.ui
 
-import android.widget.Toast
 import androidx.annotation.DrawableRes
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -29,7 +28,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import coil.compose.AsyncImage
 import com.donation.fda.theme.primaryColor
-import com.donation.fda.presentation.components.TextView
+import com.donation.fda.presentation.ui.util.TextView
 import com.donation.fda.presentation.ui.navigations.NavScreen
 import com.donation.fda.theme.white
 import com.google.accompanist.pager.ExperimentalPagerApi

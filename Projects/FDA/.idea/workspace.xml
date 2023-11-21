@@ -10,12 +10,19 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="7a542fa3-5384-4501-98df-17be50c62556" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/app/src/main/java/com/donation/fda/presentation/ui/LoginScreen.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/src/main/java/com/donation/fda/presentation/ui/RegisterScreen.kt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/src/main/java/com/donation/fda/data/common/ClientInterceptors.kt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/src/main/java/com/donation/fda/data/common/Constants.kt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/src/main/java/com/donation/fda/data/common/Resource.kt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/src/main/java/com/donation/fda/data/common/util/Validators.kt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/src/main/java/com/donation/fda/data/common/util/json_convertoer/TypeConverter.kt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/donation/fda/presentation/components/Componentes.kt" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/donation/fda/presentation/components/Componentes.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/donation/fda/presentation/components/Componentes.kt" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/donation/fda/presentation/ui/util/Componentes.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/donation/fda/presentation/ui/LoginScreen.kt" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/donation/fda/presentation/ui/LoginScreen.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/donation/fda/presentation/ui/RegisterScreen.kt" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/donation/fda/presentation/ui/RegisterScreen.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/donation/fda/presentation/ui/WalkthroughScreen.kt" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/donation/fda/presentation/ui/WalkthroughScreen.kt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/src/main/java/com/donation/fda/presentation/ui/WelcomeScreen.kt" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/donation/fda/presentation/ui/WelcomeScreen.kt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/src/main/java/com/donation/fda/presentation/ui/navigations/NavHost.kt" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/donation/fda/presentation/ui/navigations/NavHost.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/donation/fda/presentation/ui/navigations/ScreenRoute.kt" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/donation/fda/presentation/ui/navigations/ScreenRoute.kt" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -70,15 +77,19 @@
     "RunOnceActivity.cidr.known.project.marker": "true",
     "cidr.known.project.marker": "true",
     "last_directory_selection": "C:/Desktop/FDA/app/src/main/res/mipmap-hdpi",
-    "last_opened_file_path": "D:/FYP Hepls apps/SocialMedialLogin",
+    "last_opened_file_path": "C:/Documents/Final Years/Final Year Project (FYP)/Projects/FDA/app/src/main/java/com/donation/fda/data",
     "settings.editor.selected.configurable": "AndroidSdkUpdater"
   }
 }]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\Documents\Final Years\Final Year Project (FYP)\Projects\FDA\app\src\main\java\com\donation\fda\data" />
       <recent name="C:\Documents\Final Years\Final Year Project (FYP)\Projects\FDA\app\src\main\java\com\donation\fda\presentation\ui\navigations" />
       <recent name="C:\Desktop\FDA\app\src\main\res\mipmap-hdpi" />
       <recent name="C:\Desktop\FDA\app\src\main\java\com\donation\fda\presentation" />
+    </key>
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Documents\Final Years\Final Year Project (FYP)\Projects\FDA\app\src\main\java\com\donation\fda\presentation\ui\util" />
     </key>
   </component>
   <component name="RunManager">

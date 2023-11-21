@@ -31,21 +31,24 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
-import com.donation.fda.presentation.components.ButtonView
-import com.donation.fda.presentation.components.CheckboxComponent
-import com.donation.fda.presentation.components.DividerWithText
-import com.donation.fda.presentation.components.InputTextFieldView
-import com.donation.fda.presentation.components.PasswordTextFieldView
-import com.donation.fda.presentation.components.TextButtonView
-import com.donation.fda.presentation.components.TextView
-import com.donation.fda.presentation.components.VectorIconView
 import com.donation.fda.presentation.ui.navigations.NavScreen
+import com.donation.fda.presentation.ui.util.ButtonView
+import com.donation.fda.presentation.ui.util.CheckboxComponent
+import com.donation.fda.presentation.ui.util.DividerWithText
+import com.donation.fda.presentation.ui.util.InputTextFieldView
+import com.donation.fda.presentation.ui.util.PasswordTextFieldView
+import com.donation.fda.presentation.ui.util.TextButtonView
+import com.donation.fda.presentation.ui.util.TextView
+import com.donation.fda.presentation.ui.util.VectorIconView
 import com.donation.fda.theme.primaryColor
 import com.donation.fda.theme.white
 import com.record.fda.R
 
 @Composable
-fun LoginViewScreen(navController: NavHostController) {
+fun LoginViewScreen(userTypes: String?, navController: NavHostController) {
+
+    val userTypes by remember { mutableStateOf(userTypes ?: "Donor") }
+
     var username by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
 
@@ -89,7 +92,7 @@ fun LoginViewScreen(navController: NavHostController) {
                 modifier = Modifier.size(150.dp)
             )
             TextView(
-                text = if (checkedState) "Volunteers" else "User",
+                text = if (checkedState) userTypes.toString() else "User",
                 fontSize = 18.sp,
                 fontWeight = FontWeight.SemiBold,
                 modifier = Modifier.padding(top = 10.dp)
@@ -99,9 +102,9 @@ fun LoginViewScreen(navController: NavHostController) {
         InputTextFieldView(
             value = username,
             onValueChange = { username = it },
-            leadingIcon = { VectorIconView(imageVector = Icons.Default.PersonOutline)},
+            leadingIcon = { VectorIconView(imageVector = Icons.Default.PersonOutline) },
             label = "Username",
-            placeholder= "Enter username",
+            placeholder = "Enter username",
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(8.dp)
@@ -110,7 +113,7 @@ fun LoginViewScreen(navController: NavHostController) {
         PasswordTextFieldView(
             value = password,
             onValueChange = { password = it },
-            leadingIcon = { VectorIconView(imageVector = Icons.Default.LockOpen)},
+            leadingIcon = { VectorIconView(imageVector = Icons.Default.LockOpen) },
             label = "Password",
             placeholder= "Enter password",
             modifier = Modifier
