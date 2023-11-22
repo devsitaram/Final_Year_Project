@@ -10,7 +10,17 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="7a542fa3-5384-4501-98df-17be50c62556" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/../../Documents/Interim Report/Interim Report.docx" beforeDir="false" afterPath="$PROJECT_DIR$/../../Documents/Interim Report/Interim Report.docx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/src/main/java/com/donation/fda/presentation/SampleDesign.kt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/src/main/res/raw/login_animation.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../Documents/Interim Report/~WRL0561.tmp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../Documents/Log/Log Book (FYP Class).docx" beforeDir="false" afterPath="$PROJECT_DIR$/../../Documents/Log/Log Book (FYP Class).docx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/build.gradle.kts" beforeDir="false" afterPath="$PROJECT_DIR$/app/build.gradle.kts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/donation/fda/MainActivity.kt" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/donation/fda/MainActivity.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/donation/fda/presentation/ui/LoginScreen.kt" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/donation/fda/presentation/ui/LoginScreen.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/donation/fda/presentation/ui/RegisterScreen.kt" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/donation/fda/presentation/ui/RegisterScreen.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/donation/fda/presentation/ui/util/Componentes.kt" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/donation/fda/presentation/ui/util/Componentes.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/donation/fda/theme/Color.kt" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/donation/fda/theme/Color.kt" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -63,14 +73,16 @@
     "RunOnceActivity.OpenProjectViewOnStart": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "RunOnceActivity.cidr.known.project.marker": "true",
+    "android-custom-viewC:/Users/Lenovo/.gradle/caches/modules-2/files-2.1/com.airbnb.android/lottie/4.0.0/f687e27335ef32af05ea09bab8e12703ef451cfc/lottie-4.0.0-sources.jar!/com/airbnb/lottie/LottieAnimationView.java_SELECTED": "LottieAnimationView",
     "cidr.known.project.marker": "true",
     "last_directory_selection": "C:/Desktop/FDA/app/src/main/res/mipmap-hdpi",
-    "last_opened_file_path": "C:/Documents/Final Years/Final Year Project (FYP)/Projects/FDA/app/src/main/java/com/donation/fda/data",
+    "last_opened_file_path": "C:/Documents/Final Years/Final Year Project (FYP)/Projects/FDA/app/src/main/res/raw",
     "settings.editor.selected.configurable": "AndroidSdkUpdater"
   }
 }]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\Documents\Final Years\Final Year Project (FYP)\Projects\FDA\app\src\main\res\raw" />
       <recent name="C:\Documents\Final Years\Final Year Project (FYP)\Projects\FDA\app\src\main\java\com\donation\fda\data" />
       <recent name="C:\Documents\Final Years\Final Year Project (FYP)\Projects\FDA\app\src\main\java\com\donation\fda\presentation\ui\navigations" />
       <recent name="C:\Desktop\FDA\app\src\main\res\mipmap-hdpi" />

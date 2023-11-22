@@ -2,6 +2,7 @@ package com.donation.fda.presentation.ui.util
 
 import android.annotation.SuppressLint
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -17,6 +18,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.text.ClickableText
 import androidx.compose.foundation.text.KeyboardOptions
@@ -57,10 +59,15 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.BlendMode
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.FilterQuality
 import androidx.compose.ui.graphics.Shape
+import androidx.compose.ui.graphics.drawscope.DrawStyle
+import androidx.compose.ui.graphics.drawscope.Fill
+import androidx.compose.ui.graphics.drawscope.translate
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
@@ -83,6 +90,13 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import coil.compose.AsyncImage
 import coil.compose.AsyncImagePainter
+import com.airbnb.lottie.LottieComposition
+import com.airbnb.lottie.compose.LottieAnimation
+import com.airbnb.lottie.compose.LottieCompositionResult
+import com.airbnb.lottie.compose.LottieCompositionSpec
+import com.airbnb.lottie.compose.LottieConstants
+import com.airbnb.lottie.compose.animateLottieCompositionAsState
+import com.airbnb.lottie.compose.rememberLottieComposition
 import com.donation.fda.theme.pink
 import com.donation.fda.theme.primaryColor
 import com.donation.fda.theme.white
@@ -352,14 +366,18 @@ fun PasswordTextFieldView(
         TextView(
             text = "The $label is empty!",
             style = TextStyle(color = errorColor, textAlign = TextAlign.Start),
-            modifier = Modifier.fillMaxWidth().padding(start = 8.dp, top = 1.dp)
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(start = 8.dp, top = 1.dp)
         )
     }
     if (isError) {
         TextView(
             text = errorMessage.toString(),
             style = TextStyle(color = errorColor),
-            modifier = Modifier.fillMaxWidth().padding(start = 8.dp, top = 1.dp)
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(start = 8.dp, top = 1.dp)
         )
     }
 }
@@ -710,7 +728,7 @@ fun ButtonAppBar(
 // }
 
 @Composable
-fun DividerWithText(text: String, modifier: Modifier= Modifier) {
+fun DividerWithText(text: String, modifier: Modifier = Modifier) {
     Row(
         modifier = modifier,
         horizontalArrangement = Arrangement.SpaceBetween,
@@ -730,5 +748,65 @@ fun ImageViewPainter(painterImage: Painter) {
         modifier = Modifier
             .background(color = Color.White)
             .wrapContentWidth(),
+    )
+}
+
+@Composable
+fun CanvasView(
+    modifier: Modifier = Modifier,
+    left: Float = 0f,
+    top: Float = 0f,
+    color: Color = Color.Unspecified,
+    radius: Float = 0f,
+    center: Offset = Offset(0f, 0f), // Default center at (0, 0)
+    alpha: Float = 1f, // Default alpha fully opaque
+    style: DrawStyle = Fill, // Default draw style as Fill
+    colorFilter: ColorFilter? = null, // Default no color filter
+    blendMode: BlendMode = BlendMode.SrcOver // Default blend mode
+) {
+    Canvas(modifier = modifier) {
+        translate(left = left, top = top) {
+            drawCircle(
+                color = color,
+                radius = radius,
+                center = center,
+                alpha = alpha,
+                style = style,
+                colorFilter = colorFilter,
+                blendMode = blendMode
+            )
+        }
+    }
+}
+
+// graphic design
+//@Composable
+//fun CanvasExample() {
+//    Canvas(modifier = Modifier.size(100.dp)) {
+//        translate(left = 400f, top = -100f) {
+//            drawCircle(Color.Blue, radius = 200.dp.toPx())
+//        }
+//    }
+//}
+
+@Composable
+fun LottieAnimationsView(
+    rawResource: Int,
+    isAnimating: Boolean = true,
+    speed: Float = 0.75f,
+    modifier: Modifier = Modifier
+) {
+    val compositionResult: LottieCompositionResult =
+        rememberLottieComposition(spec = LottieCompositionSpec.RawRes(rawResource))
+    val progress by animateLottieCompositionAsState(
+        composition = compositionResult.value,
+        isPlaying = isAnimating,
+        iterations = LottieConstants.IterateForever,
+        speed = speed
+    )
+    LottieAnimation(
+        composition = compositionResult.value,
+        progress = progress,
+        modifier = modifier
     )
 }

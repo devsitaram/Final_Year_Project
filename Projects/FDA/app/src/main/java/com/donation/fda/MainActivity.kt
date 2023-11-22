@@ -10,12 +10,14 @@ import androidx.compose.material3.Surface
 import androidx.compose.ui.Modifier
 import androidx.navigation.compose.rememberNavController
 import com.donation.fda.data.common.ClientInterceptors
+import com.donation.fda.presentation.SampleUiDesign
 import com.donation.fda.presentation.ui.navigations.NavigationViewScreen
 import com.donation.fda.theme.FDATheme
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -30,6 +32,7 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
+//                    SampleUiDesign()
                     val navController = rememberNavController()
                     NavigationViewScreen(getInstallDevice, navController)
                 }

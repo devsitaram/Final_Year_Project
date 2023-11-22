@@ -135,9 +135,9 @@ dependencies {
     implementation("io.coil-kt:coil-compose:2.4.0")
 
 //    // lottie
-//    implementation ("com.airbnb.android:lottie-compose:4.0.0")
-//    implementation ("androidx.compose.foundation:foundation:1.5.3")
-//    implementation ("androidx.viewpager2:viewpager2:1.0.0")
+    implementation ("com.airbnb.android:lottie-compose:4.0.0")
+    implementation ("androidx.compose.foundation:foundation:1.5.3")
+    implementation ("androidx.viewpager2:viewpager2:1.0.0")
 
 //    // location track
 //    implementation("com.google.android.gms:play-services-location:21.0.1")

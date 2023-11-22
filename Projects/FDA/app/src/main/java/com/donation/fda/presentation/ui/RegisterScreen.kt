@@ -1,5 +1,8 @@
 package com.donation.fda.presentation.ui
 
+import android.content.Context
+import android.content.Intent
+import android.net.Uri
 import android.widget.Toast
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -9,9 +12,11 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Surface
 import androidx.compose.material3.ButtonDefaults
@@ -20,6 +25,10 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExposedDropdownMenuBox
 import androidx.compose.material3.ExposedDropdownMenuDefaults
 import androidx.compose.material.OutlinedTextField
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AccountCircle
+import androidx.compose.material.icons.filled.AddHomeWork
+import androidx.compose.material.icons.filled.BroadcastOnHome
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
@@ -35,6 +44,8 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -46,6 +57,7 @@ import com.donation.fda.presentation.ui.util.InputTextFieldView
 import com.donation.fda.presentation.ui.util.PasswordTextFieldView
 import com.donation.fda.presentation.ui.util.TextView
 import com.donation.fda.presentation.ui.util.ImageViewPainter
+import com.donation.fda.presentation.ui.util.VectorIconView
 import com.donation.fda.theme.primaryColor
 import com.donation.fda.theme.white
 import com.record.fda.R
@@ -57,6 +69,10 @@ import com.record.fda.R
 fun RegisterViewScreen(navController: NavHostController) {
 
     val context = LocalContext.current
+    // sharedPreferences
+//    val sharedPreferences =
+//        context.getSharedPreferences("food_donation_preferences", Context.MODE_PRIVATE)
+//    val editor = sharedPreferences.edit()
 
     // dropdown items variable initialize
     val users = arrayOf("Donor", "Volunteer", "Farmer", "NGOs")
@@ -101,10 +117,13 @@ fun RegisterViewScreen(navController: NavHostController) {
         passwordEmptyValue = isPasswordEmpty // password error message
 
         if (!isNameEmpty && !isEmailEmpty && !isPasswordEmpty) {
+            phoneNumErrorValue = phoneNum.length != 10
+            dobErrorValue = dob.length != 10
 //            val isSuccess = registerViewModel.registerDetails(name, email, password, context)
 //            if (isSuccess) {
 //                Toast.makeText(context, "Register success", Toast.LENGTH_SHORT).show()
 //                navController.navigate(NavScreen.LoginPage.route) // navigate
+//                editor.putString("userTypes", "selectedText").apply()
 //            } else {
 //                emailErrorMessage = true
 //            }
@@ -137,35 +156,54 @@ fun RegisterViewScreen(navController: NavHostController) {
 
             Spacer(modifier = Modifier.padding(top = 30.dp))
 
-            // Dropdown options
-            ExposedDropdownMenuBox(
-                expanded = expanded,
-                onExpandedChange = {
-                    expanded = !expanded
-                },
-                modifier = Modifier.width(200.dp).padding(5.dp)
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.Start
             ) {
-                OutlinedTextField(
-                    value = selectedText,
-                    onValueChange = { selectedText = it },
-                    readOnly = true,
-                    trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded) },
-                    modifier = Modifier.menuAnchor()
+                VectorIconView(
+                    imageVector =
+                    when (selectedText) {
+                        "Donor" -> Icons.Default.AccountCircle
+                        "Volunteer" -> Icons.Default.AccountCircle
+                        "Farmer" -> Icons.Default.AccountCircle
+                        else -> Icons.Default.AddHomeWork
+                    },
+                    tint = primaryColor,
+                    modifier = Modifier.size(70.dp)
                 )
-
-                ExposedDropdownMenu(
+                // Dropdown options
+                ExposedDropdownMenuBox(
                     expanded = expanded,
-                    onDismissRequest = { expanded = false }
+                    onExpandedChange = {
+                        expanded = !expanded
+                    },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(5.dp)
                 ) {
-                    users.forEach { item ->
-                        DropdownMenuItem(
-                            onClick = {
-                                selectedText = item
-                                expanded = false
-                                Toast.makeText(context, item, Toast.LENGTH_SHORT).show()
+                    OutlinedTextField(
+                        value = selectedText,
+                        onValueChange = { selectedText = it },
+                        readOnly = true,
+                        trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded) },
+                        modifier = Modifier.menuAnchor()
+                    )
+
+                    ExposedDropdownMenu(
+                        expanded = expanded,
+                        onDismissRequest = { expanded = false }
+                    ) {
+                        users.forEach { item ->
+                            DropdownMenuItem(
+                                onClick = {
+                                    selectedText = item
+                                    expanded = false
+                                    Toast.makeText(context, item, Toast.LENGTH_SHORT).show()
+                                }
+                            ) {
+                                TextView(text = item)
                             }
-                        ){
-                            TextView(text = item)
                         }
                     }
                 }
@@ -194,6 +232,7 @@ fun RegisterViewScreen(navController: NavHostController) {
                 errorValue = emailErrorValue,
                 invalidMessage = "Enter the valid email address",
                 errorColor = Color.Red,
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(5.dp)
@@ -201,13 +240,17 @@ fun RegisterViewScreen(navController: NavHostController) {
 
             InputTextFieldView(
                 value = phoneNum,
-                onValueChange = { phoneNum = it },
+                onValueChange = {
+                    val newPhoneNumber = it.take(10).filter { char -> char.isDigit() }
+                    phoneNum = newPhoneNumber
+                },
                 label = "Phone Number",
                 placeholder = "Enter phone no",
                 isEmptyValue = phoneNumEmptyValue,
-                errorValue = phoneNumErrorValue,
+                isInvalidValue = phoneNumErrorValue,
                 invalidMessage = "Enter the valid phone number",
                 errorColor = Color.Red,
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(5.dp)
@@ -215,13 +258,22 @@ fun RegisterViewScreen(navController: NavHostController) {
 
             InputTextFieldView(
                 value = dob,
-                onValueChange = { dob = it },
+                onValueChange = {
+                    // Apply the filter to allow only digits and limit to 10 characters
+                    val newDob = it.take(10).filter { char -> char.isDigit() }
+                    dob = when {
+                        newDob.length <= 2 -> newDob
+                        newDob.length <= 4 -> "${newDob.substring(0, 2)}-${newDob.substring(2)}"
+                        else -> "${newDob.substring(0, 2)}-${newDob.substring(2, 4)}-${newDob.substring(4)}"
+                    }
+                },
                 label = "Date of Birth",
-                placeholder = "Enter DOB",
+                placeholder = "dd-mm-YYYY",
                 isEmptyValue = dobEmptyValue,
-                errorValue = dobErrorValue,
+                isInvalidValue = dobErrorValue,
                 invalidMessage = "Enter the valid DOB",
                 errorColor = Color.Red,
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(5.dp)
@@ -234,6 +286,7 @@ fun RegisterViewScreen(navController: NavHostController) {
                 placeholder = "Enter password",
                 isEmptyValue = passwordEmptyValue,
                 errorColor = Color.Red,
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(5.dp)
@@ -257,22 +310,71 @@ fun RegisterViewScreen(navController: NavHostController) {
             )
 
             Spacer(modifier = Modifier.padding(top = 15.dp))
-            DividerWithText(text = "OR", modifier = Modifier.fillMaxWidth())
-
-            TextView(
-                text = "For Teacher and Principals who want to use the platform, send an email at: learn@mysecondteacher.com",
-                style = TextStyle(
-                    fontSize = 12.sp,
-                    fontStyle = FontStyle.Normal,
-                    fontWeight = FontWeight.Normal,
-                    lineHeight = 15.sp,
-                    color = Color.DarkGray,
-                    textAlign = TextAlign.Center
-                ),
+            DividerWithText(
+                text = "OR",
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(top = 10.dp, bottom = 15.dp)
+                    .padding(horizontal = 5.dp)
             )
+
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 10.dp, bottom = 15.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                TextView(
+                    text = "For Donor, Volunteer and Farmer who want to use the platform who have not email, create account:",
+                    style = TextStyle(
+                        fontSize = 12.sp,
+                        fontStyle = FontStyle.Normal,
+                        fontWeight = FontWeight.Normal,
+                        lineHeight = 15.sp,
+                        color = Color.DarkGray,
+                        textAlign = TextAlign.Center
+                    ),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(
+                            horizontal = 10.dp
+                        )
+                )
+                TextView(
+                    text = "www.gmail.com",
+                    style = TextStyle(
+                        fontSize = 12.sp,
+                        fontStyle = FontStyle.Normal,
+                        fontWeight = FontWeight.Normal,
+                        lineHeight = 15.sp,
+                        color = Color.Blue,
+                        textAlign = TextAlign.Center
+                    ),
+                    modifier = Modifier
+                        .wrapContentWidth()
+                        .clickable {
+                            val webIntent = Intent(
+                                Intent.ACTION_VIEW,
+                                // create gail account
+                                Uri.parse("https://accounts.google.com/lifecycle/steps/signup/name?continue=https://mail.google.com/mail/&dsh=S1661076939:1700642031568321&flowEntry=SignUp&flowName=GlifWebSignIn&service=mail&theme=glif&TL=AHNYTITevo2Lqzffgo_ASptfEExdEk6nU3AFab3NVhDokqtgU3ET05LqLlheaVIx")
+                            )
+                            context.startActivity(webIntent)
+                        }
+                )
+            }
+//            TextView(
+//                text = "For Donor, Volunteer and Farmer who want to use the platform who have not email, create gmail account account: learn@mysecondteacher.com",
+//                style = TextStyle(
+//                    fontSize = 12.sp,
+//                    fontStyle = FontStyle.Normal,
+//                    fontWeight = FontWeight.Normal,
+//                    lineHeight = 15.sp,
+//                    color = Color.DarkGray,
+//                    textAlign = TextAlign.Center
+//                ),
+//                modifier = Modifier
+//                    .fillMaxWidth()
+//                    .padding(top = 10.dp, bottom = 15.dp)
+//            )
 
             Row(
                 modifier = Modifier
