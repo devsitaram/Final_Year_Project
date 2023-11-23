@@ -87,8 +87,7 @@ fun LoginViewScreen(userTypes: String?, navController: NavHostController) {
         passwordEmptyValue = isPasswordEmpty
         if (!isEmailEmpty && !isPasswordEmpty) {
 
-            // call viewmodel function
-            // add access token
+//            // call viewmodel function
 //            LogInViewModel.getLoginUserAuth(email, password)
 //            if (userLoginResult.data?.success == true) {
 //                navController.navigate(NavScreen.DashboardPage.route) {
@@ -179,7 +178,7 @@ fun LoginViewScreen(userTypes: String?, navController: NavHostController) {
 //                    .padding(start = 15.dp,top=15.dp)
 //            ) {
 //                TextView(
-//                    text = "Sign in to your \naccount!",
+//                    text = "Sign in to your \account!",
 //                    color = Color.DarkGray,
 //                    fontSize = 20.sp,
 //                    fontWeight = FontWeight.SemiBold,
@@ -222,7 +221,7 @@ fun LoginViewScreen(userTypes: String?, navController: NavHostController) {
 
             }
             TextView(
-                text = if (checkedState) "Login account: ${users.toString()}" else "Enter the valid email and password",
+                text = if (checkedState) "You login with ${users.toString()} account" else "Enter the valid email and password",
                 fontSize = 14.sp,
                 fontWeight = FontWeight.Normal,
                 fontStyle = FontStyle.Normal,
@@ -261,7 +260,7 @@ fun LoginViewScreen(userTypes: String?, navController: NavHostController) {
                 modifier = Modifier
                     .wrapContentWidth()
                     .padding(12.dp),
-                onClick = { /*ScreenList.ForgotPassword.route*/ },
+                onClick = { navController.navigate(NavScreen.ForgotPasswordPage.route) },
                 colors = ButtonDefaults.buttonColors(
                     containerColor = Color.Unspecified
                 ),

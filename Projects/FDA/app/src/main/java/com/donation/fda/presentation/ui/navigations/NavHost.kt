@@ -23,6 +23,7 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.donation.fda.data.common.Constants.USER_TYPES
+import com.donation.fda.presentation.ui.ForgotPasswordViewScreen
 import com.donation.fda.presentation.ui.util.TextView
 import com.donation.fda.presentation.ui.util.VectorIconView
 import com.donation.fda.presentation.ui.IntroSliderViewScreen
@@ -62,6 +63,9 @@ fun NavigationViewScreen(getInstallDevice: String?, navController: NavHostContro
             RegisterViewScreen(navController)
         }
 
+        composable(NavScreen.ForgotPasswordPage.route){
+            ForgotPasswordViewScreen(navController)
+        }
 //        composable(
 //            route = NavScreen.RegisterPage.route,
 //            arguments = listOf(

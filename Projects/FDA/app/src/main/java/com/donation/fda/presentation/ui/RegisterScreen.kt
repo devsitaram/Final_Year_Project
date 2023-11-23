@@ -138,8 +138,8 @@ fun RegisterViewScreen(navController: NavHostController) {
                 .verticalScroll(rememberScrollState()),
             verticalArrangement = Arrangement.Top,
         ) {
-            Spacer(modifier = Modifier.padding(top = 30.dp))
-            ImageViewPainter(painterImage = painterResource(id = R.mipmap.img_profile))
+//            Spacer(modifier = Modifier.padding(top = 30.dp))
+//            ImageViewPainter(painterImage = painterResource(id = R.mipmap.img_profile))
 
             Spacer(modifier = Modifier.padding(top = 30.dp))
             TextView(
@@ -267,7 +267,7 @@ fun RegisterViewScreen(navController: NavHostController) {
                         else -> "${newDob.substring(0, 2)}-${newDob.substring(2, 4)}-${newDob.substring(4)}"
                     }
                 },
-                label = "Date of Birth",
+                label = if (selectedText == "NGOs") "Establish date" else "Date of Birth",
                 placeholder = "dd-mm-YYYY",
                 isEmptyValue = dobEmptyValue,
                 isInvalidValue = dobErrorValue,

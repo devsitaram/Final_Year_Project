@@ -741,13 +741,15 @@ fun DividerWithText(text: String, modifier: Modifier = Modifier) {
 }
 
 @Composable
-fun ImageViewPainter(painterImage: Painter) {
+fun ImageViewPainter(
+    painterImage: Painter,
+    contentDescription: String? = null,
+    modifier: Modifier = Modifier
+) {
     Image(
         painter = painterImage,
         contentDescription = null,
-        modifier = Modifier
-            .background(color = Color.White)
-            .wrapContentWidth(),
+        modifier = modifier
     )
 }
 

@@ -164,7 +164,7 @@ fun IntroSliderViewScreen(navController: NavHostController) {
                         .border(1.dp, color = primaryColor, shape = CircleShape)
                         .height(38.dp)
                 ) {
-                    TextView(text = "Next")
+                    TextView(text = "Next", color = white)
                 }
             }
             if (isContinues.value) {
@@ -184,7 +184,7 @@ fun IntroSliderViewScreen(navController: NavHostController) {
                         .border(1.dp, color = primaryColor, shape = CircleShape)
                         .height(38.dp)
                 ) {
-                    TextView(text = "Continue")
+                    TextView(text = "Continue", color = white)
                 }
             }
         }
