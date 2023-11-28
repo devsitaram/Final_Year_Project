@@ -4,7 +4,6 @@ import android.annotation.SuppressLint
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -18,7 +17,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.text.ClickableText
 import androidx.compose.foundation.text.KeyboardOptions
@@ -35,6 +33,7 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.Visibility
@@ -90,7 +89,6 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import coil.compose.AsyncImage
 import coil.compose.AsyncImagePainter
-import com.airbnb.lottie.LottieComposition
 import com.airbnb.lottie.compose.LottieAnimation
 import com.airbnb.lottie.compose.LottieCompositionResult
 import com.airbnb.lottie.compose.LottieCompositionSpec
@@ -99,12 +97,10 @@ import com.airbnb.lottie.compose.animateLottieCompositionAsState
 import com.airbnb.lottie.compose.rememberLottieComposition
 import com.donation.fda.theme.pink
 import com.donation.fda.theme.primaryColor
+import com.donation.fda.theme.red
 import com.donation.fda.theme.white
 import com.record.fda.R
 
-/**
- * @param text: text
- */
 @Composable
 fun TextView(
     text: String,
@@ -295,7 +291,6 @@ fun InputTextFieldView(
 }
 
 // password input text fields
-@OptIn(ExperimentalMaterial3Api::class)
 @SuppressLint("ModifierParameter")
 @Composable
 fun PasswordTextFieldView(
@@ -353,7 +348,7 @@ fun PasswordTextFieldView(
             ) {
                 VectorIconView(
                     imageVector = if (passwordVisibility.value) Icons.Default.Visibility else Icons.Default.VisibilityOff,
-                    tint = if (isEmptyValue || isError) Color.Red else primaryColor
+                    tint = if (isEmptyValue || isError) red else primaryColor
                 )
             }
         },
@@ -503,7 +498,7 @@ fun ProgressIndicator(
 }
 
 @Composable
-fun MessageDialogBox(
+fun SuccessMessageDialogBox(
     title: String? = null,
     descriptions: String? = null,
     onDismiss: () -> Unit,
@@ -512,21 +507,33 @@ fun MessageDialogBox(
 ) {
     AlertDialog(
         title = {
-            TextView(
-                text = title.toString(),
-                fontSize = 18.sp,
-                fontWeight = FontWeight.Bold,
-                textAlign = TextAlign.Center,
-                color = color,
-                modifier = Modifier.fillMaxWidth()
-            )
+            Column(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Icon(
+                    imageVector = Icons.Default.CheckCircle,
+                    contentDescription = null,
+                    tint = color,
+                    modifier = Modifier.size(100.dp)
+                )
+                TextView(
+                    text = title.toString(),
+                    fontSize = 18.sp,
+                    fontWeight = FontWeight.Bold,
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier.fillMaxWidth()
+                )
+            }
         },
         onDismissRequest = { onDismiss() },
         text = {
             TextView(
                 text = descriptions.toString(),
+                fontSize = 14.sp,
                 textAlign = TextAlign.Center,
-                color = Color.Black,
+                fontFamily = FontFamily.Default,
+                fontWeight = FontWeight.Normal,
                 modifier = Modifier.fillMaxWidth()
             )
         },
@@ -546,8 +553,64 @@ fun MessageDialogBox(
                         fontSize = 15.sp,
                         color = Color.White,
                         textAlign = TextAlign.Center,
-                        fontWeight = FontWeight.SemiBold
+                        fontWeight = FontWeight.SemiBold,
                     ),
+                    modifier = Modifier.fillMaxWidth()
+                )
+            }
+        }
+    )
+}
+
+@Composable
+fun ErrorMessageDialogBox(
+    title: String? = null,
+    descriptions: String? = null,
+    onDismiss: () -> Unit,
+    btnText: String? = null,
+    color: Color = Color.Transparent,
+) {
+    AlertDialog(
+        title = {
+            TextView(
+                text = title.toString(),
+                fontSize = 18.sp,
+                color = color,
+                fontWeight = FontWeight.Bold,
+                textAlign = TextAlign.Center,
+                modifier = Modifier.fillMaxWidth()
+            )
+        },
+        onDismissRequest = { onDismiss() },
+        text = {
+            TextView(
+                text = descriptions.toString(),
+                fontSize = 14.sp,
+                textAlign = TextAlign.Center,
+                fontFamily = FontFamily.Default,
+                fontWeight = FontWeight.Normal,
+                modifier = Modifier.fillMaxWidth()
+            )
+        },
+        modifier = Modifier.fillMaxWidth(),
+        confirmButton = {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(bottom = 5.dp),
+                horizontalArrangement = Arrangement.Center
+            ) {
+                ButtonView(
+                    onClick = { onDismiss() },
+                    colors = ButtonDefaults.buttonColors(color),
+                    text = btnText.toString(),
+                    textStyle = TextStyle(
+                        fontSize = 15.sp,
+                        color = Color.White,
+                        textAlign = TextAlign.Center,
+                        fontWeight = FontWeight.SemiBold,
+                    ),
+                    modifier = Modifier.wrapContentWidth()
                 )
             }
         }

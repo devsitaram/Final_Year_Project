@@ -11,7 +11,8 @@ import com.donation.fda.data.common.Constants.USER_TYPES
 sealed class NavScreen(val route: String) {
     object IntroSliderPage: NavScreen("IntroSlider")
     object WelcomePage: NavScreen("Welcome")
-    object LoginPage: NavScreen("Login/{$USER_TYPES}")
+//    object LoginPage: NavScreen("Login/{$USER_TYPES}")
+    object LoginPage: NavScreen("Login")
     object RegisterPage: NavScreen("Register")
     object ForgotPasswordPage: NavScreen("ForgotPassword")
     object DashboardPage: NavScreen("Dashboard")
