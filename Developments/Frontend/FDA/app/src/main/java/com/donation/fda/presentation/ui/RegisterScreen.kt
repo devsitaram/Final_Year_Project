@@ -263,7 +263,6 @@ fun RegisterView(
 
     // register button onClickAction
     val registerOnClick = {
-
 //            val isSuccess = registerViewModel.registerDetails(name, email, password, roll, context)
 //            if (isSuccess) {
 //                Toast.makeText(context, "Register success", Toast.LENGTH_SHORT).show()

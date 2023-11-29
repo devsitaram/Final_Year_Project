@@ -127,7 +127,7 @@ fun WelcomeViewScreen(navController: NavHostController) {
                 ),
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(50.dp)
+                    .height(45.dp)
             )
             Spacer(modifier = Modifier.padding(8.dp))
             ButtonView(

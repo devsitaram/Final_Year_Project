@@ -13,7 +13,7 @@ val Pink40 = Color(0xFF7D5260)
 
 val black = Color(0xFF000000)
 val white = Color(0xFFFFFFFF)
-
+val gray = Color(0xFF969696)
 val skyBlue = Color(0xCC1A97FA)
 val blue = Color(0xCC1A97FA)
 val pink = Color(0xCC870EFF)
@@ -21,5 +21,5 @@ val green = Color(0xFF42BB0B)
 val red = Color(0xFFDA190C)
 val orange = Color(0xCCFF6C3D)
 val yellow = Color(0xFFFFB630)
-val softWhite = Color(0xF2F7F5F5)
+val backgroundLayoutColor = Color(0xFFF3F3F3)
 

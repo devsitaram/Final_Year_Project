@@ -41,6 +41,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
+import com.donation.fda.presentation.ui.dashboard.donor.ScreenList
 import com.donation.fda.presentation.ui.navigations.NavScreen
 import com.donation.fda.presentation.ui.util.ButtonView
 import com.donation.fda.presentation.ui.util.CanvasView
@@ -79,6 +80,11 @@ fun LoginViewScreen(navController: NavHostController) {
     val isPasswordEmpty by remember { derivedStateOf { password.isEmpty() } }
 
     val onClickLogin: () -> Unit = {
+        navController.navigate(NavScreen.DashboardPage.route){
+            popUpTo(NavScreen.LoginPage.route){
+                inclusive = true
+            }
+        }
 //            // call viewmodel function
 //        LogInViewModel.getLoginUserAuth(email, password)
 //        if (userLoginResult.data?.success == true) {
