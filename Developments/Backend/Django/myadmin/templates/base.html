@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="en-us" dir="ltr">
+
+<head>
+    <title>Food Share</title>
+    <link rel="stylesheet" href="/static/admin/css/base.css">
+    <link rel="stylesheet" href="/static/admin/css/dark_mode.css">
+    <link rel="stylesheet" href="/static/admin/css/dashboard.css">
+    <link rel="stylesheet" href="/static/admin/css/nav_sidebar.css">
+    <link rel="stylesheet" href="/static/admin/css/responsive.css">
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <script src="/static/admin/js/nav_sidebar.js" defer></script>
+    <script src="/static/admin/js/theme.js" defer></script>
+    <meta name="viewport" content="user-scalable=no, width=device-width, initial-scale=1.0, maximum-scale=1.0">
+    <meta name="robots" content="NONE,NOARCHIVE">
+</head>
+
+<body class="dashboard" data-admin-utc-offset="1" style="display: flexbox;">
+    <!-- Container -->
+    <div id="container">
+        <!-- Header -->
+        <div id="header" style="background: linear-gradient(to right, #FB8B24, #E36414)">
+            <div id="branding">
+                <h1 id="site-name" style="color: white;"><b>Weast Food Management System</b></h1>
+            </div>
+            <div>
+                <button class="Btn" id="profile-button">Profile</button>
+            </div>
+        </div>
+        <!-- END Header -->
+
+        <!-- Add the profile card -->
+        <div id="profile-card" class="profile-card">
+            <!-- Profile card content -->
+            <div>
+                <img id="profile-image" src="" alt="Profile Image">
+            </div>
+            <div style="text-align: left;">
+                <p id="profile-role">Role: </p>
+                <p id="profile-name">Name: </p>
+                <p id="profile-email">Email: </p>
+                <p id="profile-contact">Contact: </p>
+                <p id="profile-address">Address: </p>
+                <p>
+                    <a href="{% url 'logout' %}" style="text-decoration: none; color: red;">Log out</a>
+                </p>
+            </div>
+        </div>
+
+        <!-- Sidebar -->
+        <div class="sidebar" style="width: 25%;">
+            <div class="app-accounts module">
+                <caption style="background: linear-gradient(to right, #FB8B24, #E36414)">
+                    <h2 style="background: linear-gradient(to right, #FB8B24, #E36414)">Food Share Data</h2>
+                </caption>
+                <table>
+                    <tbody>
+                        {% for table_name in list_of_table %}
+                        {% if not table_name|slice:":6" == 'django' and not table_name|slice:":5" == 'auth_' and not table_name|slice:":10" == 'authtoken_' %}
+                        {% with trimmed_table_name=table_name|cut:"foodshare_" %}
+                        <tr class="model-{{ table_name }}">
+                            <th scope="row" style="text-transform: uppercase;">
+                                <a href="{% url 'view_data' table_name=table_name %}">{{ trimmed_table_name }}</a>
+                            </th>
+                            <td>
+                                <a href="{% url 'add_data' table_name=table_name %}" class="addlink">Add</a>
+                            </td>
+                        </tr>
+                        {% endwith %}
+                        {% endif %}
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <!-- END Sidebar -->
+
+        <!-- Main Content -->
+        <div style="width: 75%;"> <!-- right side 75% -->
+            {% block content %}
+            <!-- Contents here -->
+            {% endblock %}
+        </div>
+        <!-- END Main Content -->
+
+    </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            // Fetch user profile data
+            fetchUserProfile();
+
+            // Add click event listener to profile button
+            var profileButton = document.getElementById("profile-button");
+            var profileCard = document.getElementById("profile-card");
+
+            profileButton.addEventListener("click", function(event) {
+                // Toggle the display of the profile card
+                profileCard.style.display = profileCard.style.display === "block" ? "none" : "block";
+            });
+
+            // Listen for clicks outside of the profile card to hide it
+            document.addEventListener("click", function(event) {
+                if (!profileCard.contains(event.target) && event.target !== profileButton) {
+                    profileCard.style.display = "none";
+                }
+            });
+        });
+
+        function fetchUserProfile() {
+            fetch('/api/user/profile/', {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': 'Bearer ' + localStorage.getItem('token') // Assuming you are using JWT token for authentication
+                    }
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.is_success) {
+                        // Populate profile card with user profile data
+                        var profileRole = document.getElementById("profile-role");
+                        var profileImage = document.getElementById("profile-image");
+                        var profileName = document.getElementById("profile-name");
+                        var profileEmail = document.getElementById("profile-email");
+                        var profileContact = document.getElementById("profile-contact");
+                        var profileAddress = document.getElementById("profile-address");
+
+                        profileRole.textContent += data.user_profile.role; // Assuming 'name' is the field in the user profile data
+                        profileImage.src = data.user_profile.photo_url; // Assuming 'profile_image' is the field in the user profile data
+                        profileName.textContent += data.user_profile.username; // Assuming 'name' is the field in the user profile data
+                        profileEmail.textContent += data.user_profile.email; // Assuming 'email' is the field in the user profile data
+                        profileContact.textContent += data.user_profile.contact_number; // Assuming 'email' is the field in the user profile data
+                        profileAddress.textContent += data.user_profile.address;
+
+                    } else {
+                        console.error(data.message);
+                    }
+                })
+                .catch(error => console.error('Error:', error));
+        }
+    </script>
+
+    <style>
+        .Btn {
+            background-color: #FB8B24;
+            color: #ffffff;
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+            width: 58px;
+            height: 30px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+            transition-duration: .3s;
+            box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.199);
+        }
+
+        /* plus sign */
+        .sign {
+            width: 100%;
+            transition-duration: .3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .sign svg {
+            width: 17px;
+        }
+
+        .sign svg path {
+            fill: var(--night-rider);
+        }
+
+        /* text */
+        .text {
+            position: absolute;
+            right: 0%;
+            width: 0%;
+            opacity: 0;
+            font-size: 1em;
+            font-weight: 600;
+            transition-duration: .3s;
+        }
+
+        /* hover effect on button width */
+        .Btn:hover {
+            box-shadow: #ffffff;
+            transition-duration: .3s;
+        }
+
+        .Btn:hover .sign {
+            width: 30%;
+            transition-duration: .3s;
+            padding-left: 20px;
+        }
+
+        /* hover effect button's text */
+        .Btn:hover .text {
+            opacity: 1;
+            width: 70%;
+            transition-duration: .3s;
+            padding-right: 10px;
+        }
+
+        /* Add styles for the profile card */
+        .profile-card {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            position: absolute;
+            top: 50px; /* Adjust as needed */
+            right: 10px; /* Adjust as needed */
+            background: white;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            z-index: 999; /* Ensure the profile card appears above other elements */
+            text-align: center; /* Center align all content */
+        }
+
+        /* Style the profile image to be circular */
+        .profile-card img {
+            border-radius: 50%;
+            width: 100px; /* Set width and height to maintain aspect ratio */
+            height: 100px;
+            object-fit: cover; /* Ensure the image covers the entire area */
+            margin-bottom: 10px; /* Add margin at the bottom for spacing */
+        }
+
+        /*
+        Drop down
+        */
+        .paste-button {
+            position: relative;
+            display: block;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        .button {
+            background-color: #4CAF50;
+            color: #212121;
+            padding: 10px 15px;
+            font-size: 15px;
+            font-weight: bold;
+            border: 2px solid transparent;
+            border-radius: 15px;
+            cursor: pointer;
+        }
+
+        .dropdown-content {
+            display: none;
+            font-size: 13px;
+            position: absolute;
+            z-index: 1;
+            min-width: 200px;
+            background-color: #212121;
+            border: 2px solid #4CAF50;
+            border-radius: 0px 15px 15px 15px;
+            box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+        }
+
+        .dropdown-content a {
+            color: #4CAF50;
+            padding: 8px 10px;
+            text-decoration: none;
+            display: block;
+            transition: 0.1s;
+        }
+
+        .dropdown-content a:hover {
+            background-color: #4CAF50;
+            color: #212121;
+        }
+
+        .dropdown-content a:focus {
+            background-color: #212121;
+            color: #4CAF50;
+        }
+
+        .dropdown-content #top:hover {
+            border-radius: 0px 13px 0px 0px;
+        }
+
+        .dropdown-content #bottom:hover {
+            border-radius: 0px 0px 13px 13px;
+        }
+
+        .paste-button:hover button {
+            border-radius: 15px 15px 0px 0px;
+        }
+
+        .paste-button:hover .dropdown-content {
+            display: block;
+        }
+
+        .sidebar {
+            height: 100%;
+            width: 250px;
+            position: fixed;
+            top: 0;
+            left: 0;
+            background-color: #111;
+            overflow-x: hidden;
+            padding-top: 20px;
+        }
+
+        .sidebar a {
+            padding: 10px;
+            text-decoration: none;
+            font-size: 14px;
+            color: #818181;
+            display: block;
+        }
+
+        .sidebar a:hover {
+            color: #f1f1f1;
+        }
+
+        .content {
+            margin-left: 250px;
+            padding: 16px;
+            height: 1000px;
+        }
+    </style>
+</body>
+
+</html>

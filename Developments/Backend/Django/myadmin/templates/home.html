@@ -1,0 +1,49 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+    {% comment %} <div class="main" id="main">
+      <div id="content-start" class="content" tabindex="-1">
+        
+        <!-- Content -->
+        <div id="content" class="colMS">
+          <div id="content-main">
+            <div class="app-accounts module">
+              <caption style="background: linear-gradient(to right, #FB8B24, #E36414)">
+                <h2 style="background: linear-gradient(to right, #FB8B24, #E36414)">Food Share Data</h2>
+              </caption>
+              <table>
+                <tbody>
+
+                  {% for table_name in list_of_table %}
+                    {% if not table_name|slice:":6" == 'django' and not table_name|slice:":5" == 'auth_' and not table_name|slice:":10" == 'authtoken_' %}
+                      {% with trimmed_table_name=table_name|cut:"foodshare_" %}
+                        <tr class="model-{{ table_name }}">
+                          <th scope="row" style="text-transform: uppercase;">
+                            <a href="{% url 'view_data' table_name=table_name %}">{{ trimmed_table_name }}</a>
+                          </th>
+                          <td>
+                            <a href="{% url 'add_data' table_name=table_name %}" class="addlink">Add</a>
+                          </td>
+                        </tr>
+                      {% endwith %}
+                    {% endif %}
+                  {% endfor %}
+
+                </tbody>
+              </table>
+            </div>
+
+          <div id="content-related">
+            // grapht display
+          </div>
+          <br class="clear">
+        </div>
+
+        <!-- END Content -->
+      </div>
+    </div>
+  </div> {% endcomment %}
+  <!-- END Container -->
+
+{% endblock %}
