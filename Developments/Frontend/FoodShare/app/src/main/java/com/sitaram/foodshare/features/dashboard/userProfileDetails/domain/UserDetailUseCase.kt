@@ -11,7 +11,7 @@ class UserDetailUseCase(private val userDetailRepository: UserDetailRepository) 
         try {
             emit(Resource.Success(data = userDetailRepository.getUserProfileById(userId = userId)))
         } catch (e: Exception) {
-            emit(Resource.Error(message = "Not found!"))
+            emit(Resource.Error(message = "Unable to connect to the server."))
         }
     }
 }

@@ -16,7 +16,7 @@ class UsersUseCase(private val usersRepository: UsersRepository) {
                 emit(Resource.Error(message = result?.message))
             }
         } catch (e: Exception) {
-            emit(Resource.Error(message =  "Not Found"))
+            emit(Resource.Error(message =  "Unable to connect to the server."))
         }
     }
 
@@ -30,7 +30,7 @@ class UsersUseCase(private val usersRepository: UsersRepository) {
                 emit(Resource.Error(message = result?.message))
             }
         } catch (e: Exception) {
-            emit(Resource.Error(message =  "Not Found"))
+            emit(Resource.Error(message =  "Unable to connect to the server."))
         }
     }
 }

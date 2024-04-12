@@ -36,4 +36,27 @@ class LoginViewModel @Inject constructor(private val loginUseCase: LoginUseCase)
             }
         }.launchIn(viewModelScope)
     }
+
+    fun getLoginUserAuth(userId: Int?, fcmToken: String?, userName: String?) {
+        _signInState = _signInState.copy(isLoading = true)
+        loginUseCase.invoke(userId, fcmToken, userName).onEach { result ->
+            _signInState = when (result) {
+                is Resource.Loading -> {
+                    _signInState.copy(isLoading = true)
+                }
+
+                is Resource.Success -> {
+                    _signInState.copy(message = result.message, isLoading = false)
+                }
+
+                is Resource.Error -> {
+                    _signInState.copy(error = result.message, isLoading = false)
+                }
+            }
+        }.launchIn(viewModelScope)
+    }
+
+    fun clearMessage(){
+        _signInState = _signInState.copy(message = null)
+    }
 }

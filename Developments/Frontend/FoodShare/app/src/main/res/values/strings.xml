@@ -145,4 +145,8 @@
     <string name="currently_your_password_has_been_updated">Currently, your password has been updated.</string>
     <string name="no_food_details_available">No food details available</string>
     <string name="you_must_connect_to_a_wi_fi_network_to_proceed">You must connect to a Wi-Fi network to proceed.</string>
+    <string name="skip_video">Skip Video</string>
+    <string name="play">Play</string>
+    <string name="distributed_location">Distributed Location</string>
+    <string name="complete">Complete</string>
 </resources>

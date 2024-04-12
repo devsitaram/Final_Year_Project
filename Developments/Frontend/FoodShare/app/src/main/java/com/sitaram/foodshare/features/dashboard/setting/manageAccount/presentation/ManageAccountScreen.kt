@@ -46,7 +46,7 @@ import com.sitaram.foodshare.theme.red
 import com.sitaram.foodshare.theme.textColor
 import com.sitaram.foodshare.theme.white
 import com.sitaram.foodshare.utils.NetworkObserver
-import com.sitaram.foodshare.utils.UserInterfaceUtil.Companion.showLocalNotification
+import com.sitaram.foodshare.utils.UserInterfaceUtil.Companion.showNotification
 import com.sitaram.foodshare.utils.UserInterfaceUtil.Companion.showToast
 import com.sitaram.foodshare.utils.compose.ConfirmationDialogView
 import com.sitaram.foodshare.utils.compose.DividerView
@@ -151,7 +151,7 @@ fun ManageAccountScreen(
                         popUpTo(BtnNavScreen.Setting.route) {
                             inclusive = true
                             isConfirmation = false
-                            showLocalNotification(context,
+                            showNotification(context,
                                 context.getString(R.string.account_deactivation),
                                 context.getString(R.string.your_account_is_permanently_deactivated)
                             )

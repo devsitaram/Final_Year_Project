@@ -7,7 +7,6 @@ import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageInfo
 import android.content.pm.PackageManager
-import android.net.ConnectivityManager
 import android.net.Uri
 import android.widget.Toast
 import androidx.core.app.NotificationCompat
@@ -15,6 +14,8 @@ import androidx.core.app.TaskStackBuilder
 import androidx.core.content.ContextCompat
 import com.sitaram.foodshare.MainActivity
 import com.sitaram.foodshare.R
+import com.sitaram.foodshare.features.pushNotification.CHANNEL_ID
+import com.sitaram.foodshare.features.pushNotification.CHANNEL_NAME
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
@@ -59,7 +60,7 @@ class UserInterfaceUtil {
             }
         }
 
-        fun showLocalNotification(context: Context, title: String, description: String) {
+        fun showNotification(context: Context, title: String, description: String) {
             val intent = Intent(context, MainActivity::class.java)
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
 
@@ -69,8 +70,8 @@ class UserInterfaceUtil {
             }
 
             // Create the notification
-            val notification = NotificationCompat.Builder(context, "notification_channel")
-                .setSmallIcon(R.mipmap.ic_launcher_foreground)
+            val notification = NotificationCompat.Builder(context, CHANNEL_ID)
+                .setSmallIcon(R.mipmap.ic_launcher_foreground) // ic_launcher_foreground
                 .setContentTitle(title)
                 .setContentText(description)
                 .setColor(ContextCompat.getColor(context, R.color.primary))

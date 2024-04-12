@@ -142,7 +142,7 @@ fun FoodDetailsViewScreen(
     if (getFoodDetails.error != null) {
         DisplayErrorMessageView(
             text = getFoodDetails.error,
-            vectorIcon = Icons.Default.Refresh,
+            vectorIcon = if (foodDetailViewModel.isRefreshing) null else Icons.Default.Refresh,
             onClick = { foodDetailViewModel.getSwipeToRefresh() }
         )
     }
@@ -165,40 +165,47 @@ fun FoodDetailsViewScreen(
             onClickTrailingIcon = { isUpdateDonateFood = !isUpdateDonateFood }
         )
         DividerView(modifier = Modifier.fillMaxWidth(), thickness = 1.dp)
-
-        if (!isConnected) {
-            NetworkIsNotAvailableView()
-        } else {
-            getFoodDetails.data?.let {
-                if (!isUpdateDonateFood) {
-                    ViewFoodDetails(
-                        food = it,
-                        rating = rating,
-                        onClickViewMap = {
-                            navController.navigate("GoogleMapView/${it.latitude.toString()}/${it.longitude.toString()}/${it.username}")
-                        },
-                        onClickViewProfile = {
-                            navController.navigate("UserDetailView/${it.userId}")
-                        },
-                        context = context,
+        getFoodDetails.data.let { it ->
+            if (!isConnected) {
+                NetworkIsNotAvailableView()
+            } else {
+                if (it == null){
+                    DisplayErrorMessageView(
+                        text = getFoodDetails.message ?: stringResource(R.string.food_not_found),
+                        vectorIcon = if (foodDetailViewModel.isRefreshing) null else Icons.Default.Refresh,
+                        onClick = { foodDetailViewModel.getSwipeToRefresh() }
                     )
                 } else {
-                    ViewEditDonateFoodDetails(
-                        food = it,
-                        onClickFoodUpdate = { it1 ->
-                            // Update the donate food
-                            MainScope().launch {
-                                foodDetailViewModel.getUpdateDonateFood(it.id, it1, context)
-                                isUpdateDonateFood = false
-                            }
-                        },
-                        onClickImageUpdate = { it1 ->
-                            foodId = it.id ?: 0
-                            fileImage = it1
-                            isShowConfirmation = true
-                        },
-                        context = context
-                    )
+                    if (!isUpdateDonateFood) {
+                        ViewFoodDetails(
+                            food = it,
+                            rating = rating,
+                            onClickViewMap = {
+                                navController.navigate("GoogleMapView/${it.latitude.toString()}/${it.longitude.toString()}/${it.username}")
+                            },
+                            onClickViewProfile = {
+                                navController.navigate("UserDetailView/${it.userId}")
+                            },
+                            context = context,
+                        )
+                    } else {
+                        ViewEditDonateFoodDetails(
+                            food = it,
+                            onClickFoodUpdate = { it1 ->
+                                // Update the donate food
+                                MainScope().launch {
+                                    foodDetailViewModel.getUpdateDonateFood(it.id, it1, context)
+                                    isUpdateDonateFood = false
+                                }
+                            },
+                            onClickImageUpdate = { it1 ->
+                                foodId = it.id ?: 0
+                                fileImage = it1
+                                isShowConfirmation = true
+                            },
+                            context = context
+                        )
+                    }
                 }
             }
         }

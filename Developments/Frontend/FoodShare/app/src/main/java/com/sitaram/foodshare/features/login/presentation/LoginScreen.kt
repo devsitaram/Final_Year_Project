@@ -2,7 +2,6 @@ package com.sitaram.foodshare.features.login.presentation
 
 import android.Manifest
 import android.content.pm.PackageManager
-import android.util.Log
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
@@ -46,7 +45,6 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.google.gson.Gson
 import com.sitaram.foodshare.R
-import com.sitaram.foodshare.features.firebase.data.fcmServices.MyFirebaseMessagingService
 import com.sitaram.foodshare.features.login.data.pojo.Authentication
 import com.sitaram.foodshare.helper.UserInterceptors
 import com.sitaram.foodshare.features.navigations.NavScreen
@@ -61,7 +59,6 @@ import com.sitaram.foodshare.theme.red
 import com.sitaram.foodshare.theme.white
 import com.sitaram.foodshare.theme.yellow
 import com.sitaram.foodshare.utils.NetworkObserver
-import com.sitaram.foodshare.utils.UserInterfaceUtil
 import com.sitaram.foodshare.utils.UserInterfaceUtil.Companion.showToast
 import com.sitaram.foodshare.utils.Validators.isValidEmailAddress
 import com.sitaram.foodshare.utils.compose.ClickableTextView

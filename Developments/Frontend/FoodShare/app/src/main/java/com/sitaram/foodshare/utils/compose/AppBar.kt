@@ -109,11 +109,13 @@ fun TopAppBarIconView(
                 if (notificationIcon != null) {
                     BadgedBox(
                         badge = {
-                            Badge {
-                                TextView(
-                                    text = if (numOfNotification > 9) "+9" else numOfNotification.toString(),
-                                    color = white
-                                )
+                            if (numOfNotification != 0) {
+                                Badge {
+                                    TextView(
+                                        text = if (numOfNotification > 9) "+9" else numOfNotification.toString(),
+                                        color = white
+                                    )
+                                }
                             }
                         },
                         modifier = Modifier.padding(end = 14.dp)
@@ -121,7 +123,11 @@ fun TopAppBarIconView(
                         VectorIconView(
                             imageVector = notificationIcon,
                             tint = gray,
-                            modifier = Modifier.clickable { onClickAction?.invoke() })
+                            modifier = Modifier
+                                .clickable {
+                                onClickAction?.invoke()
+                            }
+                        )
                     }
                 }
                 if (vectorIcon != null) {

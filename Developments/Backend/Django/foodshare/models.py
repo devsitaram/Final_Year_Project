@@ -163,9 +163,7 @@ class Ngo(models.Model):
 
     # create the notification table
 class Notification(models.Model):
-    # notification_id = models.AutoField(primary_key=True)
-    title = models.CharField(max_length=20)
-    report_description = models.TextField()
+    token = models.TextField(null=True)
     created_by = models.CharField(max_length=100, null=True)
     created_date = models.DateField(auto_now_add=True)
     is_delete = models.BooleanField(default=False)

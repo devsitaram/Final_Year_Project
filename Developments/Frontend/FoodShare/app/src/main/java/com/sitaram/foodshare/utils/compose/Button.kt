@@ -197,7 +197,6 @@ fun RoundShapeButton(
 
 @Composable
 fun OutlineButtonView(
-    onClick: () -> Unit,
     modifier: Modifier = Modifier,
     colors: ButtonColors = ButtonDefaults.buttonColors(Color.Unspecified),
     btnText: String,
@@ -207,7 +206,8 @@ fun OutlineButtonView(
     contentPadding: PaddingValues = PaddingValues(0.dp),
     textColors: Color = primary,
     buttonSize: ButtonSize = ButtonSize.NON,
-    content: @Composable() (RowScope.() -> Unit)? = null
+    content: @Composable() (RowScope.() -> Unit)? = null,
+    onClick: () -> Unit,
 ) {
     when (buttonSize){
         ButtonSize.LARGE -> LargeOutlineButton(
@@ -350,7 +350,7 @@ fun SmallOutlineButton(
         border = border,
         contentPadding = contentPadding
     ) {
-        TextView(text = btnText, textType = textType, color = textColors, modifier = Modifier.padding(vertical = 8.dp, horizontal = 16.dp))
+        TextView(text = btnText, textType = textType, color = textColors) //  modifier = Modifier.padding(vertical = 8.dp, horizontal = 16.dp)
     }
 }
 

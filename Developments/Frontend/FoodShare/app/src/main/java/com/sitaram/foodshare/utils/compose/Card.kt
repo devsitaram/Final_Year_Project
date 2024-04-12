@@ -344,18 +344,20 @@ fun ContentCardView(
                                 onDismissRequest = { expandedUpdate = false },
                                 modifier = Modifier.background(colorResource(id = R.color.white))
                             ) {
-                                DropdownMenuItem(
-                                    text = {
-                                        DropdownMenusItems(
-                                            text = stringResource(R.string.report),
-                                            painter = Icons.Default.Report
-                                        )
-                                    },
-                                    onClick = {
-                                        expandedUpdate = false
-                                        onClickReport?.invoke()
-                                    }
-                                )
+                                if (status != "New") {
+                                    DropdownMenuItem(
+                                        text = {
+                                            DropdownMenusItems(
+                                                text = stringResource(R.string.report),
+                                                painter = Icons.Default.Report
+                                            )
+                                        },
+                                        onClick = {
+                                            expandedUpdate = false
+                                            onClickReport?.invoke()
+                                        }
+                                    )
+                                }
                                 DropdownMenuItem(
                                     text = {
                                         DropdownMenusItems(

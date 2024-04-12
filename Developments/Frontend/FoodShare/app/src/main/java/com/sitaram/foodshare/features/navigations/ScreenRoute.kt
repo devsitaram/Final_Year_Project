@@ -6,8 +6,6 @@ import androidx.compose.material.icons.filled.Groups
 import androidx.compose.material.icons.filled.History
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Person
-import androidx.compose.material.icons.filled.Report
-import androidx.compose.material.icons.filled.ReportGmailerrorred
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.ui.graphics.vector.ImageVector
 
@@ -35,7 +33,7 @@ sealed class NavScreen(val route: String) {
     object FoodDetailViewPage : NavScreen("FoodDetailView/{$KEY_ID}/{$FOOD_NAME}/{$FOOD_RATING}")
     object UserDetailViewPage : NavScreen("UserDetailView/{$KEY_ID}")
     object FoodAcceptViewPage: NavScreen("FoodAcceptView/{$KEY_ID}/{$FOOD_NAME}/{$USER_EMAIL}")
-    object UpdateFoodHistory: NavScreen("UpdateFoodHistory/{$KEY_ID}/{$FOOD_NAME}/{$USER_EMAIL}")
+    object CompetedFoodHistory: NavScreen("CompetedFoodHistory/{$KEY_ID}/{$FOOD_NAME}/{$USER_EMAIL}")
 }
 
 sealed class BtnNavScreen(val route: String, val title: String, val icon: ImageVector?) {

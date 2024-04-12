@@ -104,6 +104,7 @@ fun HistoryViewScreen(
                     if (getHistoryState.error != null) {
                         DisplayErrorMessageView(
                             text = getHistoryState.error,
+                            vectorIcon = if (historyViewModel.isRefreshing) null else Icons.Default.Refresh,
                             onClick = { historyViewModel.getSwipeToRefresh() }
                         )
                     }

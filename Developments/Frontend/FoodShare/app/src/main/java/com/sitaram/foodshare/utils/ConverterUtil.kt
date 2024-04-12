@@ -24,7 +24,7 @@ object ConverterUtil {
     fun convertUriToFile(context: Context, uri: Uri): File {
 
         val inputStream = context.contentResolver.openInputStream(uri)
-        val file = File(context.cacheDir, "temp_image.jpg")
+        val file = File(context.cacheDir, "image.jpg")
 
         inputStream?.use { input ->
             FileOutputStream(file).use { output ->
@@ -72,7 +72,7 @@ object ConverterUtil {
             val outputStream = ByteArrayOutputStream()
             bitmap?.compress(Bitmap.CompressFormat.JPEG, 100, outputStream) // Convert bitmap to JPEG format with maximum quality
             val bytes = outputStream.toByteArray()
-            val tempFile = File.createTempFile("temp_image", ".jpg", context.cacheDir) // Create a temporary file with .jpg extension
+            val tempFile = File.createTempFile("image", ".jpg", context.cacheDir) // Create a temporary file with .jpg extension
             tempFile.writeBytes(bytes)
             tempFile
         }

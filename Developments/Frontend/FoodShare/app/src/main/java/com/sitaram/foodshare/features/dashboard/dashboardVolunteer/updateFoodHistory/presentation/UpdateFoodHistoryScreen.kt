@@ -22,6 +22,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.foundation.lazy.grid.itemsIndexed
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
@@ -68,6 +69,7 @@ import com.sitaram.foodshare.utils.NetworkObserver
 import com.sitaram.foodshare.utils.UserInterfaceUtil.Companion.showToast
 import com.sitaram.foodshare.utils.compose.AsyncImagePainter
 import com.sitaram.foodshare.utils.compose.ButtonSize
+import com.sitaram.foodshare.utils.compose.ButtonView
 import com.sitaram.foodshare.utils.compose.ClickableTextView
 import com.sitaram.foodshare.utils.compose.DisplayErrorMessageView
 import com.sitaram.foodshare.utils.compose.NormalTextView
@@ -86,10 +88,10 @@ import kotlinx.coroutines.launch
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @OptIn(ExperimentalCoroutinesApi::class, ExperimentalMaterial3Api::class)
 @Composable
-fun UpdateFoodHistoryView(
-    id: Int,
-    email: String?,
+fun CompletedFoodHistoryView(
+    foodId: Int,
     title: String,
+    email: String?,
     navController: NavHostController,
     completedFoodHistoryViewModel: CompletedFoodHistoryViewModel = hiltViewModel(),
 ) {
@@ -100,21 +102,23 @@ fun UpdateFoodHistoryView(
     val context = LocalContext.current
     val getUserRole = UserInterceptors(context).getUserRole()
     val getHistoryFoodDetails = completedFoodHistoryViewModel.historyState
-
     var expandedFab by remember { mutableStateOf(false) }
     var rating by remember { mutableIntStateOf(0) }
     var location by remember { mutableStateOf("") }
     var descriptions by remember { mutableStateOf("The food is successfully distributed.") }
+
     var selectedImages by remember { mutableStateOf(listOf<Pair<Uri, String>>()) }
 
     // Pick image with description
-    val galleryLauncher = rememberLauncherForActivityResult(ActivityResultContracts.GetMultipleContents()) {
-            selectedImages = it.map { uri -> uri to "" }.toMutableList()
+    val galleryLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.GetMultipleContents(),
+        onResult = { uris ->
+            selectedImages += uris.map { uri -> uri to "" }
         }
+    )
 
     LaunchedEffect(key1 = location, key2 = descriptions, key3 = selectedImages) {
-        expandedFab =
-            (location.isNotEmpty() && descriptions.isNotEmpty() && selectedImages.isNotEmpty())
+        expandedFab = (location.isNotEmpty() && descriptions.isNotEmpty() && selectedImages.isNotEmpty())
     }
 
     // Function to create the email body combining text and image descriptions
@@ -145,7 +149,7 @@ fun UpdateFoodHistoryView(
                             if (location.isNotEmpty() && descriptions.isNotEmpty()) {
                                 MainScope().launch {
                                     val completedDto = HistoryCompletedDto(
-                                        id = id,
+                                        id = foodId,
                                         descriptions = descriptions.trim(),
                                         location = location.trim(),
                                         rating = rating
@@ -169,7 +173,7 @@ fun UpdateFoodHistoryView(
                 },
                 text = {
                     TextView(
-                        text = "Completed",
+                        text = stringResource(R.string.complete),
                         textType = TextType.TITLE4,
                         color = if (expandedFab) darkGray else lightGray
                     )
@@ -177,9 +181,7 @@ fun UpdateFoodHistoryView(
             )
         },
         floatingActionButtonPosition = FabPosition.End,
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(bottom = 50.dp)
+        modifier = Modifier.fillMaxSize()
     ) {
 
         Column(
@@ -210,7 +212,7 @@ fun UpdateFoodHistoryView(
                 verticalArrangement = Arrangement.Top
             ) {
                 TextView(
-                    text = "Distributed Location",
+                    text = stringResource(R.string.distributed_location),
                     textType = TextType.BASE_TEXT_SEMI_BOLD,
                     modifier = Modifier.padding(vertical = 4.dp)
                 )
@@ -256,7 +258,11 @@ fun UpdateFoodHistoryView(
                 )
 
                 // Rating
-                Row (modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.End){
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.End
+                ) {
                     TextView(
                         text = "Rating",
                         textType = TextType.BASE_TEXT_SEMI_BOLD,
@@ -330,14 +336,21 @@ fun UpdateFoodHistoryView(
                     )
                 }
                 if (selectedImages.isNotEmpty()) {
-                    LazyVerticalGrid(columns = GridCells.Fixed(2), modifier = Modifier.padding(top = 8.dp)) {
-                        items(selectedImages) { (uri) ->
+                    LazyVerticalGrid(
+                        columns = GridCells.Fixed(2),
+                        modifier = Modifier.padding(top = 8.dp)
+                    ) {
+                        itemsIndexed(selectedImages) {index, (uri) ->
                             AsyncImagePainter(
                                 model = uri,
                                 modifier = Modifier
                                     .size(100.dp)
                                     .padding(horizontal = 4.dp)
-                                    .padding(top = 4.dp),
+                                    .padding(top = 4.dp).clickable {
+                                        selectedImages = selectedImages.toMutableList().apply {
+                                            removeAt(index)
+                                        }
+                                    },
                                 contentScale = ContentScale.Crop
                             )
                         }
@@ -380,8 +393,8 @@ fun UpdateFoodHistoryView(
             val imageUris = selectedImages.map { it.first }
             intentEmail.putParcelableArrayListExtra(Intent.EXTRA_STREAM, ArrayList(imageUris))
             context.startActivity(Intent.createChooser(intentEmail, "Choose an Email client: "))
+            navController.navigateUp()
         }
         completedFoodHistoryViewModel.clearMessage()
-        navController.popBackStack()
     }
 }

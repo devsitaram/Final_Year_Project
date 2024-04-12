@@ -12,7 +12,7 @@ class ManageAccountUseCase(private val  manageAccountRepository: ManageAccountRe
         try {
             emit(Resource.Success(manageAccountRepository.getUpdatePassword(email, password)))
         } catch (e: Exception) {
-            emit(Resource.Error(message = "Not found!"))
+            emit(Resource.Error(message = "Unable to connect to the server."))
         }
     }
     operator fun invoke(email: String): Flow<Resource<ResponsePojo?>> = flow {
@@ -20,7 +20,7 @@ class ManageAccountUseCase(private val  manageAccountRepository: ManageAccountRe
         try {
             emit(Resource.Success(data = manageAccountRepository.getDeleteAccount(email)))
         } catch (e: Exception) {
-            emit(Resource.Error(message = "Not found!"))
+            emit(Resource.Error(message = "Unable to connect to the server."))
         }
     }
 }

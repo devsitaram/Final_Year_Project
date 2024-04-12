@@ -6,8 +6,8 @@ import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.content.Context
 import android.os.Build
-import android.util.Log
-import com.google.firebase.messaging.FirebaseMessaging
+import com.sitaram.foodshare.features.pushNotification.CHANNEL_ID
+import com.sitaram.foodshare.features.pushNotification.CHANNEL_NAME
 import dagger.hilt.android.HiltAndroidApp
 
 @HiltAndroidApp
@@ -17,20 +17,20 @@ class BaseApplication: Application(){
         super.onCreate()
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val channel = NotificationChannel(
-                "notification_channel",
-                "com.sitaram.foodshare",
+                CHANNEL_ID,
+                CHANNEL_NAME,
                 NotificationManager.IMPORTANCE_HIGH
             )
             val manager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
             manager.createNotificationChannel(channel)
         }
-        FirebaseMessaging.getInstance().token.addOnCompleteListener { task ->
-            if (task.isSuccessful) {
-                val token = task.result
-                Log.d("FCM Token", token ?: "Not found")
-            } else {
-                Log.e("FCM Token", "Fetching FCM token failed", task.exception)
-            }
-        }
+//        FirebaseMessaging.getInstance().token.addOnCompleteListener { task ->
+//            if (task.isSuccessful) {
+//                val token = task.result
+//                Log.d("FCM Token", token ?: "Not found")
+//            } else {
+//                Log.e("FCM Token", "Fetching FCM token failed", task.exception)
+//            }
+//        }
     }
 }

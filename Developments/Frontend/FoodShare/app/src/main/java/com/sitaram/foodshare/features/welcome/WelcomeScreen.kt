@@ -9,20 +9,30 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.gestures.scrollable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentSize
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.SkipNext
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -49,9 +59,13 @@ import com.sitaram.foodshare.utils.UserInterfaceUtil.Companion.showToast
 import com.sitaram.foodshare.utils.compose.ButtonView
 import com.sitaram.foodshare.utils.compose.OutlineButtonView
 import com.sitaram.foodshare.utils.compose.ButtonSize
+import com.sitaram.foodshare.utils.compose.ClickableTextView
+import com.sitaram.foodshare.utils.compose.ProcessingDialogView
 import com.sitaram.foodshare.utils.compose.ProgressIndicatorView
 import com.sitaram.foodshare.utils.compose.TextType
 import com.sitaram.foodshare.utils.compose.TextView
+import com.sitaram.foodshare.utils.compose.VectorIconView
+import com.sitaram.foodshare.utils.compose.VideoPlayDialogView
 
 @OptIn(ExperimentalPermissionsApi::class)
 @Composable
@@ -60,6 +74,7 @@ fun WelcomeViewScreen(
     locationViewModel: GoogleMapViewModel = hiltViewModel()
 ) {
     val context = LocalContext.current
+    var isVideoPlay by remember{ mutableStateOf(true) }
     // sharedPreferences
     val editor = UserInterceptors(context).getPreInstEditor()
     editor.putString("appInstallation", "success").apply()
@@ -68,7 +83,9 @@ fun WelcomeViewScreen(
         modifier = Modifier
             .fillMaxSize()
             .background(white)
-            .padding(8.dp), verticalArrangement = Arrangement.Center
+            .padding(8.dp)
+            .verticalScroll(rememberScrollState()),
+        verticalArrangement = Arrangement.Center
     ) {
 
         Image(
@@ -76,7 +93,6 @@ fun WelcomeViewScreen(
             contentDescription = null,
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(horizontal = 60.dp)
         )
 
         TextView(
@@ -96,7 +112,6 @@ fun WelcomeViewScreen(
                 .fillMaxWidth()
                 .padding(12.dp)
         )
-
         Spacer(modifier = Modifier.padding(top = 30.dp))
 
         Column(
@@ -118,7 +133,6 @@ fun WelcomeViewScreen(
                     .height(46.dp),
                 buttonSize = ButtonSize.LARGE
             )
-
             Spacer(modifier = Modifier.padding(8.dp))
 
             OutlineButtonView(
@@ -139,8 +153,28 @@ fun WelcomeViewScreen(
         }
     }
 
-    val viewState by locationViewModel.viewState.collectAsState()
+    // video play
+    if (isVideoPlay) {
+        VideoPlayDialogView(context) {
+            isVideoPlay = false
+        }
+    }
+    Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.TopStart){
+        Row(
+            modifier = Modifier
+                .wrapContentSize()
+                .padding(8.dp)
+                .clickable { isVideoPlay = true },
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.Center
+        ) {
+            TextView(text = stringResource(R.string.play), textType = TextType.BASE_TEXT_SEMI_BOLD, color = primary)
+            VectorIconView(imageVector = Icons.Default.SkipNext, tint = primary)
+        }
+    }
 
+    // Map permission
+    val viewState by locationViewModel.viewState.collectAsState()
     val locationSettingsLauncher =
         rememberLauncherForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
             if (result.resultCode == Activity.RESULT_OK) {

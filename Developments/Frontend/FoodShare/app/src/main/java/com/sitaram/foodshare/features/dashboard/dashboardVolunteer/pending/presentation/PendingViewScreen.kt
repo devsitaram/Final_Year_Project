@@ -31,6 +31,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import androidx.navigation.NavHostController
 import com.sitaram.foodshare.R
 import com.sitaram.foodshare.features.dashboard.dashboardVolunteer.pending.domain.ReportDTO
 import com.sitaram.foodshare.features.dashboard.home.presentation.HomeFoodCardView
@@ -66,6 +67,7 @@ import kotlinx.coroutines.launch
 @Composable
 fun PendingViewScreen(
     navController: NavController,
+    mainNavController: NavHostController,
     pendingViewModel: PendingFoodViewModel = hiltViewModel(),
 ) {
 
@@ -149,33 +151,6 @@ fun PendingViewScreen(
                                     foodId = it1?.historyDetails?.food ?: 0
                                     isReportConfirmation = true
                                 },
-                                onClickCompleted = {
-                                    foodId = it1?.historyDetails?.id ?: 0
-                                    foodName = it1?.foodDetails?.foodName ?: ""
-                                    MainScope().launch {
-                                        it1?.historyDetails?.let {
-                                            val history = HistoryEntity(
-                                                id = it.id,
-                                                descriptions = it.descriptions ?: "N/S",
-                                                status = "Pending",
-                                                distributedLocation = it.distributedLocation
-                                                    ?: "N/S",
-                                                distributedDate = it.distributedDate ?: "N/S",
-                                                ratingPoint = it.ratingPoint ?: 0,
-                                                food = it.food,
-                                                volunteer = it.volunteer,
-                                                createdBy = it.createdBy ?: "N/S",
-                                                createdDate = it.createdDate ?: "N/S",
-                                                modifyBy = it.modifyBy ?: "N/S",
-                                                modifyDate = it.modifyDate ?: "N/S",
-                                                isDelete = it.isDelete ?: false
-                                            )
-                                            pendingViewModel.saveHistoryDetails(history)
-                                        }
-                                    }.job
-                                    userEmail = it1?.userDetails?.email ?: ""
-                                    isDonationCompleted = true
-                                },
                                 onClick = {
                                     MainScope().launch {
                                         it1?.foodDetails?.let { food ->
@@ -247,7 +222,7 @@ fun PendingViewScreen(
             onDismiss = { isDonationCompleted = false },
             btnColor = primary,
             onConfirm = {
-                navController.navigate("UpdateFoodHistory/${foodId}/${foodName}/${userEmail}")
+                //  mainNavController.navigate("CompetedFoodHistory/${foodId}/${foodName}/${userEmail}")
             }
         )
     }

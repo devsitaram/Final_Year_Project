@@ -6,7 +6,7 @@
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
     <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION"/>
-    <uses-permission android:name="android.permission.ACCESS_GPS" />
+    <uses-permission android:name="android.permission.ACCESS_GPS"/>
     <uses-permission android:name="android.permission.ACCESS_ASSISTED_GPS" />
     <uses-permission android:name="android.permission.ACCESS_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
@@ -34,12 +34,11 @@
             android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyDup0LWYQ71XybzV172L5-esHMiDCVCvEI" />
 
-<!--            Firebase_API_Key= BIh4iVuDPTstO4aw08jAJvX6GgKfX1d4peuVYefu8pa0XjH-uNViQTh-MDJJCoudaa5mVPp1ZAiFacIv41LnjPY-->
+<!--        Firebase_API_Key= AAAAw-NCzFM:APA91bHGq2kIJh4m9wBnNEFWIdMfwI_jSCcBxOCSPWDi0Sgvr_A2B8LyQVpPaA5baBVYmGV2ld5Q8osOTDOoJVfECNvjkue9cOVqf7TlKHpz6mS0MrNxXfoWU11_79TOAOnNGqzXMdUa-->
 
-<!--        Firebase Notification icon and color @drawable/app_logo -->
         <meta-data
             android:name="com.google.firebase.messaging.default_notification_icon"
-            android:resource="@mipmap/ic_launcher_round" />
+            android:resource="@mipmap/ic_launcher_foreground" />
         <meta-data
             android:name="com.google.firebase.messaging.default_notification_color"
             android:resource="@color/primary" />
@@ -59,7 +58,7 @@
         </activity>
 
         <service
-            android:name=".features.firebase.data.fcmServices.MyFirebaseMessagingService"
+            android:name=".features.pushNotification.MyFirebaseMessagingService"
             android:exported="false">
             <intent-filter>
                 <action android:name="com.google.firebase.INSTANCE_ID_EVENT"/>

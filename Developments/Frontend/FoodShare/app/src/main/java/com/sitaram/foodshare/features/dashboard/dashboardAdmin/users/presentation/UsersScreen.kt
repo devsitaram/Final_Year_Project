@@ -215,7 +215,6 @@ fun UsersViewScreenNgo(
                                     .height(56.dp)
                             )
                         }
-//                        Divider()
 
                         if (updatedList.isEmpty()) {
                             DisplayErrorMessageView(

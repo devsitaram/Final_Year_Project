@@ -20,7 +20,7 @@ class DistributedHistoryUseCase(private val distributedHistoryRepository: Distri
                 emit(Resource.Error(message = result?.message))
             }
         } catch (e: Exception){
-            emit(Resource.Error(message =  "Not Found"))
+            emit(Resource.Error(message =  "Unable to connect to the server."))
         }
     }
 
@@ -34,15 +34,7 @@ class DistributedHistoryUseCase(private val distributedHistoryRepository: Distri
                 emit(Resource.Error(message = result?.message))
             }
         } catch (e: Exception){
-            emit(Resource.Error(message = "Not found!"))
-        }
-    }
-
-    suspend operator fun invoke(history: HistoryEntity) {
-        try {
-            distributedHistoryRepository.setHistoryFoodDetail(history)
-        } catch (ex: java.lang.Exception) {
-           print(ex.message)
+            emit(Resource.Error(message = "Unable to connect to the server."))
         }
     }
 
@@ -56,7 +48,7 @@ class DistributedHistoryUseCase(private val distributedHistoryRepository: Distri
                 emit(Resource.Error(message = result?.message))
             }
         } catch (e: Exception){
-            emit(Resource.Error(message = "Not found!"))
+            emit(Resource.Error(message = "Unable to connect to the server."))
         }
     }
 }

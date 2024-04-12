@@ -7,10 +7,12 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.material.Card
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.Scaffold
 import androidx.compose.material.SnackbarHost
@@ -22,6 +24,7 @@ import androidx.compose.material.pullrefresh.pullRefresh
 import androidx.compose.material.pullrefresh.rememberPullRefreshState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
@@ -33,6 +36,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.sitaram.foodshare.R
+import com.sitaram.foodshare.features.dashboard.dashboardAdmin.adminHome.data.pojo.Data
 import com.sitaram.foodshare.theme.black
 import com.sitaram.foodshare.theme.white
 import com.sitaram.foodshare.utils.NetworkObserver
@@ -101,7 +105,7 @@ fun AdminHomeViewScreen(
                 contentColor = black,
                 numOfNotification = getHomeState.data?.data?.size ?: 0,
                 navigationIcon = { PainterImageView(painter = painterResource(id = R.mipmap.img_app_logo)) },
-                notificationIcon = Icons.Default.NotificationsActive,
+                notificationIcon = Icons.Default.NotificationsActive
             ) {
                 showSnackBar.invoke()
             }
@@ -143,16 +147,33 @@ fun AdminHomeViewScreen(
                                 verticalArrangement = Arrangement.Top
                             ) {
                                 items(result.orEmpty()) { items ->
-                                    items?.let { report ->
-                                        TextView(text = report.reportDetails?.descriptions ?: "")
-                                        TextView(text = report.reportDetails?.complaintTo ?: "")
+                                    items?.let {
+                                        ReportCardView(items)
                                     }
+//                                        TextView(text = items?.reportDetails?.descriptions ?: "")
+//                                        TextView(text = items?.reportDetails?.complaintTo ?: "")
                                 }
                             }
                         }
                     }
                 }
             }
+        }
+    }
+}
+
+@OptIn(ExperimentalMaterialApi::class)
+@Composable
+fun ReportCardView(items: Data) {
+    val isViewDetails by remember { mutableStateOf(false) }
+
+    Card(onClick = { /*TODO*/ }, modifier = Modifier.fillMaxWidth().padding(top = 8.dp)) {
+        Column(modifier = Modifier.padding(8.dp)) {
+            TextView(
+                text = items.reportDetails?.complaintTo ?: "",
+
+            )
+            TextView(text = items.reportDetails?.descriptions ?: "")
         }
     }
 }

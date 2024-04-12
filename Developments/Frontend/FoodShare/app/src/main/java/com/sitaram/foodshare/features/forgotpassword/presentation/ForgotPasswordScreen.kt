@@ -51,7 +51,7 @@ import com.sitaram.foodshare.theme.primary
 import com.sitaram.foodshare.theme.red
 import com.sitaram.foodshare.theme.textColor
 import com.sitaram.foodshare.theme.white
-import com.sitaram.foodshare.utils.UserInterfaceUtil.Companion.showLocalNotification
+import com.sitaram.foodshare.utils.UserInterfaceUtil.Companion.showNotification
 import com.sitaram.foodshare.utils.Validators.isValidEmailAddress
 import com.sitaram.foodshare.utils.compose.ButtonSize
 import com.sitaram.foodshare.utils.compose.ButtonView
@@ -410,7 +410,7 @@ fun ForgotPasswordViewScreen(
             descriptions = stringResource(R.string.your_password_update_has_been_confirmed),
             onDismiss = {
                 showSuccessDialogBox = false
-                showLocalNotification(context, context.getString(R.string.reset_password),
+                showNotification(context, context.getString(R.string.reset_password),
                     context.getString(
                         R.string.currently_your_password_has_been_updated
                     )

@@ -45,7 +45,7 @@ class FoodDetailUseCase(private val foodDetailRepository: FoodDetailRepository) 
             }
 
         } catch (ex: Exception) {
-            emit(Resource.Error(message = "Not found!"))
+            emit(Resource.Error(message = "Unable to connect to the server."))
         }
     }
 
@@ -80,7 +80,7 @@ class FoodDetailUseCase(private val foodDetailRepository: FoodDetailRepository) 
                 emit(Resource.Error(message = result?.message))
             }
         } catch (ex: Exception) {
-            emit(Resource.Error(message = "Not found!"))
+            emit(Resource.Error(message = "Unable to connect to the server."))
         }
     }
 
@@ -95,7 +95,7 @@ class FoodDetailUseCase(private val foodDetailRepository: FoodDetailRepository) 
                 emit(Resource.Error(message = result?.message))
             }
         } catch (ex: Exception){
-            emit(Resource.Error(message = "Not found!"))
+            emit(Resource.Error(message = "Unable to connect to the server."))
         }
     }
 }

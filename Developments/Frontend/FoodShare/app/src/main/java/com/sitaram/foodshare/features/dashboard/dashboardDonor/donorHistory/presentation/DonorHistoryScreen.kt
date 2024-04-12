@@ -147,9 +147,9 @@ fun HistoryDonorScreen(
                                 ContentCardView(
                                     imageUrl = it1?.foods?.streamUrl,
                                     rating = it1?.histories?.ratingPoint ?: 0,
-                                    title = it1?.foods?.foodName ?: "",
-                                    status = it1?.foods?.status ?: "",
-                                    donateLocation = it1?.foods?.pickUpLocation ?: "",
+                                    title = it1?.foods?.foodName,
+                                    status = it1?.foods?.status,
+                                    donateLocation = it1?.foods?.pickUpLocation,
                                     donationDate = it1?.foods?.createdDate ?: it1?.histories?.distributedDate,
                                     isDonor = userRole.lowercase() == "donor",
                                     onClickReport = {

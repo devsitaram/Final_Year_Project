@@ -143,7 +143,7 @@ fun FoodAcceptViewScreen(
                                 }
                             },
                             onClickCompletedBtn = {
-                                navController.navigate("UpdateFoodHistory/${foodId}/${it.foodName}/${email}")
+                                mainNavController.navigate("CompetedFoodHistory/${foodId}/${it.foodName}/${email}")
                             }
                         )
                     }

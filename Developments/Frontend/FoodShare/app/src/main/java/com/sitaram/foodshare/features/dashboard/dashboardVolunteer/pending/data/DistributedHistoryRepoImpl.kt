@@ -8,7 +8,7 @@ import com.sitaram.foodshare.source.local.RoomDao
 import com.sitaram.foodshare.source.remote.api.ApiService
 import com.sitaram.foodshare.source.remote.pojo.ResponsePojo
 
-class DistributedHistoryRepoImpl(private val apiService: ApiService, private val roomDao: RoomDao): DistributedHistoryRepository {
+class DistributedHistoryRepoImpl(private val apiService: ApiService): DistributedHistoryRepository {
     override suspend fun getPendingFood(userId: Int?, status: String?): PendingPojo? {
         return apiService.getPendingFood(userId, status)
     }
@@ -21,8 +21,8 @@ class DistributedHistoryRepoImpl(private val apiService: ApiService, private val
         return apiService.getDeleteHistory(historyId, username)
     }
 
-    override suspend fun setHistoryFoodDetail(history: HistoryEntity) {
-        roomDao.insertFoodHistory(history)
-    }
+//    override suspend fun setHistoryFoodDetail(history: HistoryEntity) {
+//        roomDao.insertFoodHistory(history)
+//    }
 
 }

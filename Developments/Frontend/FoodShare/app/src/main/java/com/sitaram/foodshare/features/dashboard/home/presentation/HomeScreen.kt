@@ -347,7 +347,7 @@ fun HomeFoodCardView(
     onClick: (() -> Unit)? = null,
     onClickDelete: (() -> Unit)? = null,
     onClickReport: (() -> Unit)? = null,
-    onClickCompleted: (() -> Unit)? = null,
+//    onClickCompleted: (() -> Unit)? = null,
 ) {
 
     var expandedUpdate by remember { mutableStateOf(false) }
@@ -453,18 +453,18 @@ fun HomeFoodCardView(
                                         onClickReport?.invoke()
                                     }
                                 )
-                                DropdownMenuItem(
-                                    text = {
-                                        DropdownMenusItems(
-                                            text = stringResource(R.string.completed),
-                                            painter = Icons.Default.Done
-                                        )
-                                    },
-                                    onClick = {
-                                        expandedUpdate = false
-                                        onClickCompleted?.invoke()
-                                    }
-                                )
+//                                DropdownMenuItem(
+//                                    text = {
+//                                        DropdownMenusItems(
+//                                            text = stringResource(R.string.completed),
+//                                            painter = Icons.Default.Done
+//                                        )
+//                                    },
+//                                    onClick = {
+//                                        expandedUpdate = false
+//                                        onClickCompleted?.invoke()
+//                                    }
+//                                )
                             }
                         }
                     }

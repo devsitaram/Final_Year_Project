@@ -12,6 +12,9 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 import os
 from pathlib import Path
 from datetime import timedelta
+# Firebase imports
+import firebase_admin
+from firebase_admin import credentials
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -32,7 +35,7 @@ ALLOWED_HOSTS = [
     '10.13.0.174', 
     '192.168.1.72',
     '127.0.0.1:8000',
-    'b193-2400-1a00-b012-2d6a-50c-a090-b2-5e4d.ngrok-free.app',
+    '124d-2400-1a00-b012-2d6a-940b-6631-da46-5321.ngrok-free.app',
     ]
 
 # Application definition 'f7ea-110-34-5-16.ngrok-free.app',
@@ -105,7 +108,7 @@ WSGI_APPLICATION = 'wastefoodmanagementsystem.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'waste_food_management_system',
+        'NAME': 'food_management_system',
         'USER': 'root',
         'PASSWORD': 'root',
         'HOST': 'localhost',
@@ -187,3 +190,7 @@ CORS_ALLOWED_ORIGINS = [
     "http://localhost:8000",
     "http://127.0.0.1:8000",
 ]
+
+# Initialize Firebase Admin SDK
+cred = credentials.Certificate('serviceAccountKey.json')
+firebase_admin.initialize_app(cred)

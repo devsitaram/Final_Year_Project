@@ -72,6 +72,7 @@ dependencies {
     implementation("androidx.compose.material3:material3")
     implementation("com.google.firebase:firebase-messaging:23.4.1")
     implementation("androidx.media3:media3-ui:1.3.1")
+    implementation("androidx.media3:media3-exoplayer:1.3.1")
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
@@ -146,12 +147,17 @@ dependencies {
     kapt("androidx.room:room-compiler:2.6.1")
 //    ksp("androidx.room:room-compiler:2.6.1") // alter native kapt
 
+    // youtube video play
+    implementation ("com.pierfrancescosoffritti.androidyoutubeplayer:chromecast-sender:0.28")
+    implementation ("com.pierfrancescosoffritti.androidyoutubeplayer:core:12.0.0")
+    implementation ("androidx.media3:media3-exoplayer:1.3.0")
+    implementation ("androidx.media3:media3-exoplayer-dash:1.3.0")
+    implementation ("androidx.media3:media3-ui:1.3.0")
+    implementation ("com.google.android.exoplayer:exoplayer-ui:2.19.1")
+    implementation ("com.google.android.exoplayer:exoplayer:2.19.1")
 
-//    // youtube video play
-//    implementation ("com.pierfrancescosoffritti.androidyoutubeplayer:chromecast-sender:0.28")
-//    implementation ("com.pierfrancescosoffritti.androidyoutubeplayer:core:12.0.0")
 
-//    // lottie
+    // lottie
     implementation("com.airbnb.android:lottie-compose:4.0.0")
     implementation("androidx.compose.foundation:foundation:1.6.5")
     implementation("androidx.viewpager2:viewpager2:1.0.0")

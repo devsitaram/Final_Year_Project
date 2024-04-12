@@ -152,8 +152,8 @@ object AppModule {
 
     @Provides
     @Singleton
-    fun provideDistributedHistoryRepoImpl(apiService: ApiService, roomDao: RoomDao): DistributedHistoryRepository {
-        return DistributedHistoryRepoImpl(apiService, roomDao)
+    fun provideDistributedHistoryRepoImpl(apiService: ApiService): DistributedHistoryRepository {
+        return DistributedHistoryRepoImpl(apiService)
     }
 
     @Provides

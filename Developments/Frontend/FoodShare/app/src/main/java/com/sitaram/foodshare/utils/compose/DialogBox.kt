@@ -1,10 +1,14 @@
 package com.sitaram.foodshare.utils.compose
 
 import android.annotation.SuppressLint
+import android.content.Context
+import android.view.ViewGroup
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -13,10 +17,12 @@ import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.CornerBasedShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.ShapeDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -27,13 +33,20 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.viewinterop.AndroidView
+import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
+import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.PlayerConstants
+import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.YouTubePlayer
+import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.listeners.AbstractYouTubePlayerListener
+import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.views.YouTubePlayerView
 import com.sitaram.foodshare.R
 import com.sitaram.foodshare.theme.black
 import com.sitaram.foodshare.theme.darkGray
 import com.sitaram.foodshare.theme.primary
 import com.sitaram.foodshare.theme.red
 import com.sitaram.foodshare.theme.textColor
+import com.sitaram.foodshare.utils.ApiUrl
 
 @Composable
 fun SuccessMessageDialogBox(
@@ -77,13 +90,13 @@ fun SuccessMessageDialogBox(
             )
         },
         confirmButton = {
-                ButtonView(
-                    onClick = { onDismiss() },
-                    colors = ButtonDefaults.buttonColors(primary),
-                    btnText = btnText ?: "Okay",
-                    buttonSize = ButtonSize.LARGE,
-                    modifier = Modifier.wrapContentWidth()
-                )
+            ButtonView(
+                onClick = { onDismiss() },
+                colors = ButtonDefaults.buttonColors(primary),
+                btnText = btnText ?: "Okay",
+                buttonSize = ButtonSize.LARGE,
+                modifier = Modifier.wrapContentWidth()
+            )
         },
         modifier = Modifier.fillMaxWidth(),
     )
@@ -143,7 +156,7 @@ fun ConfirmationDialogView(
     confirmBtnText: String? = null,
     onDismiss: (() -> Unit)? = null,
     onConfirm: (() -> Unit)? = null,
-    btnColor: Color? = red
+    btnColor: Color? = red,
 ) {
     AlertDialog(
         title = {
@@ -200,7 +213,7 @@ fun InputDialogBoxView(
     title: String? = null,
     body: @Composable () -> Unit,
     onDismissRequest: (() -> Unit)? = null,
-    confirmButton: ( () -> Unit)? = null,
+    confirmButton: (() -> Unit)? = null,
     @SuppressLint("ModifierParameter")
     modifier: Modifier = Modifier,
     dismissButton: @Composable (() -> Unit)? = null,
@@ -214,7 +227,7 @@ fun InputDialogBoxView(
     vectorIcon: ImageVector? = null,
     tint: Color = darkGray,
     enabled: Boolean? = true,
-    properties: DialogProperties = DialogProperties()
+    properties: DialogProperties = DialogProperties(),
 ) {
     AlertDialog(
         title = {
@@ -288,4 +301,72 @@ fun InputDialogBoxView(
         properties = properties,
         modifier = modifier
     )
+}
+
+@Composable
+fun VideoPlayDialogView(
+    context: Context,
+    onDismiss: () -> Unit,
+) {
+    Dialog(
+        onDismissRequest = { onDismiss.invoke() },
+        properties = DialogProperties(dismissOnBackPress = true, dismissOnClickOutside = true)
+    ) {
+        Column(
+            modifier = Modifier.fillMaxSize(),
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.End
+            ) {
+                IconButton(onClick = { onDismiss.invoke() }) {
+                    VectorIconView(
+                        imageVector = Icons.Default.Close,
+                        tint = primary
+                    )
+                }
+            }
+            AndroidView(
+                modifier = Modifier.fillMaxWidth(),
+                factory = {
+                    YouTubePlayerView(context).apply {
+                        layoutParams = ViewGroup.LayoutParams(
+                            ViewGroup.LayoutParams.MATCH_PARENT,
+                            ViewGroup.LayoutParams.WRAP_CONTENT
+                        )
+                        addYouTubePlayerListener(
+                            object : AbstractYouTubePlayerListener() {
+                                override fun onReady(youTubePlayer: YouTubePlayer) {
+                                    youTubePlayer.loadVideo(ApiUrl.YOUTUBE_VIDEO_KEY, 0F)
+                                }
+
+                                override fun onStateChange(
+                                    youTubePlayer: YouTubePlayer,
+                                    state: PlayerConstants.PlayerState,
+                                ) {
+                                    if (state == PlayerConstants.PlayerState.ENDED) {
+                                        // Video has ended
+                                        onDismiss.invoke()
+                                    }
+                                }
+                            }
+                        )
+                    }
+                }
+            )
+
+//            OutlineButtonView(btnText = stringResource(R.string.skip_video),
+//                modifier = Modifier
+//                    .fillMaxWidth()
+//                    .padding(top = 8.dp)
+//                    .border(1.dp, color = primary, shape = CircleShape),
+//                buttonSize = ButtonSize.LARGE
+//            ) {
+//                onDismiss.invoke()
+//            }
+        }
+    }
 }

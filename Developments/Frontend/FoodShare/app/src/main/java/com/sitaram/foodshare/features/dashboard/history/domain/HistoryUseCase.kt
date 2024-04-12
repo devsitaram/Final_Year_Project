@@ -16,7 +16,7 @@ class HistoryUseCase(private val historyRepository: HistoryRepository) {
                 emit(Resource.Error(message = result?.message))
             }
         } catch (e: Exception) {
-            emit(Resource.Error(message = "Not found!"))
+            emit(Resource.Error(message = "Unable to connect to the server."))
         }
     }
 

@@ -38,7 +38,7 @@ class LocalDatabaseUseCase(private val localDatabaseRepository: LocalDatabaseRep
         try {
             emit(Resource.Success(data = localDatabaseRepository.getFoodDetailById(foodId)))
         } catch (ex: Exception) {
-            emit(Resource.Error(message =  "Not found!"))
+            emit(Resource.Error(message =  "Unable to connect to the server."))
         }
     }
 }

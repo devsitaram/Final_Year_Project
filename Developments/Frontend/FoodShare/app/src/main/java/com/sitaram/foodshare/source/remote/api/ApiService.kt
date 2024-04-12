@@ -183,4 +183,10 @@ interface ApiService {
         @Query("username") username: String?,
     ): ResponsePojo?
 
+    @POST("api/notifications/save/fcm/token")
+    suspend fun deviceFcmTokenSave(
+        @Query("user_id") userId: Int?,
+        @Query("token") fcmToken: String?,
+        @Query("created_by") userName: String?,
+    ): ResponsePojo?
 }

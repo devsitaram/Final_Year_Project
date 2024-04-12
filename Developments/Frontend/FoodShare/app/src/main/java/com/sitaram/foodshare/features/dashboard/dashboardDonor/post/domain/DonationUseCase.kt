@@ -18,7 +18,7 @@ class DonationUseCase(private val donationRepository: DonationRepository) {
                 emit(Resource.Error(response?.message))
             }
         } catch (e: Exception){
-            emit(Resource.Error(e.message))
+            emit(Resource.Error(message = "Unable to connect to the server."))
         }
     }
 }

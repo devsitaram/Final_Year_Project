@@ -5,7 +5,6 @@ from rest_framework_simplejwt.views import (
     TokenRefreshView,
 )
 from rest_framework.routers import DefaultRouter
-from foodshare.views import UserViewSet
 from rest_framework_simplejwt.views import TokenVerifyView
 from foodshare.views import * # import all from views
 
@@ -17,23 +16,13 @@ urlpatterns = [
     path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
     path('api/token/verify/', TokenVerifyView.as_view(), name='token_verify'),
 
-    # apis for web admin page
-    # path('', views.admin_login, name='admin_login'),
-    # path('reset_password/', views.reset_password, name='reset_password'),
-    # path('logout/', views.logout_view, name='logout'),
-    # path('home/', views.home, name='home'),
-    
-    # path('home/<str:table_name>/view/', views.view_data, name='view_data'),
-    # path('home/<str:table_name>/add/', views.add_data, name='add_data'),
-    # path('home/<str:table_name>/<int:row_id>/delete/', views.delete_row, name='delete_row'),
-
     # apis for mobile
     path('api/authenticate/token/', LoginUser.as_view(), name='get_authentication_token'),
     path('api/register/user', RegisterUser.as_view(), name='get_register_user'),
     
     path('api/user/profile/', UserProfile.as_view(), name='get_user_profile'),
     path('api/foods/all', AllFoodDetails.as_view(), name='get_food_details'),
-    path('api/notifications/', NotificationDetails.as_view(), name='get_notification_details'),
+    path('api/notifications/save/fcm/token', NotificationDeviceToken.as_view(), name='get_notification_details'),
 
     path('api/reports/', ReportDetails.as_view(), name='get_report_details'),
 
@@ -41,7 +30,7 @@ urlpatterns = [
     path('api/ngo/profile/', NgoProfile.as_view(), name='get_ngo_profile'),
 
     # users
-    path('api/all/types/user/', GetAllUsers.as_view(), name='get_users_by_search'),
+    path('api/all/types/user/', GetAllUsersView.as_view(), name='get_users_by_search'),
     path('api/account/verify/', UserAccountVerify.as_view(), name='set_account_verify'),
 
     #update profile
@@ -56,7 +45,7 @@ urlpatterns = [
     path('api/account/delete/', DeleteAccount.as_view(), name='set_delete_account'),
 
     # foods
-    path('api/food/new/add', AddNewFood.as_view(), name="set_donate_food"),
+    path('api/food/new/add', AddNewFoodView.as_view(), name="set_donate_food"),
     path('api/food/new/get', GetNewFoods.as_view(), name='get_food_details_new'),
     path('api/food/details/history/', GetFoodHistorys.as_view(), name='get_food_details_history'),
     path('api/food/history/all', HistoryDetails.as_view(), name='get_history_details'),
@@ -79,7 +68,10 @@ urlpatterns = [
     #Report To User
     path('api/user/report', ReportToUser.as_view(), name="get_report_to_user"),
     path('api/get/report', GetReports.as_view(), name="get_report_details"),
-    path('api/verify/report', VerifyReport.as_view(), name="get_verify_report")
+    path('api/verify/report', VerifyReport.as_view(), name="get_verify_report"),
+
+    # data
+    path('api/data/count', GetAllNumberOfDataView.as_view(), name="get_total_data"),
 ]
 
 # view json data in web

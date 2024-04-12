@@ -13,7 +13,7 @@ class UpdateFoodHistoryUseCase(private val updateFoodHistoryRepository: UpdateFo
         try {
             emit(Resource.Success(updateFoodHistoryRepository.getHistoryDetails(historyId)))
         } catch (e: Exception) {
-            emit(Resource.Error(message = "Not found!"))
+            emit(Resource.Error(message = "Unable to connect to the server."))
         }
     }
 
@@ -28,7 +28,7 @@ class UpdateFoodHistoryUseCase(private val updateFoodHistoryRepository: UpdateFo
             }
 
         } catch (e: Exception) {
-            emit(Resource.Error(message = "Not found"))
+            emit(Resource.Error(message = "Unable to connect to the server."))
         }
     }
 

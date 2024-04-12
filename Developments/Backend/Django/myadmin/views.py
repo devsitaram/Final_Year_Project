@@ -15,7 +15,7 @@ from foodshare.models import *
 def home(request):
     cursor = connection.cursor()
     # Get table names from the specified database schema
-    cursor.execute("SHOW TABLES FROM waste_food_management_system")
+    cursor.execute("SHOW TABLES FROM food_management_system")
     table_names = [row[0] for row in cursor.fetchall()]
 
     return render(request, 'home.html', {'list_of_table': table_names})

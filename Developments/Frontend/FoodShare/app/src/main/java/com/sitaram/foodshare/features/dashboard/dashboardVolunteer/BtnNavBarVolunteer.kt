@@ -27,7 +27,6 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.sitaram.foodshare.features.dashboard.dashboardVolunteer.acceptFood.FoodAcceptViewScreen
 import com.sitaram.foodshare.features.dashboard.dashboardVolunteer.pending.presentation.PendingViewScreen
-import com.sitaram.foodshare.features.dashboard.dashboardVolunteer.updateFoodHistory.presentation.UpdateFoodHistoryView
 import com.sitaram.foodshare.features.dashboard.dashboardVolunteer.volunteerHistory.VolunteerHistoryViewScreen
 import com.sitaram.foodshare.features.dashboard.home.presentation.HomeViewScreen
 import com.sitaram.foodshare.features.dashboard.profile.presentation.ProfileViewScreen
@@ -150,7 +149,7 @@ fun VolunteerNavHostScreen(
         }
 
         composable(BtnNavScreen.Pending.route) {
-            PendingViewScreen(navController)
+            PendingViewScreen(navController, mainNavController)
         }
 
         composable(BtnNavScreen.History.route) {
@@ -188,25 +187,22 @@ fun VolunteerNavHostScreen(
         }
 
         // Completed Donation
-        composable(
-            route = NavScreen.UpdateFoodHistory.route,
-            arguments = listOf(
-                navArgument(KEY_ID) {
-                    type = NavType.StringType
-                },
-                navArgument(FOOD_NAME) {
-                    type = NavType.StringType
-                },
-                navArgument(USER_EMAIL){
-                    type = NavType.StringType
-                }
-            )
-        ) { backStackEntry ->
-            val id = backStackEntry.arguments?.getString(KEY_ID)?.toIntOrNull() ?: 0
-            val email = backStackEntry.arguments?.getString(USER_EMAIL)
-            val title = backStackEntry.arguments?.getString(FOOD_NAME) ?: ""
-            UpdateFoodHistoryView(id, email, title, navController)
-        }
+//        composable(route = NavScreen.CompetedFoodHistory.route,
+//            arguments = listOf(
+//                navArgument(KEY_ID) {
+//                    type = NavType.StringType
+//                },
+//                navArgument(FOOD_NAME) {
+//                    type = NavType.StringType
+//                }
+//            )
+//        ) {
+//            backStackEntry ->
+//            val foodId = backStackEntry.arguments?.getString(KEY_ID)?.toIntOrNull() ?: 0
+//            val title = backStackEntry.arguments?.getString(FOOD_NAME) ?: ""
+//            CompleteHistoryViewScreen(navController)
+//            CompletedFoodHistoryView(navController)
+//        }
 
     }
 }

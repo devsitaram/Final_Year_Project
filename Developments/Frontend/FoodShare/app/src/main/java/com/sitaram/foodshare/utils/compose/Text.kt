@@ -1,10 +1,14 @@
 package com.sitaram.foodshare.utils.compose
 
 import android.annotation.SuppressLint
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.text.ClickableText
 import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.AnnotatedString
@@ -38,7 +42,7 @@ fun TextView(
     textDecoration: TextDecoration? = null,
     overflow: TextOverflow = TextOverflow.Clip,
     softWrap: Boolean = true,
-    style: TextStyle = LocalTextStyle.current
+    style: TextStyle = LocalTextStyle.current,
 ) {
     Text(
         modifier = modifier,
@@ -72,7 +76,7 @@ fun ClickableTextView(
     onTextLayout: ((TextLayoutResult) -> Unit)? = null,
     onClick: ((Int) -> Unit?)? = null,
     modifier: Modifier = Modifier,
-    color: Color = primary
+    color: Color = primary,
 ) {
     ClickableText(
         text = AnnotatedString(annotatedText),

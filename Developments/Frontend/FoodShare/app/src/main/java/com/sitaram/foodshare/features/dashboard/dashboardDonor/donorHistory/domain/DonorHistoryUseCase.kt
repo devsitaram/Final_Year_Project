@@ -19,7 +19,7 @@ class DonorHistoryUseCase(private val donorHistoryRepository: DonorHistoryReposi
                 emit(Resource.Error(message = result?.message))
             }
         } catch (ex: Exception){
-            emit(Resource.Error(message =  "Not Found"))
+            emit(Resource.Error(message =  "Unable to connect to the server."))
         }
     }
     operator fun invoke(id: Int?, username: String?): Flow<Resource<ResponsePojo>> = flow {
@@ -32,7 +32,7 @@ class DonorHistoryUseCase(private val donorHistoryRepository: DonorHistoryReposi
                 emit(Resource.Error(message = result?.message))
             }
         } catch (e: Exception){
-            emit(Resource.Error(message = "Not found!"))
+            emit(Resource.Error(message = "Unable to connect to the server."))
         }
     }
 
@@ -46,7 +46,7 @@ class DonorHistoryUseCase(private val donorHistoryRepository: DonorHistoryReposi
                 emit(Resource.Error(message = result?.message))
             }
         } catch (e: Exception){
-            emit(Resource.Error(message = "Not found!"))
+            emit(Resource.Error(message = "Unable to connect to the server."))
         }
     }
 }

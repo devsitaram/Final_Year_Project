@@ -57,7 +57,7 @@ fun ProcessingDialogView(
 ) {
     Dialog(
         onDismissRequest = { onDismissRequest?.invoke() },
-        DialogProperties(dismissOnBackPress = false, dismissOnClickOutside = false)
+        properties = DialogProperties(dismissOnBackPress = false, dismissOnClickOutside = false)
     ) {
         Box(
             contentAlignment = Alignment.BottomCenter,

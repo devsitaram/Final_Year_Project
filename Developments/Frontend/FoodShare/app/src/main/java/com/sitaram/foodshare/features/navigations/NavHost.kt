@@ -13,7 +13,6 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
-import com.sitaram.foodshare.features.zTesting.TestViewScreen
 import com.sitaram.foodshare.helper.UserInterceptors
 import com.sitaram.foodshare.features.forgotpassword.presentation.ForgotPasswordViewScreen
 import com.sitaram.foodshare.features.introSlider.IntroSliderViewScreen
@@ -23,6 +22,7 @@ import com.sitaram.foodshare.features.welcome.WelcomeViewScreen
 import com.sitaram.foodshare.features.dashboard.dashboardDonor.DonorBtnNavBar
 import com.sitaram.foodshare.features.dashboard.dashboardAdmin.AdminBtnNavBar
 import com.sitaram.foodshare.features.dashboard.dashboardVolunteer.VolunteerBtnNavBar
+import com.sitaram.foodshare.features.dashboard.dashboardVolunteer.updateFoodHistory.presentation.CompletedFoodHistoryView
 import com.sitaram.foodshare.features.dashboard.foodDetail.presentation.FoodDetailsViewScreen
 import com.sitaram.foodshare.features.dashboard.googleMap.presentation.GoogleMapViewScreen
 import com.sitaram.foodshare.features.dashboard.setting.manageAccount.presentation.ManageAccountScreen
@@ -138,11 +138,11 @@ fun MainNavigationViewScreen() {
                 navArgument(LONGITUDE) {
                     type = NavType.StringType
                 },
-                navArgument(USER_NAME){
+                navArgument(USER_NAME) {
                     type = NavType.StringType
                 }
             )
-        ){backStackEntry ->
+        ) { backStackEntry ->
             val latitude = backStackEntry.arguments?.getString(LATITUDE)?.toDoubleOrNull() ?: 0.0
             val longitude = backStackEntry.arguments?.getString(LONGITUDE)?.toDoubleOrNull() ?: 0.0
             val username = backStackEntry.arguments?.getString(USER_NAME) ?: ""
@@ -159,11 +159,11 @@ fun MainNavigationViewScreen() {
                 navArgument(FOOD_NAME) {
                     type = NavType.StringType
                 },
-                navArgument(FOOD_RATING){
+                navArgument(FOOD_RATING) {
                     type = NavType.IntType
                 }
             )
-            ) { backStackEntry ->
+        ) { backStackEntry ->
             val id = backStackEntry.arguments?.getString(KEY_ID)?.toIntOrNull() ?: 0
             val title = backStackEntry.arguments?.getString(FOOD_NAME)
             val rating = backStackEntry.arguments?.getInt(FOOD_RATING)
@@ -180,6 +180,25 @@ fun MainNavigationViewScreen() {
         ) { backStackEntry ->
             val id = backStackEntry.arguments?.getString(KEY_ID)?.toIntOrNull() ?: 0
             UserDetailsViewScreen(id, mainNavController)
+        }
+
+        composable(route = NavScreen.CompetedFoodHistory.route,
+            arguments = listOf(
+                navArgument(KEY_ID) {
+                    type = NavType.StringType
+                },
+                navArgument(FOOD_NAME) {
+                    type = NavType.StringType
+                },
+                navArgument(USER_EMAIL) {
+                    type = NavType.StringType
+                }
+            )
+        ) { backStackEntry ->
+            val foodId = backStackEntry.arguments?.getString(KEY_ID)?.toIntOrNull() ?: 0
+            val title = backStackEntry.arguments?.getString(FOOD_NAME) ?: ""
+            val email = backStackEntry.arguments?.getString(FOOD_NAME) ?: ""
+            CompletedFoodHistoryView(foodId, title, email, mainNavController)
         }
     }
 }
