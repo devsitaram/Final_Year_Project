@@ -6,13 +6,14 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from firebase_admin import messaging
 
+# Test the notification
 class SendNotificationView(APIView):
     permission_classes = [AllowAny]
     
     def post(self, request):
         list_of_tokens = [
-            'f6wpRufYSBi4QaCgvLh_q-:APA91bEYEl_YJZfiZMbq5qbNC6W5EPF0eSEi8ZkPqMtJ7DgfFvVvBAa3MeeCny_ZI2ufAlnYOzHlg4a35j15WAbbfWFHiGYztv0LxEi7yGl7h6E6Fyh6IliJKil73ME783aoz6eLn09-',
-            ]
+            'e-2Jy9YlQpmWKsBuuUTTRB:APA91bF-5xTSvN2256dnw1toIU6LdT7d6Sq_lmPfScLH_woYQiL01R2T7xI7ZhI1TSL29Z5ji6eBwiF_dCGBuvrW7YLIiccm40wfxzjBwZZ4LRL4mIgjHJESgkm-IcC0cQlMq3EMbLto',
+        ]
         title = 'Title 4 Food Donation'
         body = 'The food is available for donation. Please pick up the food for distribution.'
         return send_notifications(title, body, list_of_tokens)

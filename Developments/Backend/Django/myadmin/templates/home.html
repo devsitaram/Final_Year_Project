@@ -2,48 +2,120 @@
 
 {% block content %}
 
-    {% comment %} <div class="main" id="main">
-      <div id="content-start" class="content" tabindex="-1">
-        
-        <!-- Content -->
-        <div id="content" class="colMS">
-          <div id="content-main">
-            <div class="app-accounts module">
-              <caption style="background: linear-gradient(to right, #FB8B24, #E36414)">
-                <h2 style="background: linear-gradient(to right, #FB8B24, #E36414)">Food Share Data</h2>
-              </caption>
-              <table>
+{% comment %} <head>
+  <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+  <script type="text/javascript">
+    google.charts.load('current', {'packages':['corechart']});
+    google.charts.setOnLoadCallback(drawChart);
+
+
+
+    function drawChart() {
+
+      var data = google.visualization.arrayToDataTable([
+        ['Task', 'Hours per Day'],
+        ['User',     11],
+        ['Food',      12],
+        ['History',  4],
+        ['Complaint', 50],
+        ['Device',    7]
+      ]);
+
+      var options = {
+        title: 'Food Share System'
+      };
+
+      var chart = new google.visualization.PieChart(document.getElementById('piechart'));
+
+      chart.draw(data, options);
+    }
+  </script>
+
+</head> {% endcomment %}
+
+<head>
+  <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+  <script type="text/javascript">
+    google.charts.load('current', {'packages':['corechart']});
+    google.charts.setOnLoadCallback(fetchAndDrawChart);
+
+    function fetchAndDrawChart() {
+      fetch('http://127.0.0.1:8000/api/data/count?role=admin')
+        .then(response => response.json())
+        .then(data => {
+          var chartData = [
+            ['Task', 'Count'],
+            ['User', data.data.user],
+            ['Food', data.data.food],
+            ['History', data.data.history],
+            ['Report', data.data.report],
+            ['Device', data.data.device]
+          ];
+
+          drawChart(chartData);
+        })
+        .catch(error => {
+          console.error('Error fetching data:', error);
+        });
+    }
+
+    function drawChart(data) {
+      var chartData = google.visualization.arrayToDataTable(data);
+
+      var options = {
+        title: 'Food Share System Latest Data'
+      };
+
+      var chart = new google.visualization.PieChart(document.getElementById('piechart'));
+
+      chart.draw(chartData, options);
+    }
+  </script>
+</head>
+
+<div class="main">
+  <div style="width: 100%; white-space: nowrap;">
+
+      <div style="width: 100%; white-space: nowrap;">
+        <!-- Left content -->
+        <div style="width: 20%; height: 100%; background-color: whitesmoke; display: inline-block; vertical-align: top;">
+          <div class="app-accounts module">
+            <caption style="background: linear-gradient(to right, #fff, #fff);">
+              <h2 style="background: linear-gradient(to right, #fff, #fff); font-size: 16px; color: black; font-weight: bold; padding-top: 16px; padding-bottom: 16px;">Food Share Tables</h2>
+            <table>
                 <tbody>
-
-                  {% for table_name in list_of_table %}
+                    {% for table_name in list_of_table %}
                     {% if not table_name|slice:":6" == 'django' and not table_name|slice:":5" == 'auth_' and not table_name|slice:":10" == 'authtoken_' %}
-                      {% with trimmed_table_name=table_name|cut:"foodshare_" %}
-                        <tr class="model-{{ table_name }}">
-                          <th scope="row" style="text-transform: uppercase;">
+                    {% with trimmed_table_name=table_name|cut:"foodshare_" %}
+                    <tr class="model-{{ table_name }}">
+                        <th scope="row" style="text-transform: uppercase;">
                             <a href="{% url 'view_data' table_name=table_name %}">{{ trimmed_table_name }}</a>
-                          </th>
-                          <td>
-                            <a href="{% url 'add_data' table_name=table_name %}" class="addlink">Add</a>
-                          </td>
-                        </tr>
-                      {% endwith %}
+                        </th>
+                        {% if trimmed_table_name == "users" %}
+                            <td>
+                                <a href="{% url 'add_new_user' table_name=table_name %}" class="addlink">Add</a>
+                            </td>
+                        {% else %}
+                            <td>
+                            </td>
+                        {% endif %}
+                    </tr>
+                    {% endwith %}
                     {% endif %}
-                  {% endfor %}
-
+                    {% endfor %}
                 </tbody>
-              </table>
-            </div>
-
-          <div id="content-related">
-            // grapht display
+            </table>
           </div>
-          <br class="clear">
         </div>
 
-        <!-- END Content -->
+         <!-- Right content -->
+        <div style="width: 80%; height: 100%; background-color: white; display: inline-block; vertical-align: top;">
+          <div id="piechart" style="width: 80%; height: 500px;" />
+        </div>
+
       </div>
-    </div>
-  </div> {% endcomment %}
-  <!-- END Container -->
+
+  </div>
+</div>
 
 {% endblock %}

@@ -35,7 +35,7 @@ ALLOWED_HOSTS = [
     '10.13.0.174', 
     '192.168.1.72',
     '127.0.0.1:8000',
-    '124d-2400-1a00-b012-2d6a-940b-6631-da46-5321.ngrok-free.app',
+    '91bf-110-34-5-16.ngrok-free.app',
     ]
 
 # Application definition 'f7ea-110-34-5-16.ngrok-free.app',
@@ -178,7 +178,7 @@ REST_FRAMEWORK = {
 
 SIMPLE_JWT = {
     "ACCESS_TOKEN_LIFETIME": timedelta(days=1),
-    "REFRESH_TOKEN_LIFETIME": timedelta(days=7),
+    "REFRESH_TOKEN_LIFETIME": timedelta(days=1),
     "ROTATE_REFRESH_TOKENS": False,
     "BLACKLIST_AFTER_ROTATION": False,
     "UPDATE_LAST_LOGIN": False,
@@ -189,6 +189,7 @@ SIMPLE_JWT = {
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:8000",
     "http://127.0.0.1:8000",
+    "https://127.0.0.1:8000",
 ]
 
 # Initialize Firebase Admin SDK

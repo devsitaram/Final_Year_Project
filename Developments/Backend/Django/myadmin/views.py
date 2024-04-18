@@ -70,6 +70,7 @@ def reset_password(request):
 
     return render(request, 'reset_password.html', {'invalid_password': invalid_password})
 
+
 # logout
 def logout_view(request):
     if request.user.is_authenticated:
@@ -83,22 +84,68 @@ def logout_view(request):
     logout(request)
     return redirect('admin_login')
 
+
+
+
+
+
+
+def register_user(request):
+    if request.method == 'POST':
+        username = request.POST.get('username')
+        email = request.POST.get('email')
+        role = request.POST.get('role')
+        password = request.POST.get('password')
+
+        try:
+            # Check if user already exists
+            user = Users.objects.get(email=email)
+            return JsonResponse({'message': 'User already exists', 'is_success': False})
+        except Users.DoesNotExist:
+            # User does not exist, create a new user
+            Users.objects.create_user(email=email, username=username, role=role, password=password)
+            return redirect(home)
+            # return JsonResponse({'message': 'Register successful', 'is_success': False})
+            
+            # Redirect to home page upon successful registration
+            
+
+
+
+
+
+
 # view data
 def view_data(request, table_name):
     try:
         cursor = connection.cursor()
+        # Get table names from the specified database schema
+        cursor.execute("SHOW TABLES FROM food_management_system")
+        table_names = [row[0] for row in cursor.fetchall()]
+
         cursor.execute(f"SELECT * FROM {table_name}")
-        columns = [col[0] for col in cursor.description]  # Fetching column names
+        columns = [col[0] for col in cursor.description]
         data = cursor.fetchall()
-        print(f"Column is : {columns}")
-        print(f"Data is : {data}")
-        return render(request, 'view_data.html', {'data': data, 'columns': columns, 'table_name': table_name})
+        return render(request, 'view_data.html', {'data': data, 'columns': columns, 'table_name': table_name, 'list_of_table': table_names})
     except LookupError:
         return HttpResponse("Table doesn't exist or an error occurred.")
 
-def add_data(request, table_name):
-    print(table_name)
-    return HttpResponse(request)
+
+
+
+
+
+
+
+
+
+
+
+
+
+def add_new_user(request, table_name):
+    return render(request, 'add_new_user.html')
+
 
 # delete 
 def delete_row(request, table_name, row_id):

@@ -17,41 +17,37 @@ urlpatterns = [
     path('api/token/verify/', TokenVerifyView.as_view(), name='token_verify'),
 
     # apis for mobile
-    path('api/authenticate/token/', LoginUser.as_view(), name='get_authentication_token'),
+    path('api/authenticate/token', LoginUser.as_view(), name='get_authentication_token'),
     path('api/register/user', RegisterUser.as_view(), name='get_register_user'),
+    path('api/logout/user', LogoutView.as_view(), name='get_logout_user'),
     
-    path('api/user/profile/', UserProfile.as_view(), name='get_user_profile'),
+    path('api/user/profile', UserProfile.as_view(), name='get_user_profile'),
     path('api/foods/all', AllFoodDetails.as_view(), name='get_food_details'),
     path('api/notifications/save/fcm/token', NotificationDeviceToken.as_view(), name='get_notification_details'),
 
-    path('api/reports/', ReportDetails.as_view(), name='get_report_details'),
-
     # NGOs api
-    path('api/ngo/profile/', NgoProfile.as_view(), name='get_ngo_profile'),
-
+    path('api/ngo/profile', NgoProfile.as_view(), name='get_ngo_profile'),
+    path('api/register/ngo', AddNgoView.as_view(), name="add_ngo_profile"),
     # users
-    path('api/all/types/user/', GetAllUsersView.as_view(), name='get_users_by_search'),
-    path('api/account/verify/', UserAccountVerify.as_view(), name='set_account_verify'),
+    path('api/all/types/user', GetAllUsersView.as_view(), name='get_users_by_search'),
+    path('api/account/verify', UserAccountVerifyView.as_view(), name='set_account_verify'),
 
     #update profile
     path('api/update/profile', UpdateProfile.as_view(), name='set_update_profile'),
-    path('api/update/profile/image/', UpdateProfilePicture.as_view(), name='set_update_profile'),
+    path('api/update/profile/image', UpdateProfilePicture.as_view(), name='set_update_profile'),
 
     # password
-    path('api/email/verify/', EmailVerify.as_view(), name='get_email_verify'),
-    path('api/update/password/', UpdatePassword.as_view(), name='set_update_password'),
+    path('api/email/verify', EmailVerify.as_view(), name='get_email_verify'),
+    path('api/update/password', UpdatePassword.as_view(), name='set_update_password'),
 
     # manage account
-    path('api/account/delete/', DeleteAccount.as_view(), name='set_delete_account'),
+    path('api/account/delete', DeleteAccount.as_view(), name='set_delete_account'),
 
     # foods
-    path('api/food/new/add', AddNewFoodView.as_view(), name="set_donate_food"),
+    path('api/food/new/post', AddNewFoodView.as_view(), name="set_donate_food"),
     path('api/food/new/get', GetNewFoods.as_view(), name='get_food_details_new'),
-    path('api/food/details/history/', GetFoodHistorys.as_view(), name='get_food_details_history'),
+    path('api/food/details/history', GetFoodHistorys.as_view(), name='get_food_details_history'),
     path('api/food/history/all', HistoryDetails.as_view(), name='get_history_details'),
-
-    # NGO image upload
-    path('api/register/ngo/', AddNgo.as_view(), name="add_ngo_profile"),
 
     # Donor side
     path('api/food/donation/histories/donor', DonationHistory.as_view(), name="get_donor_history"),
@@ -61,14 +57,14 @@ urlpatterns = [
 
     # Food Accept
     path('api/food/accept', AcceptFood.as_view(), name="get_accept_food"),
-    path('api/food/donate/competed', DonationCompleted.as_view(), name="get_donation_completed"),
+    path('api/food/donate/rating', DonationCompletedRating.as_view(), name="get_donation_completed"),
     path('api/food/history/status', GetHistoryFoodDetails.as_view(), name="get_pending_food"),
     path('api/history/delete', DeleteHistoryFood.as_view(), name="set_delete_history_food"),
 
     #Report To User
     path('api/user/report', ReportToUser.as_view(), name="get_report_to_user"),
-    path('api/get/report', GetReports.as_view(), name="get_report_details"),
-    path('api/verify/report', VerifyReport.as_view(), name="get_verify_report"),
+    path('api/get/report', GetReportView.as_view(), name="get_report_details"),
+    path('api/verify/report', VerifyReportView.as_view(), name="get_verify_report"),
 
     # data
     path('api/data/count', GetAllNumberOfDataView.as_view(), name="get_total_data"),

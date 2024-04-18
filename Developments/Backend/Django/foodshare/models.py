@@ -22,6 +22,7 @@ class UserManager(BaseUserManager):
         user.set_password(password)
         user.save(using=self._db)
         return user
+    
     # super user
     def create_superuser(self, email, username, role, password=None):
         """
@@ -50,7 +51,7 @@ class Users(AbstractBaseUser):
     gender = models.CharField(max_length=10, null=True)
     date_of_birth = models.DateField(default=datetime.now, null=True)
     abouts_user = models.TextField(max_length=500, null=True)
-    photo_url = models.ImageField(upload_to='user_images/', null=True, max_length=500) #URLField(default="https://thumbs.dreamstime.com/b/man-carries-box-food-social-care-volunteering-charity-concept-delivery-donated-home-service-volunteers-vector-201852843.jpg")
+    photo_url = models.ImageField(upload_to='user_images/', null=True, max_length=500)
 
     is_admin = models.BooleanField(default=False)
     is_active = models.BooleanField(default=False)
@@ -116,8 +117,11 @@ class Food(models.Model):
     
 # Reports
 class Report(models.Model):
-    COMPLAINT_CHOICES = (('donor', 'Complaint to Donor'), ('volunteer', 'Complaint to Volunteer'), ('farmer', 'Complaint to Farmer'),)
-
+    COMPLAINT_CHOICES = (
+        ('donor', 'Complaint to Donor'), 
+        ('volunteer', 'Complaint to Volunteer'), 
+        ('farmer', 'Complaint to Farmer'),
+    )
     complaint_to  = models.CharField(max_length=30, choices=COMPLAINT_CHOICES, null=True)
     descriptions = models.TextField(null=True)
     is_verify = models.BooleanField(default=False)

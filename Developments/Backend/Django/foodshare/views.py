@@ -9,6 +9,7 @@ from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework.response import Response
 from rest_framework.parsers import MultiPartParser, FormParser
 from rest_framework.authentication import TokenAuthentication
+from rest_framework.authtoken.models import Token
 from rest_framework.exceptions import AuthenticationFailed, NotFound
 from rest_framework.views import APIView
 from notification.views import *
@@ -26,23 +27,25 @@ class UserViewSet(viewsets.ModelViewSet):
 
 # get NGO's profile
 class NgoProfile(APIView):
-    permission_classes = [IsAdminUser]
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [AllowAny]
     def get(self, request):
-        ngo = Ngo.objects.all()
-        serializer = NgoSerializer(ngo, many=True)  # Serialize queryset
-        return Response({"ngo_profiles": serializer.data})
-    
-class ReportDetails(APIView):
-    def get(self, request):
-        reports = Report.objects.all()
-        serializer = ReportSerializer(reports, many=True)  # Serialize queryset
-        return Response({"reports": serializer.data})
-    
+        try:
+            ngo = Ngo.objects.get(id=1)
+            if ngo:
+                serializer = NgoSerializer(ngo)
+                return Response({"message":"Success", "is_success": True, "status": 200, "ngo": serializer.data})
+            else:
+                return Response({"message":"Ngo is not found", "is_success": False, "status": 400})
+        except Exception as e:
+            return Response({"message": "Sorry, something went wrong on our end. Please try again later.", "s_success": False, "status": 500})
+
+# Save the device to FCM token
 class NotificationDeviceToken(APIView):
     authentication_classes = [TokenAuthentication]
     permission_classes = [AllowAny]
 
-    def get(self, request):
+    def post(self, request):
         try:
             user_id = request.query_params.get("user_id")
             device_token = request.query_params.get("token")
@@ -50,19 +53,20 @@ class NotificationDeviceToken(APIView):
 
             # Check if user_id already exists in the database
             notification = Notification.objects.filter(user_id=user_id).first()
-
+            print(device_token)
             # If user_id exists, update the device_token
             if notification:
                 notification.token = device_token
                 notification.save()
-                return Response({'message': 'update divice token success', 'is_success': True, 'status': 200})
+                return Response({'message': 'update device token success', 'is_success': True, 'status': 200})
 
             # If user_id does not exist, create a new entry
             else:
                 Notification.objects.create(user_id=user_id, token=device_token, created_by=created_by)
-                return Response({'message': 'New divice toke save', 'is_success': True, 'status': 200})
+                return Response({'message': 'New device token saved', 'is_success': True, 'status': 200})
         except Exception as e:
             return Response({"message": "Sorry, something went wrong on our end. Please try again later.", 'is_success': False, 'status': 500})
+
 
 '''
 login authentication
@@ -128,7 +132,6 @@ class RegisterUser(APIView):
                 email = serializer.validated_data['email']
                 username = serializer.validated_data['username']
                 role = serializer.validated_data['role']
-                # Get the password from request data
                 password = request.data.get('password')
                 # Register user
                 try:
@@ -140,6 +143,22 @@ class RegisterUser(APIView):
                 return Response({'message': 'Enter a valid email address!', 'is_success': False, 'status': 400})
         except Exception as e:
             return Response({"message": "Sorry, something went wrong on our end. Please try again later.", 'is_success': False, 'status': 500})
+
+
+# Log out and token expire
+class LogoutView(APIView):
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [AllowAny]
+    def get(self, request):
+        if request.user.is_authenticated:
+            try:
+                token = Token.objects.get(user=request.user)
+                token.delete()
+                return Response({"message": "Logout successful", "is_success": True, "status": status.HTTP_200_OK})
+            except Token.DoesNotExist:
+                return Response({"message": "Sorry, something went wrong on our end. Please try again later.", 'is_success': False, 'status': 500})
+        return Response({"message": "User is not authenticated", "is_success": False, "status":status.HTTP_401_UNAUTHORIZED})
+        
 
 '''
 Home get all food:->
@@ -336,17 +355,17 @@ class GetAllUsersView(APIView):
             return Response({"message": "Sorry, something went wrong on our end. Please try again later.", 'is_success': False, 'status': 500})
 
 # account verify
-class UserAccountVerify(APIView):
+class UserAccountVerifyView(APIView):
     permission_classes = [IsAdminUser]
     def post(self, request):
         try:
-            update_user_id = request.data.get('id')
+            user_id = request.data.get('id')
             update_query = request.data.get('query')
 
-            if not update_user_id:
+            if not user_id:
                 return Response({"message": "User id is empty!", "is_success": False, 'status': 400})
 
-            user = Users.objects.filter(id=update_user_id).first()
+            user = Users.objects.filter(id=user_id).first()
 
             if not user:
                 return Response({"message": "User not found", "is_success": False, "status": 404})
@@ -404,9 +423,8 @@ class DeleteAccount(APIView):
         except Exception as e:
             return Response({"message": "Sorry, something went wrong on our end. Please try again later.", 'is_success': False, 'status': 500})
 
-'''
-Donate food
-'''
+
+# Donate food
 class AddNewFoodView(APIView):
     authentication_classes = [TokenAuthentication]
     permission_classes = [AllowAny]
@@ -417,22 +435,24 @@ class AddNewFoodView(APIView):
             serializer = FoodSerializer(data=request.data)
             
             # Retrieve FCM tokens from Notification model
-            fcm_tokens = Notification.objects.all().values_list('token', flat=True)
-            list_of_tokens = list(fcm_tokens)
-            print(list_of_tokens)
+            
             if serializer.is_valid():
                 food_instance = serializer.save()
                 title = food_instance.food_name
                 body = food_instance.descriptions 
-                print(body)
-                # Send notifications to all users
-                # result = send_notifications(title=title, body=body, list_of_tokens=list_of_tokens)  # Replace with your notification sending logic
+                
+                return Response({"message": "Donation successful", "is_success": True, "status": 200})
+                # Get FCM Token and Send notifications to all users
+                # fcm_tokens = Notification.objects.all().values_list('token', flat=True)
+                # list_of_tokens = list(fcm_tokens)
+
+                # result = send_notifications(title=title, body=body, list_of_tokens=list_of_tokens)
                 
                 # # Check if notifications were sent successfully
                 # if result.status_code == 200:
                 #     return Response({"message": "Donation successful", "is_success": True, "status": 200})
                 # else:
-                return Response({"message": "Failed to send notifications", "is_success": False, "status": 400})
+                #     return Response({"message": "Failed to send notifications", "is_success": False, "status": 400})
             else:
                 return Response({"message": 'Enter the valid data', "is_success": False, "status": 400})
         except Exception as e:
@@ -553,7 +573,6 @@ class HistoryDetails(APIView):
 
     def get(self, request):
         try:
-            #foods = Foods.objects.select_related('donor').prefetch_related('history_set__volunteer').order_by('-created_date')
             foods = Food.objects.all()
             if not foods:
                 return Response({"message": "No food found", "is_success": False, "status": 400})
@@ -576,7 +595,7 @@ class HistoryDetails(APIView):
         except Exception:
             return Response({"message": "Sorry, something went wrong on our end. Please try again later.", "is_success": False, "status": 500})
 
-class AddNgo(APIView):
+class AddNgoView(APIView):
     authentication_classes = [TokenAuthentication]
     permission_classes = [AllowAny]
     parser_classes = (MultiPartParser, FormParser)  # Add MultiPartParser and FormParser
@@ -760,7 +779,7 @@ class DonateFoodUpdate(APIView):
             if serializer.is_valid():
                 food.modify_date = datetime.now().strftime('%Y-%m-%d')
                 serializer.save()
-
+            print(serializer.data)
             return Response({
                 "message": "Donate food is updated",
                 "is_success": True,
@@ -781,7 +800,6 @@ class UpdateDonateFoodImage(APIView):
         try:
             food_id = request.data.get('id')
             image = request.FILES.get('image')
-            print(image)
             if not food_id:
                 return Response({"message": "No food id provided", "is_success": False, "status":400})
 
@@ -840,8 +858,7 @@ class DeleteHistoryFood(APIView):
         except Exception as e:
             return Response({"message": "Sorry, something went wrong on our end. Please try again later.", "is_success": False, "status":500})
 
-
-# Report User
+# Report or complaint for user
 class ReportToUser(APIView):
     authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated]
@@ -849,23 +866,40 @@ class ReportToUser(APIView):
 
     def post(self, request):
         try:
-            serializer = ReportSerializer(data=request.data)
-            if serializer.is_valid():
-                serializer.save()  # Save the serializer instance to the database
-                return Response({"message": "Report has been sumbited", "is_success": True, "status": 200})
+            food_id = request.data.get('food')
+            complaint_to = request.data.get('complaint_to')
+            descriptions = request.data.get('descriptions')
+            created_by = request.data.get('created_by')
+
+            # Check if a report already exists for the given food ID
+            report = Report.objects.filter(food_id=food_id).first()
+            if report:
+                report.complaint_to = complaint_to
+                report.descriptions = descriptions
+                report.created_by = created_by
+                report.save()
+                return Response({"message": "Report has been updated", "is_success": True, "status": 200})
+            
             else:
-                return Response({"message": "Report is not sumbit", "is_success": False, "status": 400})
+                # If no report exists, create a new one
+                serializer = ReportSerializer(data=request.data)
+                if serializer.is_valid():
+                    serializer.save()
+                    return Response({"message": "Report has been submitted", "is_success": True, "status": 200})
+                else:
+                    return Response({"message": "Report is not submitted", "is_success": False, "status": 400})
         except Exception:
             return Response({"message": "Sorry, something went wrong on our end. Please try again later.", "is_success": False, "status": 500})
 
 # Update User Profile Image
-class DonationCompleted(APIView):
+class DonationCompletedRating(APIView):
     authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated]
     permission_classes = [AllowAny]
 
     def patch(self, request):
         try:
+
             history_id = request.data.get('id')
             descriptions = request.data.get('descriptions')
             location = request.data.get('location')
@@ -873,8 +907,8 @@ class DonationCompleted(APIView):
 
             if not history_id:
                 return Response({"message": "No history Id provided", "is_success": False, "status": 400})
-
-            history = History.objects.filter(id=history_id).first()
+            
+            history = History.objects.filter(food_id=history_id).first()
             if not history:
                 return Response({"message": "History not found", "is_success": False, "status": 404})
             
@@ -891,15 +925,15 @@ class DonationCompleted(APIView):
             if food:
                 food.status = 'Completed'
                 food.save()
-
                 return Response({"message": "Food donation is successful.", "is_success": True, "status": 200})
+            
             else:
-                return Response({"message": "Food not found for the given history ID.", "is_success": False, "status": 404})
-
+                return Response({"message": "Food not found for the given history Id.", "is_success": False, "status": 404})
+            
         except Exception as e:
             return Response({"message": "Sorry, something went wrong on our end. Please try again later.", 'is_success': False, 'status': 500})
         
-class GetReports(APIView):
+class GetReportView(APIView):
     authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated]
     permission_classes = [AllowAny]
@@ -935,24 +969,30 @@ class GetReports(APIView):
         except Exception as e:
             return Response({"message": "Sorry, something went wrong on our end. Please try again later.", "is_success": False, "status": 500})
 
-class VerifyReport(APIView):
+# Report or complant verify
+class VerifyReportView(APIView):
     authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated]
     permission_classes = [AllowAny]
 
     def patch(self, request):
-        report_id = request.query_params.get("id")
-        is_verify = request.query_params.get("is_verify")
-
+    
         try:
+            report_id = request.data.get('id')
+            update_query = request.data.get('query')
+            
             report = Report.objects.get(id=report_id)
+            if update_query is not None:
+                if isinstance(update_query, bool):
+                    report.is_verify = update_query
+                    report.modify_by = "Admin"
+                    report.modify_date = datetime.now().strftime('%Y-%m-%d')
+                    report.save()
+                    return Response({"message": "Report is verified.", "is_success": True, "status":200})
+                else:
+                    return Response({"message": "Report not found.", "is_success": False, "status":404})
         except Report.DoesNotExist:
-            return Response({"message": "Report not found.", "is_success": False, "status":404})
-
-        report.is_verify = is_verify
-        report.save()
-
-        return Response({"message": "Report is verified.", "is_success": True, "status":200})
+            return Response({"message": "Sorry, something went wrong on our end. Please try again later.", "is_success": False, "status": 500})
 
 # All number of data in databse
 class GetAllNumberOfDataView(APIView):
@@ -961,18 +1001,27 @@ class GetAllNumberOfDataView(APIView):
     permission_classes = [AllowAny]
 
     def get(self, request):
-        # Count the number of objects in each table
-        food_count = Food.objects.count()
-        user_count = Users.objects.count()
-        history_count = History.objects.count()
-        report_date = Report.objects.count()
+        try:
+            role = request.query_params.get("role")
+            # Count the number of objects in each table
+            food_count = Food.objects.count()
+            user_count = Users.objects.count()
+            history_count = History.objects.count()
+            report_count = Report.objects.count()
 
-        # Create a dictionary to hold the counts
-        data = {
-            'food': food_count,
-            'user': user_count,
-            'history': history_count,
-            'report': report_date
-        }
+            # Create a dictionary to hold the counts
+            data = {
+                'food': food_count,
+                'user': user_count,
+                'history': history_count,
+                'report': report_count,
+            }
 
-        return Response(data)
+            # Check if user role is specified
+            if role == "admin":
+                device_count = Notification.objects.count()
+                data['device'] = device_count
+
+            return Response({"message": "Success", "is_success": True, "status": 200, "data": data})
+        except Exception as ex:
+            return Response({"message": "Sorry, something went wrong on our end. Please try again later.", "is_success": False, "status": 500})
