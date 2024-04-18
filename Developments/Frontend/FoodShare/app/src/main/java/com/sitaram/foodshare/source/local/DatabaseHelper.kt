@@ -6,19 +6,50 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 import com.sitaram.foodshare.utils.ApiUrl
 
+/**
+ * Database helper class for managing the Room database instance.
+ * tables: ProfileEntity, FoodsEntity, HistoryEntity etc.
+ */
+@Suppress("DEPRECATION")
 @Database(entities = [ProfileEntity::class, FoodsEntity::class, HistoryEntity::class], version = 4, exportSchema = false)
 abstract class DatabaseHelper : RoomDatabase() {
+
+    // Abstract method
     abstract fun userDao(): RoomDao
 
     companion object {
         private var INSTANCE: DatabaseHelper? = null
 
+        /**
+         * Gets the database instance.
+         * @param context The application context.
+         * @return The database instance.
+         */
         fun getDatabaseInstance(context: Context): DatabaseHelper {
             synchronized(context) {
                 return INSTANCE ?: buildDatabase(context).also { INSTANCE = it }
             }
         }
 
+        /**
+         * delete the database instance.
+         * @param context The application context.
+         * @return The boolean response.
+         */
+        fun clearDatabase(context: Context): Boolean {
+            val dbFile = context.getDatabasePath(ApiUrl.LOCAL_DATABASE_NAME)
+            return if (dbFile.exists()) {
+                dbFile.delete()
+            } else {
+                false
+            }
+        }
+
+        /**
+         * Builds the database instance.
+         * @param context The application context.
+         * @return The built database instance.
+         */
         private fun buildDatabase(context: Context): DatabaseHelper {
             return Room.databaseBuilder(
                 context.applicationContext,

@@ -42,7 +42,6 @@ import com.sitaram.foodshare.utils.compose.DisplayErrorMessageView
 import com.sitaram.foodshare.utils.compose.NetworkIsNotAvailableView
 import com.sitaram.foodshare.utils.compose.PainterImageView
 import com.sitaram.foodshare.utils.compose.ProcessingDialogView
-import com.sitaram.foodshare.utils.compose.ProgressIndicatorView
 import com.sitaram.foodshare.utils.compose.PullRefreshIndicatorView
 import com.sitaram.foodshare.utils.compose.TopAppBarIconView
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -155,6 +154,7 @@ fun VolunteerHistoryViewScreen(
                                             userId = food.donor,
                                             username = it1.userDetails?.username,
                                             contactNumber = it1.userDetails?.contactNumber,
+                                            email = it1.userDetails?.email,
                                             photoUrl = it1.userDetails?.photoUrl,
                                         )
                                     }?.let {

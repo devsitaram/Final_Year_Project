@@ -40,6 +40,23 @@ class UserManager(BaseUserManager):
         user.save(using=self._db)
         return user
 
+
+# create the Ngos model
+class Ngo(models.Model):
+    # ngo_id = models.AutoField(primary_key=True)
+    ngo_name = models.CharField(max_length=100, unique=True)
+    ngo_email = models.EmailField(max_length=50, unique=True)
+    ngo_location = models.CharField(max_length=100, null=True)
+    ngo_contact = models.CharField(max_length=15, unique=True)
+    established_date = models.DateField(datetime.now)
+    abouts_ngo = models.TextField(null=True)
+    ngo_stream_url = models.ImageField(upload_to='food_images/', null=True)
+    created_by = models.CharField(max_length=100, null=True)
+    created_date = models.DateField(auto_now_add=True)
+    modify_by = models.CharField(max_length=50, null=True)
+    modify_date = models.DateField(null=True)
+    is_delete = models.BooleanField(default=False)
+    
 # create custom User table AbstractBaseUser
 class Users(AbstractBaseUser):
     email = models.EmailField(verbose_name='Email', max_length=255, unique=True)
@@ -54,7 +71,8 @@ class Users(AbstractBaseUser):
     photo_url = models.ImageField(upload_to='user_images/', null=True, max_length=500)
 
     is_admin = models.BooleanField(default=False)
-    is_active = models.BooleanField(default=False)
+    is_active = models.BooleanField(default=True)
+    ngo = models.ForeignKey(Ngo, on_delete=models.CASCADE, null=True) # FK (donor id)
     created_by = models.CharField(max_length=100, null=True, default='Self')
     created_date = models.DateField(auto_now_add=True)
     modify_by = models.CharField(max_length=50, null=True)
@@ -81,7 +99,6 @@ class Users(AbstractBaseUser):
     def is_staff(self):
         "Is the user a member of staff?"
         return True # return self.is_admin
-
 
 # crate the Food model
 class Food(models.Model):
@@ -149,24 +166,16 @@ class History(models.Model):
     volunteer = models.ForeignKey(Users, on_delete=models.CASCADE, null=True) # FK (volunteer id)
     food = models.ForeignKey(Food, on_delete=models.CASCADE, null=True) # FK (food id)
 
-# create the Ngos model
-class Ngo(models.Model):
-    # ngo_id = models.AutoField(primary_key=True)
-    ngo_name = models.CharField(max_length=100, unique=True)
-    ngo_email = models.EmailField(max_length=50, unique=True)
-    ngo_location = models.CharField(max_length=100, null=True)
-    ngo_contact = models.CharField(max_length=15, unique=True)
-    established_date = models.DateField(datetime.now)
-    abouts_ngo = models.TextField(null=True)
-    ngo_stream_url = models.ImageField(upload_to='food_images/', null=True)
-    created_by = models.CharField(max_length=100, null=True)
-    created_date = models.DateField(auto_now_add=True)
-    modify_by = models.CharField(max_length=50, null=True)
-    modify_date = models.DateField(null=True)
-    is_delete = models.BooleanField(default=False)
-
     # create the notification table
 class Notification(models.Model):
+    title = models.TextField(null=True)
+    descriptions = models.TextField(null=True)
+    created_by = models.CharField(max_length=100, null=True)
+    created_date = models.DateField(auto_now_add=True)
+    status = models.BooleanField(default=False)
+    food = models.ForeignKey(Food, on_delete=models.CASCADE) # FK
+
+class Device(models.Model):
     token = models.TextField(null=True)
     created_by = models.CharField(max_length=100, null=True)
     created_date = models.DateField(auto_now_add=True)

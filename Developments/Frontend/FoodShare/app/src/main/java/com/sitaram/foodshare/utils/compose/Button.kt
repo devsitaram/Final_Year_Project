@@ -2,7 +2,6 @@ package com.sitaram.foodshare.utils.compose
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonColors
@@ -21,6 +20,18 @@ import com.sitaram.foodshare.theme.primary
 import com.sitaram.foodshare.theme.red
 import com.sitaram.foodshare.theme.white
 
+/**
+ * This utility file contains composable functions for creating customized buttons in Jetpack Compose.
+ * It includes functions for creating buttons of various sizes and styles, including outlined buttons and text buttons.
+ * @param onClick The action to perform when the button is clicked.
+ * @param modifier The modifier for the button.
+ * @param colors The colors for the button.
+ * @param btnText The text to display on the button.
+ * @param enabled Whether the button is enabled.
+ * @param elevation The elevation of the button.
+ * @param contentPadding The padding around the button's content.
+ * @param textColors The colors of the button's text.
+ */
 @Composable
 fun ButtonView(
     btnText: String,
@@ -31,7 +42,6 @@ fun ButtonView(
     contentPadding: PaddingValues = PaddingValues(0.dp),
     textColors: Color = white,
     buttonSize: ButtonSize = ButtonSize.NON,
-    content: @Composable (RowScope.() -> Unit)? = null,
     onClick: () -> Unit,
 ) {
     when (buttonSize){
@@ -44,7 +54,6 @@ fun ButtonView(
             elevation = elevation,
             contentPadding = contentPadding,
             textColors = textColors,
-            content = content
         )
         ButtonSize.MEDIUM -> MediumButton(
             onClick = onClick,
@@ -55,7 +64,6 @@ fun ButtonView(
             elevation = elevation,
             contentPadding = contentPadding,
             textColors = textColors,
-            content = content
         )
         ButtonSize.SMALL -> SmallButton(
             onClick = onClick,
@@ -66,7 +74,6 @@ fun ButtonView(
             elevation = elevation,
             contentPadding = contentPadding,
             textColors = textColors,
-            content = content
         )
         else -> RoundShapeButton(
             onClick = onClick,
@@ -77,25 +84,28 @@ fun ButtonView(
             elevation = elevation,
             contentPadding = contentPadding,
             textColors = textColors,
-            content = content
         )
     }
 }
 
+/**
+ * Composable function to create a large-sized button.
+ * @param textType The type of text to display on the button.
+ * @param border The border of the button.
+ */
 @Composable
 fun LargeButton(
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
     colors: ButtonColors = ButtonDefaults.buttonColors(primary),
     btnText: String,
-    shape: Shape = ShapeDefaults.Medium,
+//    shape: Shape = ShapeDefaults.ExtraLarge,
     textType: TextType = TextType.BUTTON_TEXT_LARGE,
     enabled: Boolean = true,
     elevation: ButtonElevation? = null,
     border: BorderStroke? = null,
     contentPadding: PaddingValues = PaddingValues(0.dp),
     textColors: Color = white,
-    content: @Composable() (RowScope.() -> Unit)?
 ) {
     Button(
         onClick = { onClick() },
@@ -116,14 +126,13 @@ fun MediumButton(
     modifier: Modifier = Modifier,
     colors: ButtonColors = ButtonDefaults.buttonColors(primary),
     btnText: String,
-    shape: Shape = ShapeDefaults.Medium,
+    shape: Shape = ShapeDefaults.ExtraLarge,
     textType: TextType = TextType.BUTTON_TEXT_REGULAR,
     enabled: Boolean = true,
     elevation: ButtonElevation? = null,
     border: BorderStroke? = null,
     contentPadding: PaddingValues = PaddingValues(0.dp),
     textColors: Color = white,
-    content: @Composable() (RowScope.() -> Unit)?
 ) {
     Button(
         onClick = { onClick() },
@@ -131,6 +140,7 @@ fun MediumButton(
         colors = colors,
         enabled = enabled,
         elevation = elevation,
+        shape = shape,
         border = border,
         contentPadding = contentPadding
     ) {
@@ -145,14 +155,13 @@ fun SmallButton(
     modifier: Modifier = Modifier,
     colors: ButtonColors = ButtonDefaults.buttonColors(primary),
     btnText: String,
-    shape: Shape = ShapeDefaults.Medium,
+    shape: Shape = ShapeDefaults.ExtraLarge,
     textType: TextType = TextType.BUTTON_TEXT_SMALL,
     enabled: Boolean = true,
     elevation: ButtonElevation? = null,
     border: BorderStroke? = null,
     contentPadding: PaddingValues = PaddingValues(0.dp),
     textColors: Color = white,
-    content: @Composable() (RowScope.() -> Unit)?
 ) {
     Button(
         onClick = { onClick() },
@@ -160,6 +169,7 @@ fun SmallButton(
         colors = colors,
         enabled = enabled,
         elevation = elevation,
+        shape = shape,
         border = border,
         contentPadding = contentPadding,
         content = {
@@ -180,7 +190,6 @@ fun RoundShapeButton(
     border: BorderStroke? = null,
     contentPadding: PaddingValues = PaddingValues(0.dp),
     textColors: Color = white,
-    content: @Composable() (RowScope.() -> Unit)?
 ) {
     Button(
         onClick = { onClick() },
@@ -206,7 +215,6 @@ fun OutlineButtonView(
     contentPadding: PaddingValues = PaddingValues(0.dp),
     textColors: Color = primary,
     buttonSize: ButtonSize = ButtonSize.NON,
-    content: @Composable() (RowScope.() -> Unit)? = null,
     onClick: () -> Unit,
 ) {
     when (buttonSize){
@@ -220,7 +228,6 @@ fun OutlineButtonView(
             border = border,
             contentPadding = contentPadding,
             textColors = textColors,
-            content = content
         )
         ButtonSize.MEDIUM -> MediumOutlineButton(
             onClick = onClick,
@@ -231,7 +238,6 @@ fun OutlineButtonView(
             elevation = elevation,
             contentPadding = contentPadding,
             textColors = textColors,
-            content = content
         )
         ButtonSize.SMALL -> SmallOutlineButton(
             onClick = onClick,
@@ -242,7 +248,6 @@ fun OutlineButtonView(
             elevation = elevation,
             contentPadding = contentPadding,
             textColors = textColors,
-            content = content
         )
         else -> RoundShapeOutlineButton(
             onClick = onClick,
@@ -253,22 +258,9 @@ fun OutlineButtonView(
             elevation = elevation,
             contentPadding = contentPadding,
             textColors = textColors,
-            content = content
         )
     }
 }
-
-//    OutlinedButton(
-//        onClick = { onClick() },
-//        modifier = modifier,
-//        colors = colors,
-//        enabled = enabled,
-//        elevation = elevation,
-//        border = border,
-//        contentPadding = contentPadding
-//    ) {
-//        TextView(text = btnText, textType = textType, color = textColors, modifier = Modifier.padding(vertical = 8.dp, horizontal = 16.dp))
-//    }
 
 @Composable
 fun LargeOutlineButton(
@@ -278,12 +270,11 @@ fun LargeOutlineButton(
     btnText: String,
     textType: TextType = TextType.BUTTON_TEXT_LARGE,
     enabled: Boolean = true,
-    shape: Shape = ShapeDefaults.Large,
+    shape: Shape = ShapeDefaults.ExtraLarge,
     elevation: ButtonElevation? = null,
     border: BorderStroke? = null,
     contentPadding: PaddingValues = PaddingValues(0.dp),
     textColors: Color = primary,
-    content: @Composable() (RowScope.() -> Unit)? = null
 ) {
     OutlinedButton(
         onClick = { onClick() },
@@ -291,6 +282,7 @@ fun LargeOutlineButton(
         colors = colors,
         enabled = enabled,
         elevation = elevation,
+        shape = shape,
         border = border,
         contentPadding = contentPadding
     ) {
@@ -306,17 +298,17 @@ fun MediumOutlineButton(
     btnText: String,
     textType: TextType = TextType.BUTTON_TEXT_REGULAR,
     enabled: Boolean = true,
-    shape: Shape = ShapeDefaults.Medium,
+    shape: Shape = ShapeDefaults.ExtraLarge,
     elevation: ButtonElevation? = null,
     border: BorderStroke? = null,
     contentPadding: PaddingValues = PaddingValues(0.dp),
     textColors: Color = primary,
-    content: @Composable() (RowScope.() -> Unit)? = null
 ) {
     OutlinedButton(
         onClick = { onClick() },
         modifier = modifier,
         colors = colors,
+        shape = shape,
         enabled = enabled,
         elevation = elevation,
         border = border,
@@ -334,12 +326,11 @@ fun SmallOutlineButton(
     btnText: String,
     textType: TextType = TextType.BUTTON_TEXT_SMALL,
     enabled: Boolean = true,
-    shape: Shape = ShapeDefaults.Small,
+    shape: Shape = ShapeDefaults.ExtraSmall,
     elevation: ButtonElevation? = null,
     border: BorderStroke? = null,
     contentPadding: PaddingValues = PaddingValues(0.dp),
     textColors: Color = primary,
-    content: @Composable() (RowScope.() -> Unit)? = null
 ) {
     OutlinedButton(
         onClick = { onClick() },
@@ -347,6 +338,7 @@ fun SmallOutlineButton(
         colors = colors,
         enabled = enabled,
         elevation = elevation,
+        shape = shape,
         border = border,
         contentPadding = contentPadding
     ) {
@@ -362,12 +354,11 @@ fun RoundShapeOutlineButton(
     btnText: String,
     textType: TextType = TextType.BUTTON_TEXT_SMALL,
     enabled: Boolean = true,
-    shape: Shape = ShapeDefaults.Small,
+    shape: Shape = ShapeDefaults.ExtraSmall,
     elevation: ButtonElevation? = null,
     border: BorderStroke? = null,
     contentPadding: PaddingValues = PaddingValues(0.dp),
     textColors: Color = primary,
-    content: @Composable() (RowScope.() -> Unit)? = null
 ) {
     OutlinedButton(
         onClick = { onClick() },
@@ -375,6 +366,7 @@ fun RoundShapeOutlineButton(
         colors = colors,
         enabled = enabled,
         elevation = elevation,
+        shape = shape,
         border = border,
         contentPadding = contentPadding
     ) {
@@ -383,33 +375,32 @@ fun RoundShapeOutlineButton(
 }
 
 // text button
-@Composable
-fun TextButtonView(
-    onClick: () -> Unit,
-    modifier: Modifier = Modifier,
-    text: String,
-    textType: TextType = TextType.BUTTON_TEXT_REGULAR,
-    enabled: Boolean = true,
-    shape: Shape = MaterialTheme.shapes.small,
-    colors: ButtonColors = ButtonDefaults.buttonColors(),
-    elevation: ButtonElevation? = null,
-    border: BorderStroke? = null,
-    contentPadding: PaddingValues = PaddingValues(0.dp),
-    content: @Composable() (RowScope.() -> Unit)? = null
-) {
-    TextButton(
-        onClick = { onClick() },
-        modifier = modifier,
-        enabled = enabled,
-        shape = shape,
-        colors = colors,
-        elevation = elevation,
-        border = border,
-        contentPadding = contentPadding,
-    ) {
-        TextView(text = text, textType = textType, color = primary, modifier = Modifier)
-    }
-}
+//@Composable
+//fun TextButtonView(
+//    onClick: () -> Unit,
+//    modifier: Modifier = Modifier,
+//    text: String,
+//    textType: TextType = TextType.BUTTON_TEXT_REGULAR,
+//    enabled: Boolean = true,
+//    shape: Shape = MaterialTheme.shapes.small,
+//    colors: ButtonColors = ButtonDefaults.buttonColors(),
+//    elevation: ButtonElevation? = null,
+//    border: BorderStroke? = null,
+//    contentPadding: PaddingValues = PaddingValues(0.dp),
+//) {
+//    TextButton(
+//        onClick = { onClick() },
+//        modifier = modifier,
+//        enabled = enabled,
+//        shape = shape,
+//        colors = colors,
+//        elevation = elevation,
+//        border = border,
+//        contentPadding = contentPadding,
+//    ) {
+//        TextView(text = text, textType = textType, color = primary, modifier = Modifier)
+//    }
+//}
 
 @Composable
 fun DangerButtonView(
@@ -419,7 +410,7 @@ fun DangerButtonView(
     btnText: String,
     textType: TextType = TextType.BUTTON_TEXT_REGULAR,
     enabled: Boolean = true,
-    shape: Shape = ShapeDefaults.Medium,
+    shape: Shape = ShapeDefaults.ExtraLarge,
     elevation: ButtonElevation? = null,
     border: BorderStroke? = null,
     contentPadding: PaddingValues = PaddingValues(0.dp),
@@ -431,6 +422,7 @@ fun DangerButtonView(
         colors = colors,
         enabled = enabled,
         elevation = elevation,
+        shape = shape,
         border = border,
         contentPadding = contentPadding
     ) {
@@ -438,6 +430,9 @@ fun DangerButtonView(
     }
 }
 
+/**
+ * Enum class representing different sizes for buttons.
+ */
 enum class ButtonSize {
     SMALL, MEDIUM, LARGE, NON
 }

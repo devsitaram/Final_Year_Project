@@ -1,7 +1,6 @@
 plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
-
     // external plugin
     id("kotlin-android")
     id("kotlin-kapt")
@@ -9,8 +8,6 @@ plugins {
     id("kotlin-parcelize") // data transfer
     id ("com.google.dagger.hilt.android")
     id ("com.google.android.libraries.mapsplatform.secrets-gradle-plugin") // google map services
-//    id("com.google.devtools.ksp")
-
     // Firebase
     id("com.google.gms.google-services")
 }
@@ -72,7 +69,6 @@ dependencies {
     implementation("androidx.compose.material3:material3")
     implementation("com.google.firebase:firebase-messaging:23.4.1")
     implementation("androidx.media3:media3-ui:1.3.1")
-    implementation("androidx.media3:media3-exoplayer:1.3.1")
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
@@ -85,7 +81,7 @@ dependencies {
     implementation("androidx.navigation:navigation-compose:2.7.7") // floating action button bar
 
     // compose
-    implementation("androidx.compose.ui:ui:1.6.5")
+//    implementation("androidx.compose.ui:ui:1.6.5")
     implementation("androidx.compose.material:material:1.6.5")
     debugImplementation("androidx.compose.ui:ui-tooling:1.6.5")
     implementation("androidx.compose.ui:ui-tooling-preview:1.6.5")
@@ -144,15 +140,16 @@ dependencies {
     implementation("androidx.room:room-runtime:2.6.1")
     implementation("androidx.room:room-ktx:2.6.1")
     implementation("androidx.room:room-paging:2.6.1")
+    //noinspection KaptUsageInsteadOfKsp
     kapt("androidx.room:room-compiler:2.6.1")
-//    ksp("androidx.room:room-compiler:2.6.1") // alter native kapt
+    // ksp("androidx.room:room-compiler:2.6.1") // alter native kapt
 
     // youtube video play
     implementation ("com.pierfrancescosoffritti.androidyoutubeplayer:chromecast-sender:0.28")
     implementation ("com.pierfrancescosoffritti.androidyoutubeplayer:core:12.0.0")
-    implementation ("androidx.media3:media3-exoplayer:1.3.0")
-    implementation ("androidx.media3:media3-exoplayer-dash:1.3.0")
-    implementation ("androidx.media3:media3-ui:1.3.0")
+    implementation ("androidx.media3:media3-exoplayer:1.3.1")
+    implementation ("androidx.media3:media3-exoplayer-dash:1.3.1")
+    implementation ("androidx.media3:media3-ui:1.3.1")
     implementation ("com.google.android.exoplayer:exoplayer-ui:2.19.1")
     implementation ("com.google.android.exoplayer:exoplayer:2.19.1")
 
@@ -176,6 +173,9 @@ dependencies {
     // Firebase
     implementation(platform("com.google.firebase:firebase-bom:32.8.0"))
     implementation("com.google.firebase:firebase-analytics-ktx")
+
+    // Token validation check
+    implementation("com.auth0:java-jwt:3.18.1")
 
 }
 

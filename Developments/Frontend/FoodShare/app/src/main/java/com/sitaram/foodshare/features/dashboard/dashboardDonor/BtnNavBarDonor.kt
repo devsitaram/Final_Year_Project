@@ -38,7 +38,7 @@ import com.sitaram.foodshare.features.dashboard.dashboardDonor.donorHistory.pres
 import com.sitaram.foodshare.features.dashboard.dashboardDonor.post.presentation.FoodPostViewScreen
 import com.sitaram.foodshare.features.dashboard.home.presentation.HomeViewScreen
 import com.sitaram.foodshare.features.dashboard.profile.presentation.ProfileViewScreen
-import com.sitaram.foodshare.features.dashboard.setting.SettingViewScreen
+import com.sitaram.foodshare.features.dashboard.setting.presentation.SettingViewScreen
 import com.sitaram.foodshare.features.navigations.BtnNavScreen
 import com.sitaram.foodshare.features.navigations.NavScreen
 import com.sitaram.foodshare.features.navigations.donatePages
@@ -53,6 +53,7 @@ import com.sitaram.foodshare.utils.compose.VectorIconView
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter", "UnusedMaterialScaffoldPaddingParameter")
 @Composable
 fun DonorBtnNavBar(mainNavController: NavHostController) {
+
     val navController = rememberNavController()
     var isPostActive by remember { mutableStateOf(false) } // Remember the state
     Scaffold(
@@ -214,7 +215,7 @@ fun DonorNavHostScreen(navController: NavHostController, mainNavController: NavH
     ) {
         // home
         composable(BtnNavScreen.Home.route) {
-            HomeViewScreen(navController, mainNavController)
+            HomeViewScreen(mainNavController)
         }
 
         // History

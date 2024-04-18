@@ -8,15 +8,14 @@ import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.ui.graphics.vector.ImageVector
-
-const val KEY_ID = "id_key"
-const val LATITUDE = "latitude"
-const val LONGITUDE = "longitude"
-const val USER_NAME = "username"
-const val USER_EMAIL = "user_email"
-const val IS_BOOLEAN = "is_boolean"
-const val FOOD_NAME = "food_name"
-const val FOOD_RATING = "food_rating"
+import com.sitaram.foodshare.utils.ApiUrl.Companion.FOOD_NAME
+import com.sitaram.foodshare.utils.ApiUrl.Companion.FOOD_RATING
+import com.sitaram.foodshare.utils.ApiUrl.Companion.KEY_ID
+import com.sitaram.foodshare.utils.ApiUrl.Companion.LATITUDE
+import com.sitaram.foodshare.utils.ApiUrl.Companion.LONGITUDE
+import com.sitaram.foodshare.utils.ApiUrl.Companion.USER_EMAIL
+import com.sitaram.foodshare.utils.ApiUrl.Companion.USER_NAME
+import com.sitaram.foodshare.utils.ApiUrl.Companion.USER_ROLE
 
 sealed class NavScreen(val route: String) {
     object IntroSliderPage : NavScreen("IntroSlider")
@@ -27,13 +26,15 @@ sealed class NavScreen(val route: String) {
     object FoodPostPage : NavScreen("FoodPostPage")
     object DonorDashboardPage : NavScreen("Donors")
     object VolunteerDashboardPage : NavScreen("Volunteers")
-    object NgoDashboardPage : NavScreen("Ngo")
+    object AdminDashboardPage : NavScreen("Admin")
+    object NgoPage : NavScreen("Ngo/{$USER_ROLE}")
     object AccountManagePage : NavScreen("Account")
+    object Notification : NavScreen("Notification")
     object GoogleMapViewPage: NavScreen("GoogleMapView/{$LATITUDE}/{$LONGITUDE}/{$USER_NAME}")
     object FoodDetailViewPage : NavScreen("FoodDetailView/{$KEY_ID}/{$FOOD_NAME}/{$FOOD_RATING}")
     object UserDetailViewPage : NavScreen("UserDetailView/{$KEY_ID}")
     object FoodAcceptViewPage: NavScreen("FoodAcceptView/{$KEY_ID}/{$FOOD_NAME}/{$USER_EMAIL}")
-    object CompetedFoodHistory: NavScreen("CompetedFoodHistory/{$KEY_ID}/{$FOOD_NAME}/{$USER_EMAIL}")
+    object CompetedFoodHistory: NavScreen("DonationRating/{$KEY_ID}/{$FOOD_NAME}/{$USER_EMAIL}")
 }
 
 sealed class BtnNavScreen(val route: String, val title: String, val icon: ImageVector?) {

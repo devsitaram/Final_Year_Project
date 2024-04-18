@@ -83,7 +83,7 @@ fun SuccessMessageDialogBox(
         onDismissRequest = { onDismiss() },
         text = {
             TextView(
-                text = descriptions ?: "successful",
+                text = descriptions ?: stringResource(R.string.successful),
                 textAlign = TextAlign.Start,
                 textType = TextType.LARGE_TEXT_REGULAR,
                 modifier = Modifier.fillMaxWidth()
@@ -93,7 +93,7 @@ fun SuccessMessageDialogBox(
             ButtonView(
                 onClick = { onDismiss() },
                 colors = ButtonDefaults.buttonColors(primary),
-                btnText = btnText ?: "Okay",
+                btnText = btnText ?: stringResource(id = R.string.okay),
                 buttonSize = ButtonSize.LARGE,
                 modifier = Modifier.wrapContentWidth()
             )
@@ -204,6 +204,63 @@ fun ConfirmationDialogView(
         onDismissRequest = { onDismiss?.invoke() },
         modifier = Modifier.fillMaxWidth(),
         shape = CardDefaults.elevatedShape
+    )
+}
+
+
+// Information
+@Composable
+fun InformationMessageDialogBox(
+    title: String? = null,
+    descriptions: String? = null,
+    onDismiss: () -> Unit,
+    btnText: String? = null,
+    color: Color? = null,
+    imageVector: ImageVector = Icons.Default.Info,
+) {
+    AlertDialog(
+        title = {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.Start
+            ) {
+                VectorIconView(
+                    imageVector = imageVector,
+                    tint = color ?: primary,
+                    modifier = Modifier.size(25.dp)
+                )
+                TextView(
+                    text = title ?: stringResource(R.string.info),
+                    textType = TextType.TITLE3,
+                    textAlign = TextAlign.Start,
+                    color = black,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(start = 4.dp)
+                )
+            }
+        },
+        shape = ShapeDefaults.Small,
+        onDismissRequest = { onDismiss() },
+        text = {
+            TextView(
+                text = descriptions ?: stringResource(R.string.successful),
+                textAlign = TextAlign.Start,
+                textType = TextType.LARGE_TEXT_REGULAR,
+                modifier = Modifier.fillMaxWidth()
+            )
+        },
+        confirmButton = {
+            ButtonView(
+                onClick = { onDismiss() },
+                colors = ButtonDefaults.buttonColors(primary),
+                btnText = btnText ?: stringResource(id = R.string.okay),
+                buttonSize = ButtonSize.LARGE,
+                modifier = Modifier.wrapContentWidth()
+            )
+        },
+        modifier = Modifier.fillMaxWidth(),
     )
 }
 
@@ -322,6 +379,13 @@ fun VideoPlayDialogView(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.End
             ) {
+                TextView(
+                    text = stringResource(R.string.please_do_not_waste_food),
+                    textAlign = TextAlign.Start,
+                    color = primary,
+                    textType = TextType.TITLE4,
+                    modifier = Modifier.weight(1f)
+                )
                 IconButton(onClick = { onDismiss.invoke() }) {
                     VectorIconView(
                         imageVector = Icons.Default.Close,
@@ -357,16 +421,6 @@ fun VideoPlayDialogView(
                     }
                 }
             )
-
-//            OutlineButtonView(btnText = stringResource(R.string.skip_video),
-//                modifier = Modifier
-//                    .fillMaxWidth()
-//                    .padding(top = 8.dp)
-//                    .border(1.dp, color = primary, shape = CircleShape),
-//                buttonSize = ButtonSize.LARGE
-//            ) {
-//                onDismiss.invoke()
-//            }
         }
     }
 }

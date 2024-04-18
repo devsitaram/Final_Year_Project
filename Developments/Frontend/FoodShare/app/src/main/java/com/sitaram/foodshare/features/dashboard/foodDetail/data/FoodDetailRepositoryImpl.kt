@@ -12,7 +12,7 @@ import okhttp3.RequestBody.Companion.asRequestBody
 import okhttp3.RequestBody.Companion.toRequestBody
 import java.io.File
 
-class FoodDetailRepositoryImpl(private val apiService: ApiService, ) : FoodDetailRepository {
+class FoodDetailRepositoryImpl(private val apiService: ApiService) : FoodDetailRepository {
 
     override suspend fun getAcceptFood(foodModelDAO: FoodModelDAO?): ResponsePojo? {
         return apiService.acceptFood(foodModelDAO)

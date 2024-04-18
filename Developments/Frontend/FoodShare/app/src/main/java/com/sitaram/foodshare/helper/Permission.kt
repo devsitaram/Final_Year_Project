@@ -8,15 +8,24 @@ import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.model.LatLng
 import com.google.maps.android.compose.CameraPositionState
 
+// This is the permission class
 class Permission {
 
     companion object {
+        /**
+         * Centers the camera on the specified location with animation.
+         * @param location The location to center the camera on.
+         */
         suspend fun CameraPositionState.centerOnLocation(location: LatLng) = animate(
             update = CameraUpdateFactory.newLatLngZoom(location, 15f),
             durationMs = 1000
         )
 
-        // from compose
+        /**
+         * Checks if the app has permission to access the device's location.
+         * @param context The context.
+         * @return True if the app has permission to access the device's location, false otherwise.
+         */
         fun hasViewLocationPermission(context: Context): Boolean {
             return ContextCompat.checkSelfPermission(
                 context,

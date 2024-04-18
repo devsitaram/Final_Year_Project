@@ -22,7 +22,7 @@ class ForgotPasswordViewModel @Inject constructor(private val forgotPasswordUseC
     val forgotPasswordState: ForgotPasswordState get() = _forgotPasswordState
 
     fun getVerifyEmail(email: String){
-        forgotPasswordUseCase(email.trim()).onEach { result ->
+        forgotPasswordUseCase.invoke(email.trim()).onEach { result ->
             _emailVerifyState = when (result) {
                 is Resource.Loading -> {
                     ForgotPasswordState(isLoading = true)
@@ -33,7 +33,7 @@ class ForgotPasswordViewModel @Inject constructor(private val forgotPasswordUseC
                 }
 
                 is Resource.Error -> {
-                    ForgotPasswordState(isError = result.data?.message ?: result.message)
+                    ForgotPasswordState(isError = result.message)
                 }
             }
         }.launchIn(viewModelScope)
@@ -41,7 +41,7 @@ class ForgotPasswordViewModel @Inject constructor(private val forgotPasswordUseC
 
     // White space remove
     fun setForgotPassword(email: String?, password: String?){
-        forgotPasswordUseCase(email?.trim(), password?.trim()).onEach { result ->
+        forgotPasswordUseCase.invoke(email?.trim(), password?.trim()).onEach { result ->
             _forgotPasswordState = when (result) {
                 is Resource.Loading -> {
                     ForgotPasswordState(isLoading = true)
@@ -52,7 +52,7 @@ class ForgotPasswordViewModel @Inject constructor(private val forgotPasswordUseC
                 }
 
                 is Resource.Error -> {
-                    ForgotPasswordState(isError = result.data?.message ?: result.message)
+                    ForgotPasswordState(isError = result.message)
                 }
             }
         }.launchIn(viewModelScope)

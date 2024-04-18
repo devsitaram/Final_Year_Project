@@ -19,6 +19,11 @@ import coil.compose.AsyncImagePainter
 import coil.compose.rememberAsyncImagePainter
 import com.sitaram.foodshare.theme.gray
 
+/**
+ * Painter image
+ * use in: painter = rememberAsyncImagePainter(https://image/example.png),
+ */
+// painter = rememberAsyncImagePainter(
 @SuppressLint("ModifierParameter")
 @Composable
 fun PainterImageView(
@@ -41,6 +46,10 @@ fun PainterImageView(
     )
 }
 
+/**
+ * Async image
+ * use in: model = https://example.png,
+ */
 @SuppressLint("ModifierParameter")
 @Composable
 fun AsyncImageView(
@@ -69,11 +78,15 @@ fun AsyncImageView(
     )
 }
 
+/**
+ * AsyncImagePainter image
+ * use in: model = url,
+ */
 @Composable
 fun AsyncImagePainter(
     model: Any? = null,
     contentDescription: String? = null,
-    modifier: Modifier = Modifier,
+    @SuppressLint("ModifierParameter") modifier: Modifier = Modifier,
     alignment: Alignment = Alignment.Center,
     contentScale: ContentScale = ContentScale.Fit,
     alpha: Float = 1.0f,
@@ -90,6 +103,7 @@ fun AsyncImagePainter(
     )
 }
 
+// This is the image crop to display in circle share
 @Composable
 fun CircularImageView(
     painter: Painter,
@@ -106,6 +120,10 @@ fun CircularImageView(
     }
 }
 
+/**
+ * Painter image
+ * use in: painterImage = painterResource(id = R.mipmap.img_forgot_password),
+ */
 @Composable
 fun PainterImageView(
     painterImage: Painter,
@@ -119,6 +137,10 @@ fun PainterImageView(
     )
 }
 
+/**
+ * Vector icon
+ * use in: imageVector = Icons.Default.Email,
+ */
 @Composable
 fun VectorIconView(
     imageVector: ImageVector,

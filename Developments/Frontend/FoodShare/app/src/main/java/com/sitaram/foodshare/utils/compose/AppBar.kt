@@ -1,6 +1,7 @@
 package com.sitaram.foodshare.utils.compose
 
 import android.annotation.SuppressLint
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
@@ -8,6 +9,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentSize
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.Badge
 import androidx.compose.material.BadgedBox
 import androidx.compose.material.IconButton
@@ -15,6 +17,7 @@ import androidx.compose.material.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.style.TextAlign
@@ -25,6 +28,18 @@ import com.sitaram.foodshare.theme.gray
 import com.sitaram.foodshare.theme.textColor
 import com.sitaram.foodshare.theme.white
 
+/**
+ * Composable function that creates a customized top app bar with a title, leading and trailing icons.
+ *
+ * @param title The title text to display in the app bar.
+ * @param color The color of the title text.
+ * @param backgroundColor The background color of the app bar.
+ * @param modifier The modifier for the top app bar.
+ * @param leadingIcon The icon to use for the leading action.
+ * @param trailingIcon The icon to use for the trailing action.
+ * @param onClickLeadingIcon The action to perform when the leading icon is clicked.
+ * @param onClickTrailingIcon The action to perform when the trailing icon is clicked.
+ */
 @Composable
 fun TopAppBarView(
     title: String,
@@ -86,6 +101,19 @@ fun TopAppBarView(
     )
 }
 
+/**
+ * Composable function that creates a customized top app bar with title, notification icon, and additional actions.
+ *
+ * @param title The title text to display in the app bar.
+ * @param modifier The modifier for the top app bar.
+ * @param navigationIcon The icon to use for the navigation button.
+ * @param backgroundColor The background color of the app bar.
+ * @param contentColor The color of the content within the app bar.
+ * @param numOfNotification The number of notifications to display on the badge.
+ * @param notificationIcon The icon to use for the notification button.
+ * @param vectorIcon The icon to use for the additional action button.
+ * @param onClickAction The action to perform when the additional action button is clicked.
+ */
 @Composable
 fun TopAppBarIconView(
     title: String? = null,
@@ -120,14 +148,22 @@ fun TopAppBarIconView(
                         },
                         modifier = Modifier.padding(end = 14.dp)
                     ) {
-                        VectorIconView(
-                            imageVector = notificationIcon,
-                            tint = gray,
+                        IconButton(
                             modifier = Modifier
-                                .clickable {
+                                .wrapContentSize()
+                                .clip(CircleShape)
+                                .background(white)
+                                .size(30.dp),
+                            onClick = {
                                 onClickAction?.invoke()
                             }
-                        )
+                        ) {
+                            VectorIconView(
+                                imageVector = notificationIcon,
+                                tint = gray,
+                                modifier = Modifier.size(25.dp)
+                            )
+                        }
                     }
                 }
                 if (vectorIcon != null) {

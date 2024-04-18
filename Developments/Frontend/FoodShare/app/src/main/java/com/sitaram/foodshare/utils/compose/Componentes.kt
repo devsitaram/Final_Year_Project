@@ -147,7 +147,6 @@ fun DisplayErrorMessageView(
     text: String? = null,
     vectorIcon: ImageVector? = null,
     onClick: (() -> Unit)? = null,
-
 ) {
     Column(
         modifier = Modifier.fillMaxSize().padding(horizontal = 16.dp),
@@ -222,7 +221,7 @@ fun UserProfileContactView(
                 modifier = Modifier.padding(top = 4.dp)
             )
         }
-        androidx.compose.material.IconButton(
+        IconButton(
             modifier = Modifier
                 .wrapContentSize()
                 .clip(CircleShape)

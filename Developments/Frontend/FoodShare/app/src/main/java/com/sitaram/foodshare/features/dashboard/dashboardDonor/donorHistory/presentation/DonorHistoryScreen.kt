@@ -108,7 +108,7 @@ fun HistoryDonorScreen(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         TopAppBarIconView(
-            title = "Donation History",
+            title = stringResource(R.string.donation_history),
             modifier = Modifier.shadow(1.5.dp),
             navigationIcon = { PainterImageView(painter = painterResource(id = R.mipmap.img_app_logo)) },
             backgroundColor = white,
@@ -134,7 +134,10 @@ fun HistoryDonorScreen(
                         DisplayErrorMessageView(
                             text = getDonorHistory.error,
                             vectorIcon = if (donorHistoryViewModel.isRefreshing) null else Icons.Default.Refresh,
-                            onClick = { donorHistoryViewModel.getSwipeToRefresh() }
+                            onClick = {
+                                donorHistoryViewModel.getSwipeToRefresh()
+                                donorHistoryViewModel.clearMessage()
+                            }
                         )
                     } else {
                         LazyColumn(
@@ -181,8 +184,9 @@ fun HistoryDonorScreen(
                                                 createdDate = food.createdDate,
                                                 modifyDate = food.modifyDate,
                                                 isDelete = food.isDelete,
-                                                userId = food.donor,
+                                                userId = it1.volunteer?.id ?: it1.donor?.id,
                                                 username = it1.volunteer?.username ?: it1.donor?.username,
+                                                email = it1.volunteer?.email ?: it1.donor?.email,
                                                 contactNumber = it1.volunteer?.contactNumber ?: it1.donor?.contactNumber,
                                                 photoUrl = it1.volunteer?.photoUrl ?: it1.donor?.photoUrl,
                                             )
@@ -213,6 +217,7 @@ fun HistoryDonorScreen(
                                 }
                             }
                         }
+
                     }
                 }
 
@@ -220,7 +225,10 @@ fun HistoryDonorScreen(
                     DisplayErrorMessageView(
                         text = getDonorHistory.error,
                         vectorIcon = if (donorHistoryViewModel.isRefreshing) null else Icons.Default.Refresh,
-                        onClick = { donorHistoryViewModel.getSwipeToRefresh() }
+                        onClick = {
+                            donorHistoryViewModel.getSwipeToRefresh()
+                            donorHistoryViewModel.clearMessage()
+                        }
                     )
                 }
 
@@ -248,7 +256,7 @@ fun HistoryDonorScreen(
             onDismiss = { isDeleteConfirmation = false },
             onConfirm = {
                 MainScope().launch {
-                    donorHistoryViewModel.getDeleteFood(foodId, username, itemIndex, context)
+                    donorHistoryViewModel.getDeleteFood(foodId, username, itemIndex)
                     isDeleteConfirmation = false
                 }
             }
@@ -297,7 +305,7 @@ fun HistoryDonorScreen(
                     )
                     donorHistoryViewModel.getReportToUser(reportDTO)
                 } else {
-                    showToast(context, "No Internet connection")
+                    showToast(context, context.getString(R.string.no_internet_connection))
                 }
                 isReportConfirmation = false
             }

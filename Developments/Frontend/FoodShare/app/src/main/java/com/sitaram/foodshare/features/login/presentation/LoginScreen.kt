@@ -2,9 +2,11 @@ package com.sitaram.foodshare.features.login.presentation
 
 import android.Manifest
 import android.content.pm.PackageManager
+import android.os.Build
+import android.util.Log
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.compose.foundation.background
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -33,7 +35,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -45,6 +46,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.google.gson.Gson
 import com.sitaram.foodshare.R
+import com.sitaram.foodshare.features.dashboard.pushNotification.MyFirebaseMessagingService
 import com.sitaram.foodshare.features.login.data.pojo.Authentication
 import com.sitaram.foodshare.helper.UserInterceptors
 import com.sitaram.foodshare.features.navigations.NavScreen
@@ -74,14 +76,16 @@ import com.sitaram.foodshare.utils.compose.TextView
 import com.sitaram.foodshare.utils.compose.VectorIconView
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 
+@RequiresApi(Build.VERSION_CODES.TIRAMISU)
 @OptIn(ExperimentalCoroutinesApi::class)
 @Composable
 fun LoginViewScreen(
     navController: NavHostController,
-    logInViewModel: LoginViewModel = hiltViewModel()
+    logInViewModel: LoginViewModel = hiltViewModel(),
 ) {
 
     val context = LocalContext.current
+    // Request for notification permission
     var hasNotificationPermission by remember {
         mutableStateOf(
             ContextCompat.checkSelfPermission(
@@ -90,7 +94,6 @@ fun LoginViewScreen(
             ) == PackageManager.PERMISSION_GRANTED
         )
     }
-
     val notificationPermissionLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.RequestPermission()
     ) { isGranted ->
@@ -98,9 +101,9 @@ fun LoginViewScreen(
     }
 
     // Check The Internet Connection
-    val editor = UserInterceptors(context).getPreInstEditor()
+
     val getInstance = UserInterceptors(context)
-//    val notificationToke = MyFirebaseMessagingService().getTokenInstance()
+    val editor = getInstance.getPreInstEditor()
     val connection by NetworkObserver.connectivityState()
     val isConnected = connection === NetworkObserver.ConnectionState.Available
 
@@ -118,6 +121,10 @@ fun LoginViewScreen(
     var passwordEmptyValue by remember { mutableStateOf(false) }
     val isPasswordEmpty by remember { derivedStateOf { password.isEmpty() } }
 
+    // Device fcm token
+    val deviceToken = getInstance.getFcmDeviceToke()
+    val fcmDeviceToken = MyFirebaseMessagingService().getTokenInstance()
+
     val onClickLogin: () -> Unit = {
         if (isValidEmailAddress(email)) {
             if (isConnected) {
@@ -132,25 +139,15 @@ fun LoginViewScreen(
 
     // Fetch emailPreference inside the LaunchedEffect
     LaunchedEffect(checkedState) {
-            val emailPreference = getInstance.saveEmail()
-            if (email.isNotEmpty() && emailPreference != email && isValidEmailAddress(email)) {
-                editor.putString("email", email).apply()
-            }
-            email = if (checkedState) emailPreference else ""
+        val emailPreference = getInstance.getRememberEmail()
+        if (email.isNotEmpty() && emailPreference != email && isValidEmailAddress(email)) {
+            editor.putString("email", email).apply()
+        }
+        email = if (checkedState && emailPreference.isNotEmpty()) emailPreference else email
     }
 
     if (userLoginResult.isLoading) {
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .background(Color.Unspecified),
-            contentAlignment = Alignment.Center
-        ) {
-            ProcessingDialogView(
-                title = stringResource(R.string.processing),
-                body = stringResource(R.string.please_wait_for_processing)
-            )
-        }
+        ProcessingDialogView()
     }
 
     LaunchedEffect(key1 = userLoginResult.error, block = {
@@ -160,57 +157,70 @@ fun LoginViewScreen(
         }
     })
 
-    LaunchedEffect(key1 = userLoginResult.data, block = {
-        userLoginResult.data?.let { response->
-            if (response.isSuccess == true) {
-                response.authentication.let { auth ->
-                    val userAuthResponse = Authentication(
-                        id = auth?.id,
-                        username = auth?.username,
-                        email = auth?.email,
-                        role = auth?.role,
-                        accessToken = auth?.accessToken,
-                        profile = auth?.profile,
-                    )
-                    when (auth?.role?.lowercase()) {
-                        "donor" -> {
-                            // navigate the Donor dashboard
-                            navController.navigate(NavScreen.DonorDashboardPage.route) {
-                                popUpTo(NavScreen.LoginPage.route) {
-                                    inclusive = true
+    LaunchedEffect(
+        key1 = userLoginResult.data,
+        block = {
+            userLoginResult.data?.let { response ->
+                if (response.isSuccess == true) {
+                    response.authentication.let { auth ->
+                        val userAuthResponse = Authentication(
+                            id = auth?.id,
+                            username = auth?.username,
+                            email = auth?.email,
+                            role = auth?.role,
+                            accessToken = auth?.accessToken,
+                            profile = auth?.profile,
+                        )
+                        when (auth?.role?.lowercase()) {
+                            "donor" -> {
+                                // navigate the Donor dashboard
+                                navController.navigate(NavScreen.DonorDashboardPage.route) {
+                                    popUpTo(NavScreen.LoginPage.route) {
+                                        inclusive = true
+                                    }
+                                }
+                            }
+
+                            "admin" -> {
+                                // navigate the Admin dashboard
+                                navController.navigate(NavScreen.AdminDashboardPage.route) {
+                                    popUpTo(NavScreen.LoginPage.route) {
+                                        inclusive = true
+                                    }
+                                }
+                            }
+
+                            // navigate the Volunteer dashboard
+                            else -> {
+                                navController.navigate(NavScreen.VolunteerDashboardPage.route) {
+                                    popUpTo(NavScreen.LoginPage.route) {
+                                        inclusive = true
+                                    }
                                 }
                             }
                         }
-
-                        "admin" -> {
-                            // navigate the Admin dashboard
-                            navController.navigate(NavScreen.NgoDashboardPage.route) {
-                                popUpTo(NavScreen.LoginPage.route) {
-                                    inclusive = true
-                                }
-                            }
-                        }
-
-                        // navigate the Volunteer dashboard
-                        else -> {
-                            navController.navigate(NavScreen.VolunteerDashboardPage.route) {
-                                popUpTo(NavScreen.LoginPage.route) {
-                                    inclusive = true
-                                }
-                            }
+                        // save the user authentication
+                        editor.putString("authentication", Gson().toJson(userAuthResponse)).apply()
+                        showToast(context, response.message)
+                        if (deviceToken.isEmpty()) {
+                            logInViewModel.setDeviceFcmToken(
+                                userId = auth?.id,
+                                fcmToken = fcmDeviceToken.result,
+                                userName = auth?.username
+                            )
+                            editor.putString("fcmDeviceToken", deviceToken).apply()
                         }
                     }
-                    // save the user authentication
-                    editor.putString("authentication", Gson().toJson(userAuthResponse)).apply()
+
+
+                    // Notification permission
                     if (!hasNotificationPermission) {
                         notificationPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
                     }
                 }
-                showToast(context, response.message)
-//                Log.e("Token", "Token: $notificationToke")
             }
         }
-    })
+    )
 
 
     Box(modifier = Modifier.fillMaxSize()) {
@@ -289,7 +299,7 @@ fun LoginViewScreen(
             value = email,
             onValueChange = {
                 email = it
-                if(it.isNotEmpty()) {
+                if (it.isNotEmpty()) {
                     isNotValidEmail = false
                     emailEmptyValue = false
                 }
@@ -304,7 +314,7 @@ fun LoginViewScreen(
             placeholder = stringResource(R.string.enter_email),
             isEmptyValue = emailEmptyValue,
             isInvalidValue = isNotValidEmail,
-            invalidMessage = "Invalid Email address",
+            invalidMessage = stringResource(R.string.invalid_email_address),
             errorColor = red,
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
             modifier = Modifier
@@ -367,7 +377,7 @@ fun LoginViewScreen(
 
         // check box
         CheckboxView(
-            text = "Remember Me",
+            text = stringResource(R.string.remember_me),
             checked = checkedState,
             onCheckedChange = { checkedState = it },
             modifier = Modifier

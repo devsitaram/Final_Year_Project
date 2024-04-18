@@ -16,27 +16,39 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 import javax.inject.Inject
 
+/**
+ * Repository implementation for managing Google Maps functionality.
+ */
 class GoogleMapRepositoryImpl @Inject constructor(
     private val context: Context,
     private val locationClient: FusedLocationProviderClient
 ) : GoogleMapRepository {
+
+    /**
+     * Requests location updates based on provided latitude and longitude.
+     * @param latitude The latitude coordinate.
+     * @param longitude The longitude coordinate.
+     * @return A flow emitting the updated location as a LatLng object.
+     */
     @SuppressLint("MissingPermission")
     override fun requestLocationUpdates(
         latitude: Double,
         longitude: Double,
     ): Flow<LatLng?> = callbackFlow {
 
-        // compose
+        // Check if the app has location permission
         if (!hasViewLocationPermission(context)) {
             trySend(null)
             return@callbackFlow
         }
 
+        // Define the location request parameters
         val request = LocationRequest.Builder(1L)
             .setIntervalMillis(1L)
             .setPriority(Priority.PRIORITY_HIGH_ACCURACY)
             .build()
 
+        // Define the callback for location updates
         val currentLocation = object : LocationCallback() {
             override fun onLocationResult(locationResult: LocationResult) {
                 if (latitude == 0.0 || longitude == 0.0) {
@@ -49,12 +61,14 @@ class GoogleMapRepositoryImpl @Inject constructor(
             }
         }
 
+        // Request location updates
         locationClient.requestLocationUpdates(
             request,
             currentLocation,
             Looper.getMainLooper()
         )
 
+        // Remove location updates when the flow is closed
         awaitClose {
             locationClient.removeLocationUpdates(currentLocation)
         }

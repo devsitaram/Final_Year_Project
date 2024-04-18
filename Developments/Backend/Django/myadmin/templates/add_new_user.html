@@ -47,7 +47,7 @@
         var form = event.target;
         var formData = new FormData(form);
 
-        fetch('/api/register/user', {
+        fetch('/api/add/user', {
             method: 'POST',
             body: formData,
         })

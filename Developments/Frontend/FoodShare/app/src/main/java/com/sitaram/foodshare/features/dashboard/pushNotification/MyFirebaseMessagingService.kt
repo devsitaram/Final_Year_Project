@@ -5,7 +5,6 @@ import android.app.NotificationManager
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
-import android.util.Log
 import androidx.core.app.NotificationCompat
 import androidx.core.app.TaskStackBuilder
 import androidx.core.content.ContextCompat
@@ -19,16 +18,15 @@ import com.sitaram.foodshare.utils.ApiUrl.Companion.CHANNEL_ID
 
 @SuppressLint("MissingFirebaseInstanceTokenRefresh")
 class MyFirebaseMessagingService: FirebaseMessagingService() {
-    override fun onNewToken(token: String) {
-        super.onNewToken(token)
-        Log.e("Token", token)
-    }
+//    override fun onNewToken(token: String) {
+//        super.onNewToken(token)
+////        Log.e("Token", token)
+//    }
 
     // New fcm access token generated
     fun getTokenInstance(): Task<String> {
         return FirebaseMessaging.getInstance().token.addOnCompleteListener { task ->
             if (task.isSuccessful) {
-                Log.e("Token", task.result)
                 task.result
             }
             else {
@@ -45,6 +43,7 @@ class MyFirebaseMessagingService: FirebaseMessagingService() {
     }
 
     private fun showNotification(title: String, description: String) {
+
         val intent = Intent(this, MainActivity::class.java)
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
 
@@ -52,7 +51,6 @@ class MyFirebaseMessagingService: FirebaseMessagingService() {
             addNextIntentWithParentStack(intent)
             getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE)
         }
-
         // Create the notification
         val notification = NotificationCompat.Builder(this, CHANNEL_ID)
             .setSmallIcon(R.mipmap.ic_launcher_foreground)

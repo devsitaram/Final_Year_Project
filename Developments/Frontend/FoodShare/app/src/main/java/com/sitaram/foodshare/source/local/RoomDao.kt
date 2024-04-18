@@ -6,7 +6,10 @@ import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Update
 
-// Data Access Objects (dao)
+/**
+ * This is the interface RoomDao (Data Access Objects)
+ * There have multiple function for room database call
+ */
 @SuppressWarnings("AndroidUnresolvedRoomSqlReference")
 @Dao
 interface RoomDao {
@@ -37,9 +40,5 @@ interface RoomDao {
 
     @Query("DELETE FROM profile WHERE email = :email")
     suspend fun deleteProfileByEmail(email: String): Int?
-
-    // update food
-    @Update
-    suspend fun updateFood(foodsEntity: FoodsEntity): Int?
 
 }

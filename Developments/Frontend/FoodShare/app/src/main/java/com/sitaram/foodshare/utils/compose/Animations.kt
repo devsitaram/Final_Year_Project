@@ -15,6 +15,17 @@ import com.airbnb.lottie.compose.LottieConstants
 import com.airbnb.lottie.compose.animateLottieCompositionAsState
 import com.airbnb.lottie.compose.rememberLottieComposition
 
+/**
+ * Composable function that displays a Lottie animation.
+ * This function loads a Lottie animation from the provided raw resource ID,
+ * and allows controlling its playback and speed.
+ *
+ * @param rawResource The resource ID of the Lottie animation.
+ * @param isAnimating Whether the animation should be playing.
+ * @param speed The playback speed of the animation.
+ * @param stopAtProgress The progress value at which the animation should stop.
+ * @param modifier The modifier for the Lottie animation.
+ */
 @Composable
 fun LottieAnimationsView(
     rawResource: Int,

@@ -21,9 +21,12 @@ urlpatterns = [
     path('api/register/user', RegisterUser.as_view(), name='get_register_user'),
     path('api/logout/user', LogoutView.as_view(), name='get_logout_user'),
     
+    # Profile
     path('api/user/profile', UserProfile.as_view(), name='get_user_profile'),
+    path('api/update/profile', UpdateProfile.as_view(), name='set_update_profile'),
+    path('api/update/profile/image', UpdateProfilePicture.as_view(), name='set_update_profile'),
     path('api/foods/all', AllFoodDetails.as_view(), name='get_food_details'),
-    path('api/notifications/save/fcm/token', NotificationDeviceToken.as_view(), name='get_notification_details'),
+    path('api/fcm/device/token/save', DeviceTokenView.as_view(), name='set_device_details'),
 
     # NGOs api
     path('api/ngo/profile', NgoProfile.as_view(), name='get_ngo_profile'),
@@ -31,10 +34,6 @@ urlpatterns = [
     # users
     path('api/all/types/user', GetAllUsersView.as_view(), name='get_users_by_search'),
     path('api/account/verify', UserAccountVerifyView.as_view(), name='set_account_verify'),
-
-    #update profile
-    path('api/update/profile', UpdateProfile.as_view(), name='set_update_profile'),
-    path('api/update/profile/image', UpdateProfilePicture.as_view(), name='set_update_profile'),
 
     # password
     path('api/email/verify', EmailVerify.as_view(), name='get_email_verify'),
@@ -66,8 +65,14 @@ urlpatterns = [
     path('api/get/report', GetReportView.as_view(), name="get_report_details"),
     path('api/verify/report', VerifyReportView.as_view(), name="get_verify_report"),
 
+    # notification
+    # path('api/view/notification', AddNewNotification.as_view(), name="set_new_notification"),
+    path('api/get/all/notification', GetNotifications.as_view(), name="get_new_notification"),
     # data
     path('api/data/count', GetAllNumberOfDataView.as_view(), name="get_total_data"),
+
+    # test
+    path('api/get/token', GetNewToken.as_view(), name="get_all_token"),
 ]
 
 # view json data in web

@@ -21,7 +21,6 @@ class ApiRetrofitInstance {
          * @param context The context required for creating OkHttpClient.
          * @return Retrofit instance.
          */
-         
         fun getRetrofitInstance(context: Context): Retrofit {
             if (retrofitInstance == null) {
                 // Create the object of HttpLoggingInterceptor

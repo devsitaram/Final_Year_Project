@@ -16,6 +16,7 @@ import com.sitaram.foodshare.theme.darkGray
 import com.sitaram.foodshare.theme.gray
 import com.sitaram.foodshare.theme.lightGray
 
+// Composable function to display a divider with text.
 @Composable
 fun DividerWithTextView(text: String, modifier: Modifier = Modifier) {
     Row(
@@ -29,6 +30,7 @@ fun DividerWithTextView(text: String, modifier: Modifier = Modifier) {
     }
 }
 
+// Composable function to display a divider
 @Composable
 fun DividerView(
     @SuppressLint("ModifierParameter") modifier: Modifier = Modifier.shadow(2.dp),

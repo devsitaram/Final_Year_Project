@@ -30,26 +30,39 @@ fun CheckboxView(
         disabledCheckedColor = gray, // Set disabled checked color
         disabledUncheckedColor = gray,
     ),
+    leftSize: Int? = 0,
     checked: Boolean, // Remove the remember here
-    onCheckedChange: ((Boolean) -> Unit)? = null // Update the onClick lambda to pass the Boolean
+    onCheckedChange: (Boolean) -> Unit // Update the onClick lambda to pass the Boolean
 ) {
     Row(
         modifier = modifier,
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.Start,
     ) {
+        if (text != null && leftSize == 1) {
+            ClickableTextView(
+                annotatedText = text, //"Remember Me",
+                color = if (checked) primary else gray,
+                textType = textType,
+                maxLines = 2,
+                overflow = TextOverflow.Ellipsis,
+                modifier = Modifier
+                    .weight(1f)
+                    .clickable {
+                        onCheckedChange(checked)
+                    },
+            )
+        }
         Checkbox(
             checked = checked,
             onCheckedChange = {
-                if (onCheckedChange != null) {
-                    onCheckedChange(it)
-                }
+                onCheckedChange(it)
             }, // Pass the updated value to the onClick lambda
             modifier = Modifier.scale(0.9f),
             enabled = enabled,
             colors = colors
         )
-        if (text != null) {
+        if (text != null && leftSize == 0) {
             ClickableTextView(
                 annotatedText = text, //"Remember Me",
                 color = if (checked) primary else gray,
@@ -59,9 +72,7 @@ fun CheckboxView(
                 modifier = Modifier
                     .wrapContentWidth()
                     .clickable {
-                        if (onCheckedChange != null) {
-                            onCheckedChange(!checked)
-                        }
+                        onCheckedChange(checked)
                     },
             )
         }

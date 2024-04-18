@@ -19,23 +19,16 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
-import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import androidx.navigation.navArgument
-import com.sitaram.foodshare.features.dashboard.dashboardVolunteer.acceptFood.FoodAcceptViewScreen
 import com.sitaram.foodshare.features.dashboard.dashboardVolunteer.pending.presentation.PendingViewScreen
 import com.sitaram.foodshare.features.dashboard.dashboardVolunteer.volunteerHistory.VolunteerHistoryViewScreen
 import com.sitaram.foodshare.features.dashboard.home.presentation.HomeViewScreen
 import com.sitaram.foodshare.features.dashboard.profile.presentation.ProfileViewScreen
-import com.sitaram.foodshare.features.dashboard.setting.SettingViewScreen
+import com.sitaram.foodshare.features.dashboard.setting.presentation.SettingViewScreen
 import com.sitaram.foodshare.features.navigations.BtnNavScreen
-import com.sitaram.foodshare.features.navigations.FOOD_NAME
-import com.sitaram.foodshare.features.navigations.KEY_ID
-import com.sitaram.foodshare.features.navigations.NavScreen
-import com.sitaram.foodshare.features.navigations.USER_EMAIL
 import com.sitaram.foodshare.features.navigations.volunteerPages
 import com.sitaram.foodshare.theme.backgroundLayoutColor
 import com.sitaram.foodshare.theme.gray
@@ -49,6 +42,7 @@ import com.sitaram.foodshare.utils.compose.VectorIconView
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun VolunteerBtnNavBar(mainNavController: NavHostController) {
+
     val navController = rememberNavController()
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentDestination = navBackStackEntry?.destination
@@ -145,11 +139,11 @@ fun VolunteerNavHostScreen(
         contentAlignment = Alignment.Center
     ) {
         composable(BtnNavScreen.Home.route) {
-            HomeViewScreen(navController, mainNavController)
+            HomeViewScreen(mainNavController)
         }
 
         composable(BtnNavScreen.Pending.route) {
-            PendingViewScreen(navController, mainNavController)
+            PendingViewScreen(mainNavController)
         }
 
         composable(BtnNavScreen.History.route) {
@@ -165,28 +159,27 @@ fun VolunteerNavHostScreen(
             SettingViewScreen(navController, mainNavController)
         }
 
-        // Accept food
-        composable(
-            route = NavScreen.FoodAcceptViewPage.route,
-            arguments = listOf(
-                navArgument(KEY_ID) {
-                    type = NavType.StringType
-                },
-                navArgument(FOOD_NAME){
-                    type = NavType.StringType
-                },
-                navArgument(USER_EMAIL){
-                    type = NavType.StringType
-                }
-            )
-        ) { backStackEntry ->
-            val id = backStackEntry.arguments?.getString(KEY_ID)?.toIntOrNull() ?: 0
-            val foodName = backStackEntry.arguments?.getString(FOOD_NAME)
-            val email = backStackEntry.arguments?.getString(USER_EMAIL)
-            FoodAcceptViewScreen(id, foodName, email, navController, mainNavController)
-        }
+//        // Accept food
+//        composable(
+//            route = NavScreen.FoodAcceptViewPage.route,
+//            arguments = listOf(
+//                navArgument(KEY_ID) {
+//                    type = NavType.StringType
+//                },
+//                navArgument(FOOD_NAME){
+//                    type = NavType.StringType
+//                },
+//                navArgument(USER_EMAIL){
+//                    type = NavType.StringType
+//                }
+//            )
+//        ) { backStackEntry ->
+//            val id = backStackEntry.arguments?.getString(KEY_ID)?.toIntOrNull() ?: 0
+//            val foodName = backStackEntry.arguments?.getString(FOOD_NAME)
+//            val email = backStackEntry.arguments?.getString(USER_EMAIL)
+//            FoodAcceptViewScreen(id, foodName, email, navController, mainNavController)
+//        }
 
-        // Completed Donation
 //        composable(route = NavScreen.CompetedFoodHistory.route,
 //            arguments = listOf(
 //                navArgument(KEY_ID) {
@@ -194,15 +187,16 @@ fun VolunteerNavHostScreen(
 //                },
 //                navArgument(FOOD_NAME) {
 //                    type = NavType.StringType
+//                },
+//                navArgument(USER_EMAIL) {
+//                    type = NavType.StringType
 //                }
 //            )
-//        ) {
-//            backStackEntry ->
+//        ) { backStackEntry ->
 //            val foodId = backStackEntry.arguments?.getString(KEY_ID)?.toIntOrNull() ?: 0
 //            val title = backStackEntry.arguments?.getString(FOOD_NAME) ?: ""
-//            CompleteHistoryViewScreen(navController)
-//            CompletedFoodHistoryView(navController)
+//            val email = backStackEntry.arguments?.getString(USER_EMAIL) ?: ""
+//            FoodDonationRatingView(foodId, title, email, navController)
 //        }
-
     }
 }

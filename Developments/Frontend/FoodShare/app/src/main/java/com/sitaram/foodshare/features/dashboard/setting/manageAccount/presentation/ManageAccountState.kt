@@ -2,13 +2,13 @@ package com.sitaram.foodshare.features.dashboard.setting.manageAccount.presentat
 
 import com.sitaram.foodshare.source.remote.pojo.ResponsePojo
 
-class UpdateAccountState (
+data class UpdateAccountState (
     val isLoading: Boolean = false,
     val data: ResponsePojo? = null,
     val isError: String? = null
 )
 
-class DeleteAccountState (
+data class DeleteAccountState (
     val isLoading: Boolean = false,
     val data: ResponsePojo? = null,
     val isError: String? = null

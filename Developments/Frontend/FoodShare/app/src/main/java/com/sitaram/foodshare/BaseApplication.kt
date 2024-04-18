@@ -6,10 +6,14 @@ import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.content.Context
 import android.os.Build
-import com.sitaram.foodshare.features.pushNotification.CHANNEL_ID
-import com.sitaram.foodshare.features.pushNotification.CHANNEL_NAME
+import com.sitaram.foodshare.utils.ApiUrl.Companion.CHANNEL_ID
+import com.sitaram.foodshare.utils.ApiUrl.Companion.CHANNEL_NAME
 import dagger.hilt.android.HiltAndroidApp
 
+/**
+ * The base application class of the application, annotated with @HiltAndroidApp for Hilt support.
+ * In @onCreate class have give the local notification permission
+ */
 @HiltAndroidApp
 class BaseApplication: Application(){
     @SuppressLint("ObsoleteSdkInt")
@@ -24,13 +28,5 @@ class BaseApplication: Application(){
             val manager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
             manager.createNotificationChannel(channel)
         }
-//        FirebaseMessaging.getInstance().token.addOnCompleteListener { task ->
-//            if (task.isSuccessful) {
-//                val token = task.result
-//                Log.d("FCM Token", token ?: "Not found")
-//            } else {
-//                Log.e("FCM Token", "Fetching FCM token failed", task.exception)
-//            }
-//        }
     }
 }

@@ -49,5 +49,7 @@ data class Profile(
     @SerializedName("role")
     var role: String? = null,
     @SerializedName("username")
-    var username: String? = null
+    var username: String? = null,
+    @SerializedName("ngo")
+    var ngo: Int? = null
 )

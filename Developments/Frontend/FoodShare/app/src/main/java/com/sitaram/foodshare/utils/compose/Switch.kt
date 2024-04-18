@@ -8,6 +8,17 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import com.sitaram.foodshare.theme.gray
 
+
+/**
+ * Composable function to display a Switch.
+ *
+ * @param checked The current checked state of the Switch.
+ * @param onCheckedChange Callback to be invoked when the checked state of the Switch changes.
+ * @param modifier The modifier to be applied to the Switch.
+ * @param enabled Whether the Switch is enabled or disabled.
+ * @param colors The colors to be used for the Switch.
+ * @param interactionSource The interaction source of the Switch.
+ */
 @Composable
 fun SwitchView(
     checked: Boolean,

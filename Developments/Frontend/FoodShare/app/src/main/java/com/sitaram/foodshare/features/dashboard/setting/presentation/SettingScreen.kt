@@ -59,6 +59,7 @@ import com.sitaram.foodshare.theme.primary
 import com.sitaram.foodshare.theme.textColor
 import com.sitaram.foodshare.theme.white
 import com.sitaram.foodshare.utils.UserInterfaceUtil
+import com.sitaram.foodshare.utils.UserInterfaceUtil.Companion.clearLocalStorage
 import com.sitaram.foodshare.utils.UserInterfaceUtil.Companion.showToast
 import com.sitaram.foodshare.utils.compose.AsyncImageView
 import com.sitaram.foodshare.utils.compose.ConfirmationDialogView
@@ -66,7 +67,6 @@ import com.sitaram.foodshare.utils.compose.ProcessingDialogView
 import com.sitaram.foodshare.utils.compose.TextType
 import com.sitaram.foodshare.utils.compose.TextView
 import com.sitaram.foodshare.utils.compose.VectorIconView
-import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
 
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
@@ -233,15 +233,9 @@ fun SettingViewScreen(
                         popUpTo(BtnNavScreen.Setting.route) {
                             inclusive = true
                         }
-                        val editor = getPreferenceInstance.edit()
-                        editor?.putString("authentication", "")?.apply()
-                        showDialogBox = false
+                        clearLocalStorage(context)
                         showToast(context, context.getString(R.string.logout_successful))
                     }
-//                    MainScope().launch {
-//                        showDialogBox = false
-//                        settingViewModel.getLogOut()
-//                    }
                 }
             )
         }

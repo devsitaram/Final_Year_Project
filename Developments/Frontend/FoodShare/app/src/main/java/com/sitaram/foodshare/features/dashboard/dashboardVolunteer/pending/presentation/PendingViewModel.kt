@@ -29,8 +29,8 @@ class PendingFoodViewModel @Inject constructor(private val distributedHistoryUse
     val getHistoryState: DistributedHistoryState get() = _getHistoryState
 
     // ReportDetails
-    private var _getReportStateDetails by mutableStateOf(ReportState())
-    val getReportState: ReportState get() = _getReportStateDetails
+    private var _getReportUserStateDetails by mutableStateOf(ReportUserState())
+    val getReportUserState: ReportUserState get() = _getReportUserStateDetails
 
     fun getPendingFood(userId: Int, status: String) {
         this.userId = userId
@@ -76,17 +76,17 @@ class PendingFoodViewModel @Inject constructor(private val distributedHistoryUse
     }
 
     fun getReportToUser(reportDTO: ReportDTO?) {
-        _getReportStateDetails = ReportState(isLoading = true)
+        _getReportUserStateDetails = ReportUserState(isLoading = true)
         distributedHistoryUseCase.invoke(reportDTO).onEach { result ->
-            _getReportStateDetails = when(result){
+            _getReportUserStateDetails = when(result){
                 is Resource.Loading -> {
-                    ReportState(isLoading = true)
+                    ReportUserState(isLoading = true)
                 }
                 is Resource.Success -> {
-                    ReportState(data = result.data)
+                    ReportUserState(data = result.data, message = result.data?.message)
                 }
                 is Resource.Error -> {
-                    ReportState(error = result.message)
+                    ReportUserState(error = result.message)
                 }
             }
         }.launchIn(viewModelScope)
@@ -102,5 +102,9 @@ class PendingFoodViewModel @Inject constructor(private val distributedHistoryUse
         viewModelScope.launch {
             localDatabase.invoke(foods)
         }
+    }
+
+    fun clearMessage() {
+        _getReportUserStateDetails = ReportUserState(message = null)
     }
 }

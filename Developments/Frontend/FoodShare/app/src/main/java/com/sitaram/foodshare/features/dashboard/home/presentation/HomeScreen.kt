@@ -1,6 +1,10 @@
 package com.sitaram.foodshare.features.dashboard.home.presentation
 
+import android.Manifest
 import android.annotation.SuppressLint
+import android.content.pm.PackageManager
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.Orientation
@@ -28,7 +32,6 @@ import androidx.compose.material.SnackbarHost
 import androidx.compose.material.SnackbarHostState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.DeleteForever
-import androidx.compose.material.icons.filled.Done
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.NotificationsActive
 import androidx.compose.material.icons.filled.Refresh
@@ -59,9 +62,12 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.core.content.ContextCompat
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.sitaram.foodshare.R
+import com.sitaram.foodshare.features.dashboard.pushNotification.MyFirebaseMessagingService
+import com.sitaram.foodshare.features.navigations.NavScreen
 import com.sitaram.foodshare.source.local.FoodsEntity
 import com.sitaram.foodshare.source.local.ProfileEntity
 import com.sitaram.foodshare.utils.ApiUrl
@@ -94,15 +100,14 @@ import kotlinx.coroutines.launch
 @OptIn(ExperimentalMaterialApi::class, ExperimentalCoroutinesApi::class)
 @Composable
 fun HomeViewScreen(
-    navController: NavHostController,
     mainNavController: NavHostController,
     homeViewModel: HomeViewModel = hiltViewModel(),
 ) {
     // Check The Internet Connection
+    val context = LocalContext.current
     val connection by NetworkObserver.connectivityState()
     val isConnected = connection === NetworkObserver.ConnectionState.Available
 
-    val context = LocalContext.current
     val getFoodDetails = homeViewModel.homeState
     val getDeleteState = homeViewModel.deleteState
     val interceptors = UserInterceptors(context)
@@ -119,11 +124,11 @@ fun HomeViewScreen(
     val snackBarHostState = remember { SnackbarHostState() }
     val coroutineScope = rememberCoroutineScope()
 
-    val showSnackBar: () -> Unit = {
-        coroutineScope.launch {
-            snackBarHostState.showSnackbar("You have ${getFoodDetails.data?.foods?.size ?: 0} food's notification${if (getFoodDetails.data?.foods?.size == 1) "" else "s"}")
-        }
-    }
+//    val showSnackBar: () -> Unit = {
+//        coroutineScope.launch {
+//            snackBarHostState.showSnackbar("You have ${getFoodDetails.data?.notification ?: 0} food's notification${if (getFoodDetails.data?.foods?.size == 1) "" else "s"}")
+//        }
+//    }
 
     if (getDeleteState.isLoading) {
         ProcessingDialogView()
@@ -154,11 +159,12 @@ fun HomeViewScreen(
                 modifier = Modifier.shadow(1.5.dp),
                 backgroundColor = white,
                 contentColor = black,
-                numOfNotification = getFoodDetails.data?.foods?.size ?: 0,
+                numOfNotification = getFoodDetails.data?.notification ?: 0,
                 navigationIcon = { PainterImageView(painter = painterResource(id = R.mipmap.img_app_logo)) },
                 notificationIcon = Icons.Default.NotificationsActive,
             ) {
-                showSnackBar.invoke()
+//                showSnackBar.invoke()
+                mainNavController.navigate(NavScreen.Notification.route)
             }
 
             if (getFoodDetails.isLoading) {
@@ -201,98 +207,171 @@ fun HomeViewScreen(
                             ) {
                                 items(result.orEmpty()) { items ->
                                     items?.let { food ->
-                                        HomeFoodCardView(
-                                            streamUrl = food.streamUrl,
-                                            foodName = food.foodName,
-                                            pickUpLocation = food.pickUpLocation,
-                                            descriptions = food.descriptions,
-                                            quantity = food.quantity,
-                                            isDonor = userRole.lowercase() == "donor" && food.user?.id == userId,
-                                            donateDate = food.createdDate,
-                                            onClickDelete = {
-                                                id = food.id ?: 0
-                                                isDeleteConfirmation = true
-                                            },
-                                            onClick = {
-                                                MainScope().launch {
-                                                    // result
-                                                    food.id?.let {
-                                                        FoodsEntity(
-                                                            id = it,
-                                                            foodName = food.foodName,
-                                                            status = food.status,
-                                                            foodTypes = food.foodTypes,
-                                                            descriptions = food.descriptions,
-                                                            streamUrl = food.streamUrl,
-                                                            quantity = food.quantity,
-                                                            pickUpLocation = food.pickUpLocation,
-                                                            expireTime = food.expireTime,
-                                                            latitude = food.latitude,
-                                                            longitude = food.longitude,
-                                                            modifyBy = food.modifyBy,
-                                                            createdBy = food.createdBy,
-                                                            createdDate = food.createdDate,
-                                                            modifyDate = food.modifyDate,
-                                                            isDelete = food.isDelete,
-                                                            userId = food.user?.id,
-                                                            username = food.user?.username,
-                                                            contactNumber = food.user?.contactNumber,
-                                                            photoUrl = food.user?.photoUrl,
+                                        if (food.status?.lowercase() == "new") {
+                                            HomeFoodCardView(
+                                                streamUrl = food.streamUrl,
+                                                foodName = food.foodName,
+                                                pickUpLocation = food.pickUpLocation,
+                                                descriptions = food.descriptions,
+                                                quantity = food.quantity,
+                                                isDonor = userRole.lowercase() == "donor" && food.user?.id == userId,
+                                                donateDate = food.createdDate,
+                                                onClickDelete = {
+                                                    id = food.id ?: 0
+                                                    isDeleteConfirmation = true
+                                                },
+                                                onClick = {
+                                                    MainScope().launch {
+                                                        // result
+                                                        food.id?.let {
+                                                            FoodsEntity(
+                                                                id = it,
+                                                                foodName = food.foodName,
+                                                                status = food.status,
+                                                                foodTypes = food.foodTypes,
+                                                                descriptions = food.descriptions,
+                                                                streamUrl = food.streamUrl,
+                                                                quantity = food.quantity,
+                                                                pickUpLocation = food.pickUpLocation,
+                                                                expireTime = food.expireTime,
+                                                                latitude = food.latitude,
+                                                                longitude = food.longitude,
+                                                                modifyBy = food.modifyBy,
+                                                                createdBy = food.createdBy,
+                                                                createdDate = food.createdDate,
+                                                                modifyDate = food.modifyDate,
+                                                                isDelete = food.isDelete,
+                                                                userId = food.user?.id,
+                                                                username = food.user?.username,
+                                                                email = food.user?.email,
+                                                                contactNumber = food.user?.contactNumber,
+                                                                photoUrl = food.user?.photoUrl,
+                                                            )
+                                                        }?.let {
+                                                            homeViewModel.saveFoodDetails(foods = it)
+                                                        }
+                                                        // user profile
+                                                        food.user?.id?.let {
+                                                            ProfileEntity(
+                                                                id = it,
+                                                                role = food.user?.role,
+                                                                address = food.user?.address
+                                                                    ?: "N/S",
+                                                                isActive = food.user?.isActive,
+                                                                gender = food.user?.gender ?: "N/S",
+                                                                lastLogin = food.user?.lastLogin
+                                                                    ?: "N/S",
+                                                                dateOfBirth = food.user?.dateOfBirth
+                                                                    ?: "N/S",
+                                                                modifyBy = food.user?.modifyBy
+                                                                    ?: "N/S",
+                                                                createdBy = food.user?.createdBy
+                                                                    ?: "N/S",
+                                                                contactNumber = food.user?.contactNumber
+                                                                    ?: "N/S",
+                                                                isDelete = food.user?.isDelete
+                                                                    ?: false,
+                                                                isAdmin = food.user?.isAdmin,
+                                                                aboutsUser = food.user?.aboutsUser
+                                                                    ?: "N/S",
+                                                                photoUrl = food.user?.photoUrl,
+                                                                createdDate = food.user?.createdDate
+                                                                    ?: "N/S",
+                                                                modifyDate = food.user?.modifyDate
+                                                                    ?: "N/S",
+                                                                email = food.user?.email ?: "N/S",
+                                                                username = food.user?.username
+                                                                    ?: "Unknow",
+                                                                ngo = food.user?.ngo
+                                                            )
+                                                        }?.let {
+                                                            homeViewModel.saveUserProfile(profile = it)
+                                                        }
+                                                    }.job
+                                                    // navigate the new page
+                                                    if (food.status?.lowercase() == "pending") {
+                                                        showToast(
+                                                            context,
+                                                            context.getString(R.string.fooddetails_already_accepted_thanks_you)
                                                         )
-                                                    }?.let {
-                                                        homeViewModel.saveFoodDetails(foods = it)
-                                                    }
-                                                    // user profile
-                                                    food.user?.id?.let {
-                                                        ProfileEntity(
-                                                            id = it,
-                                                            role = food.user?.role ?: "N/S",
-                                                            address = food.user?.address ?: "N/S",
-                                                            isActive = food.user?.isActive,
-                                                            gender = food.user?.gender ?: "N/S",
-                                                            lastLogin = food.user?.lastLogin
-                                                                ?: "N/S",
-                                                            dateOfBirth = food.user?.dateOfBirth
-                                                                ?: "N/S",
-                                                            modifyBy = food.user?.modifyBy ?: "N/S",
-                                                            createdBy = food.user?.createdBy
-                                                                ?: "N/S",
-                                                            contactNumber = food.user?.contactNumber
-                                                                ?: "N/S",
-                                                            isDelete = food.user?.isDelete ?: false,
-                                                            isAdmin = food.user?.isAdmin,
-                                                            aboutsUser = food.user?.aboutsUser
-                                                                ?: "N/S",
-                                                            photoUrl = food.user?.photoUrl,
-                                                            createdDate = food.user?.createdDate
-                                                                ?: "N/S",
-                                                            modifyDate = food.user?.modifyDate
-                                                                ?: "N/S",
-                                                            email = food.user?.email ?: "N/S",
-                                                            username = food.user?.username
-                                                                ?: "Unknow"
-                                                        )
-                                                    }?.let {
-                                                        homeViewModel.saveUserProfile(profile = it)
-                                                    }
-                                                }.job
-                                                // navigate the new page
-                                                if (food.status?.lowercase() == "pending") {
-                                                    showToast(
-                                                        context,
-                                                        "FoodDetails already accepted. Thanks You!"
-                                                    )
-                                                } else {
-                                                    val role =
-                                                        UserInterceptors(context).getUserRole()
-                                                    if (role.lowercase() == "donor") {
-                                                        mainNavController.navigate("FoodDetailView/${food.id}/${food.foodName}/${0}")
                                                     } else {
-                                                        navController.navigate("FoodAcceptView/${food.id}/${food.foodName}/${food.user?.email}")
+                                                        val role = UserInterceptors(context).getUserRole()
+                                                        if (role.lowercase() == "donor") {
+                                                            mainNavController.navigate("FoodDetailView/${food.id}/${food.foodName}/${0}")
+                                                        } else {
+                                                            mainNavController.navigate("FoodAcceptView/${food.id}/${food.foodName}/${food.user?.email}")
+                                                        }
                                                     }
                                                 }
-                                            }
-                                        )
+                                            )
+//                                            MainScope().launch {
+//                                                // result
+//                                                food.id?.let {
+//                                                    FoodsEntity(
+//                                                        id = it,
+//                                                        foodName = food.foodName,
+//                                                        status = food.status,
+//                                                        foodTypes = food.foodTypes,
+//                                                        descriptions = food.descriptions,
+//                                                        streamUrl = food.streamUrl,
+//                                                        quantity = food.quantity,
+//                                                        pickUpLocation = food.pickUpLocation,
+//                                                        expireTime = food.expireTime,
+//                                                        latitude = food.latitude,
+//                                                        longitude = food.longitude,
+//                                                        modifyBy = food.modifyBy,
+//                                                        createdBy = food.createdBy,
+//                                                        createdDate = food.createdDate,
+//                                                        modifyDate = food.modifyDate,
+//                                                        isDelete = food.isDelete,
+//                                                        userId = food.user?.id,
+//                                                        username = food.user?.username,
+//                                                        email = food.user?.email,
+//                                                        contactNumber = food.user?.contactNumber,
+//                                                        photoUrl = food.user?.photoUrl,
+//                                                    )
+//                                                }?.let {
+//                                                    homeViewModel.saveFoodDetails(foods = it)
+//                                                }
+//                                                // user profile
+//                                                food.user?.id?.let {
+//                                                    ProfileEntity(
+//                                                        id = it,
+//                                                        role = food.user?.role,
+//                                                        address = food.user?.address
+//                                                            ?: "N/S",
+//                                                        isActive = food.user?.isActive,
+//                                                        gender = food.user?.gender ?: "N/S",
+//                                                        lastLogin = food.user?.lastLogin
+//                                                            ?: "N/S",
+//                                                        dateOfBirth = food.user?.dateOfBirth
+//                                                            ?: "N/S",
+//                                                        modifyBy = food.user?.modifyBy
+//                                                            ?: "N/S",
+//                                                        createdBy = food.user?.createdBy
+//                                                            ?: "N/S",
+//                                                        contactNumber = food.user?.contactNumber
+//                                                            ?: "N/S",
+//                                                        isDelete = food.user?.isDelete
+//                                                            ?: false,
+//                                                        isAdmin = food.user?.isAdmin,
+//                                                        aboutsUser = food.user?.aboutsUser
+//                                                            ?: "N/S",
+//                                                        photoUrl = food.user?.photoUrl,
+//                                                        createdDate = food.user?.createdDate
+//                                                            ?: "N/S",
+//                                                        modifyDate = food.user?.modifyDate
+//                                                            ?: "N/S",
+//                                                        email = food.user?.email ?: "N/S",
+//                                                        username = food.user?.username
+//                                                            ?: "Unknow",
+//                                                        ngo = food.user?.ngo
+//                                                    )
+//                                                }?.let {
+//                                                    homeViewModel.saveUserProfile(profile = it)
+//                                                }
+//                                            }.job
+                                        }
                                     }
                                 }
                             }

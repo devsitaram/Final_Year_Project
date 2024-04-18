@@ -42,6 +42,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.sitaram.foodshare.R
+import com.sitaram.foodshare.helper.UserInterceptors
 import com.sitaram.foodshare.theme.lightGray
 import com.sitaram.foodshare.theme.textColor
 import com.sitaram.foodshare.theme.white
@@ -72,9 +73,11 @@ fun NgoProfileViewScreen(
 ) {
 
     // Check The Internet Connection
+    val context = LocalContext.current
+
     val connection by NetworkObserver.connectivityState()
     val isConnected = connection === NetworkObserver.ConnectionState.Available
-    val context = LocalContext.current
+    val userRole = UserInterceptors(context).getUserRole()
     LaunchedEffect(key1 = Unit) {
         if (isConnected) {
             withContext(Dispatchers.IO) {
@@ -107,7 +110,7 @@ fun NgoProfileViewScreen(
     ) {
 
         TopAppBarView(
-            title = "NGO Profile",
+            title = stringResource(R.string.ngo_profile),
             color = textColor,
             backgroundColor = white,
             leadingIcon = Icons.Default.ArrowBackIosNew,
@@ -139,7 +142,7 @@ fun NgoProfileViewScreen(
             getNgoProfile.data?.ngo?.let { ngo ->
                 Column(modifier = Modifier
                     .fillMaxWidth()
-                    .padding(horizontal = 16.dp,)
+                    .padding(horizontal = 16.dp)
                     .verticalScroll(rememberScrollState())
                 ) {
                     Row(
@@ -152,7 +155,6 @@ fun NgoProfileViewScreen(
                             contentScale = ContentScale.Crop,
                             modifier = Modifier
                                 .size(100.dp)
-                                .clip(CircleShape)
                                 .background(lightGray)
                         )
                         Column(modifier = Modifier
@@ -187,37 +189,41 @@ fun NgoProfileViewScreen(
                     TextView(text = ngo.aboutsNgo ?: "", textType = TextType.BASE_TEXT_REGULAR, modifier = Modifier.padding(bottom = 4.dp))
 
                     // number of data
-                    Column(modifier = Modifier.fillMaxWidth().padding(bottom = 8.dp)) {
+                    Column(modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(bottom = 8.dp)) {
                         CustomDataCardView(
                             numberOfData = userNumber,
                             imageVector = Icons.Default.PersonAddAlt,
-                            title = "Users",
-                            descriptions = "Latest number of application user"
+                            title = stringResource(id = R.string.users),
+                            descriptions = stringResource(R.string.latest_number_of_application_user)
                         )
                         CustomDataCardView(
                             numberOfData = foodNumber,
                             imageVector = Icons.Default.Fastfood,
-                            title = "Foods",
-                            descriptions = "Latest number of donate food"
+                            title = stringResource(R.string.foods),
+                            descriptions = stringResource(R.string.latest_number_of_donate_food)
                         )
                         CustomDataCardView(
                             numberOfData = historyNumber,
                             imageVector = Icons.Default.History,
-                            title = "Histories",
-                            descriptions = "Latest number of history"
+                            title = stringResource(R.string.histories),
+                            descriptions = stringResource(R.string.latest_number_of_history)
                         )
                         CustomDataCardView(
                             numberOfData = reportNumber,
                             imageVector = Icons.Default.Report,
-                            title = "Reports",
-                            descriptions = "Latest number of report"
+                            title = stringResource(R.string.reports),
+                            descriptions = stringResource(R.string.latest_number_of_report)
                         )
-                        CustomDataCardView(
-                            numberOfData = deviceNumber,
-                            imageVector = Icons.AutoMirrored.Filled.SendToMobile,
-                            title = "Devices",
-                            descriptions = "Latest notification device number"
-                        )
+                        if (userRole.lowercase() == "admin"){
+                            CustomDataCardView(
+                                numberOfData = deviceNumber,
+                                imageVector = Icons.AutoMirrored.Filled.SendToMobile,
+                                title = stringResource(R.string.number_of_devices),
+                                descriptions = stringResource(R.string.latest_number_device_for_notification)
+                            )
+                        }
                     }
                 }
             }
@@ -251,12 +257,15 @@ fun CustomDataCardView(
                 imageVector = imageVector,
                 modifier = Modifier
                     .size(50.dp)
-                    .clip(CircleShape).padding(2.dp)
+                    .clip(CircleShape)
+                    .padding(2.dp)
             )
 
             // Use weight and fillMaxHeight to make the Column take up remaining space
             Column(
-                modifier = Modifier.fillMaxWidth().padding(horizontal = 8.dp),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 8.dp),
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.Start
             ) {

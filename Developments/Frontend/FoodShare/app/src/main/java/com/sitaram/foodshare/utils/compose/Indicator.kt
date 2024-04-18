@@ -26,6 +26,7 @@ import com.sitaram.foodshare.R
 import com.sitaram.foodshare.theme.primary
 import com.sitaram.foodshare.theme.white
 
+// Circle processing indicator
 @Composable
 fun ProgressIndicatorView(
     modifier: Modifier = Modifier,
@@ -49,6 +50,7 @@ fun ProgressIndicatorView(
     }
 }
 
+// Custom processing dialog box
 @Composable
 fun ProcessingDialogView(
     title: String? = null,
@@ -96,6 +98,7 @@ fun ProcessingDialogView(
     }
 }
 
+// Pull to refresh indicator
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun PullRefreshIndicatorView(

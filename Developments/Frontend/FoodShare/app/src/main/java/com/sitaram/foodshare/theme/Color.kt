@@ -3,6 +3,9 @@ package com.sitaram.foodshare.theme
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 
+/**
+ * Theme colors used in the FoodShare application.
+ */
 val Purple80 = Color(0xFFD0BCFF)
 val PurpleGrey80 = Color(0xFFCCC2DC)
 val Pink80 = Color(0xFFEFB8C8)
@@ -31,4 +34,4 @@ val yellow = Color(0xFFFFB630)
 val transparent = (Color.Transparent)
 
 val colors = intArrayOf(0xE99700, 0xFCB045)
-val btnGradientColor = Brush.verticalGradient(0.0f to primary, 1.0f to Color(0xFFFCB045))
+//val btnGradientColor = Brush.verticalGradient(0.0f to primary, 1.0f to Color(0xFFFCB045))

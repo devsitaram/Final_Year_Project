@@ -36,7 +36,7 @@ import androidx.core.content.ContextCompat
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.sitaram.foodshare.R
-import com.sitaram.foodshare.features.dashboard.setting.SettingsList
+import com.sitaram.foodshare.features.dashboard.setting.presentation.SettingsList
 import com.sitaram.foodshare.helper.UserInterceptors
 import com.sitaram.foodshare.features.navigations.BtnNavScreen
 import com.sitaram.foodshare.features.navigations.NavScreen
@@ -46,7 +46,7 @@ import com.sitaram.foodshare.theme.red
 import com.sitaram.foodshare.theme.textColor
 import com.sitaram.foodshare.theme.white
 import com.sitaram.foodshare.utils.NetworkObserver
-import com.sitaram.foodshare.utils.UserInterfaceUtil.Companion.showNotification
+import com.sitaram.foodshare.utils.UserInterfaceUtil.Companion.showLocalNotification
 import com.sitaram.foodshare.utils.UserInterfaceUtil.Companion.showToast
 import com.sitaram.foodshare.utils.compose.ConfirmationDialogView
 import com.sitaram.foodshare.utils.compose.DividerView
@@ -141,7 +141,7 @@ fun ManageAccountScreen(
             getUpdatePassword.data?.isSuccess.let { response ->
                 if (response == true) {
                     showSuccessDialogBox = true
-                    showToast(context, context.getString(R.string.your_password_has_been_updated))
+//                    showToast(context, context.getString(R.string.your_password_has_been_updated))
                 }
             }
             // check the delete response
@@ -151,7 +151,7 @@ fun ManageAccountScreen(
                         popUpTo(BtnNavScreen.Setting.route) {
                             inclusive = true
                             isConfirmation = false
-                            showNotification(context,
+                            showLocalNotification(context,
                                 context.getString(R.string.account_deactivation),
                                 context.getString(R.string.your_account_is_permanently_deactivated)
                             )

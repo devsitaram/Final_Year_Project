@@ -87,7 +87,7 @@ class DonorHistoryViewModel @Inject constructor(
         }
     }
 
-    fun getDeleteFood(id: Int?, username: String?, itemIndex: Int?, context: Context) {
+    fun getDeleteFood(id: Int?, username: String?, itemIndex: Int?) {
         _donorHistoryState = _donorHistoryState.copy(isLoading = true)
 
         // Remove the item at the specified index from the data list

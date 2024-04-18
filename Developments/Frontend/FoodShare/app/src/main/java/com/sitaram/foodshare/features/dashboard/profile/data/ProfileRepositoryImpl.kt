@@ -23,7 +23,7 @@ class ProfileRepositoryImpl(private val apiService: ApiService, private val cont
 
     override suspend fun updateProfilePicture(userId: Int?, imageFile: File?): ProfilePojo? {
         val requestFile = imageFile?.asRequestBody("image/*".toMediaTypeOrNull())
-        val image = requestFile.let { MultipartBody.Part.createFormData("image", imageFile?.name ?: "No food", requestFile ?: error("Food's image is not found")) }
+        val image = imageFile.let { MultipartBody.Part.createFormData("image", imageFile?.name ?: "user",  requestFile ?: error("File is null")) }
         val userIdRequestBody = userId.toString().toRequestBody("text/plain".toMediaTypeOrNull())
         return apiService.updateProfilePicture(userIdRequestBody, image)
     }

@@ -126,10 +126,10 @@ fun HistoryViewScreen(
                                     items.let { it ->
                                         ContentCardView(
                                             imageUrl = it.food?.streamUrl,
-                                            rating = 2, //it.histories?.first()?.history?.ratingPoint,
+                                            rating = it.foodHistory?.ratingPoint ?: 0,
                                             title = it.food?.foodName,
                                             donateLocation = it.food?.pickUpLocation,
-                                            donationDate = "2034-01-20", // it.food?.createdDate ?: it.histories?.first()?.history?.createdDate,
+                                            donationDate = it.food?.createdDate ?: it.foodHistory?.createdDate,
                                             status = it.food?.status,
                                             onClick = {
                                                 MainScope().launch {
@@ -154,6 +154,7 @@ fun HistoryViewScreen(
                                                             isDelete = food.isDelete,
                                                             userId = food.donor,
                                                             username = it.donor?.username,
+                                                            email = it.donor?.email,
                                                             contactNumber = it.donor?.contactNumber,
                                                             photoUrl = it.donor?.photoUrl,
                                                         )
@@ -178,12 +179,13 @@ fun HistoryViewScreen(
                                                             isDelete = donor.isDelete ?: false,
                                                             isAdmin = donor.isAdmin ?: false,
                                                             aboutsUser = donor.aboutsUser ?: "N/S",
-                                                            photoUrl = donor.photoUrl ?: "N/S",
+                                                            photoUrl = donor.photoUrl,
                                                             createdDate = donor.createdDate
                                                                 ?: "N/S",
                                                             modifyDate = donor.modifyDate ?: "N/S",
-                                                            email = donor.email ?: "N/S",
-                                                            username = donor.username ?: "Unknow"
+                                                            email = donor.email,
+                                                            username = donor.username ?: "Unknow",
+                                                            ngo = donor.ngo
                                                         )
                                                     }?.let {
                                                         historyViewModel.saveUserProfile(profile = it)
@@ -208,14 +210,15 @@ fun HistoryViewScreen(
                                                             isAdmin = volunteer.isAdmin ?: false,
                                                             aboutsUser = volunteer.aboutsUser
                                                                 ?: "N/S",
-                                                            photoUrl = volunteer.photoUrl ?: "N/S",
+                                                            photoUrl = volunteer.photoUrl,
                                                             createdDate = volunteer.createdDate
                                                                 ?: "N/S",
                                                             modifyDate = volunteer.modifyDate
                                                                 ?: "N/S",
-                                                            email = volunteer.email ?: "N/S",
+                                                            email = volunteer.email,
                                                             username = volunteer.username
-                                                                ?: "Unknow"
+                                                                ?: "Unknow",
+                                                            ngo = volunteer.ngo
                                                         )
                                                     }?.let {
                                                         historyViewModel.saveUserProfile(profile = it)
@@ -248,7 +251,7 @@ fun HistoryViewScreen(
                                                     }
                                                 }.job
                                                 // navigate the new page
-                                                mainNavController.navigate("FoodDetailView/${it.food?.id}/${it.food?.foodName}")
+                                                mainNavController.navigate("FoodDetailView/${it.food?.id}/${it.food?.foodName}/${it.foodHistory?.ratingPoint}")
                                             }
                                         )
                                     }

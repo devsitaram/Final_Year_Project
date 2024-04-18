@@ -71,14 +71,14 @@ object NetworkObserver {
         }
     }
 
-    private fun NetworkCallback(callback: (ConnectionState) -> Unit): ConnectivityManager.NetworkCallback {
+    private fun NetworkCallback(ignoredCallback: (ConnectionState) -> Unit): ConnectivityManager.NetworkCallback {
         return object : ConnectivityManager.NetworkCallback() {
             override fun onAvailable(network: Network) {
-                callback(ConnectionState.Available)
+                ignoredCallback(ConnectionState.Available)
             }
 
             override fun onLost(network: Network) {
-                callback(ConnectionState.Unavailable)
+                ignoredCallback(ConnectionState.Unavailable)
             }
         }
     }

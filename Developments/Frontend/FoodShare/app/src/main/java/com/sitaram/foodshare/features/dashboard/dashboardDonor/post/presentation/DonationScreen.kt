@@ -168,7 +168,6 @@ fun DonationViewScreen(
     var errorMessage by remember { mutableStateOf("") }
 
     var selectedItemIndex by remember { mutableIntStateOf(0) }
-    var expandedDropDownMenu by remember { mutableStateOf(false) }
 
     var foodName by remember { mutableStateOf("") }
     var descriptions by remember { mutableStateOf("") }
@@ -348,14 +347,10 @@ fun DonationViewScreen(
                         modifier = Modifier.padding(horizontal = 2.dp, vertical = 4.dp)
                     )
                     DropDownMenu(
-                        listOfArray = listOfFoods,
+                        listOfItems = listOfFoods,
                         selectedItemIndex = selectedItemIndex,
-                        expanded = expandedDropDownMenu,
-                        onExpandedChange = { expandedDropDownMenu = !expandedDropDownMenu },
-                        onDismissRequest = { expandedDropDownMenu = false },
                         onClickAction = { index ->
                             selectedItemIndex = index
-                            expandedDropDownMenu = false
                         }
                     )
 
@@ -540,8 +535,8 @@ fun DonationViewScreen(
 }
 
 
-// List of foodDetails types
-val listOfFoods = arrayOf(
+// List of food types
+val listOfFoods = listOf(
     "Others",
     "Cake",
     "Green Vegetables",

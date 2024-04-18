@@ -2,8 +2,8 @@ package com.sitaram.foodshare.features.forgotpassword.presentation
 
 import com.sitaram.foodshare.source.remote.pojo.ResponsePojo
 
-class ForgotPasswordState(
+data class ForgotPasswordState(
     val isLoading: Boolean = false,
     val data: ResponsePojo? = null,
-    val isError: String? = ""
+    val isError: String? = null,
 )

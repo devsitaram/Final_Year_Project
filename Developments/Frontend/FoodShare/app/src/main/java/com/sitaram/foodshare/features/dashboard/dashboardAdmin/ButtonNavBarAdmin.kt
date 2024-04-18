@@ -26,7 +26,7 @@ import com.sitaram.foodshare.features.dashboard.dashboardAdmin.adminHome.present
 import com.sitaram.foodshare.features.dashboard.history.presentation.HistoryViewScreen
 import com.sitaram.foodshare.features.dashboard.dashboardAdmin.users.presentation.UsersViewScreenNgo
 import com.sitaram.foodshare.features.dashboard.profile.presentation.ProfileViewScreen
-import com.sitaram.foodshare.features.dashboard.setting.SettingViewScreen
+import com.sitaram.foodshare.features.dashboard.setting.presentation.SettingViewScreen
 import com.sitaram.foodshare.features.navigations.BtnNavScreen
 import com.sitaram.foodshare.features.navigations.adminPages
 import com.sitaram.foodshare.theme.backgroundLayoutColor
@@ -41,6 +41,7 @@ import com.sitaram.foodshare.utils.compose.VectorIconView
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
 fun AdminBtnNavBar(mainNavController: NavHostController) {
+
     val navController = rememberNavController()
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentDestination = navBackStackEntry?.destination
@@ -134,7 +135,6 @@ fun AdminNavHostScreen(navController: NavHostController, mainNavController: NavH
     ) {
         composable(BtnNavScreen.Home.route) {
             AdminHomeViewScreen(navController, mainNavController)
-//            HomeViewScreen(navController, mainNavController)
         }
 
         composable(BtnNavScreen.AllUser.route) {

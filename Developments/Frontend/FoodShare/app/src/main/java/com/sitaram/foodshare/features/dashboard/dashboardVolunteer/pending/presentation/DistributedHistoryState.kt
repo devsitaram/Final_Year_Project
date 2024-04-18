@@ -10,8 +10,9 @@ data class DistributedHistoryState(
     val message: String? = null
 )
 
-data class ReportState(
+data class ReportUserState(
     val isLoading: Boolean = false,
     val data: ResponsePojo? = null,
-    val error: String? = null
+    val error: String? = null,
+    val message: String? = null
 )

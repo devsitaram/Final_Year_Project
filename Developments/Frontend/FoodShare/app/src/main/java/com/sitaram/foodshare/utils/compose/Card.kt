@@ -69,6 +69,7 @@ fun PainterCardView(
     text: String,
     description: String,
     color: Color,
+    onClick: (() -> Unit)? = null
 ) {
     val transparentColor = color.copy(alpha = 0.10f) // Create a new color with 25% alpha
     Card(
@@ -79,7 +80,7 @@ fun PainterCardView(
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .background(transparentColor),
+                .background(transparentColor).clickable { onClick?.invoke() },
             horizontalAlignment = Alignment.Start
         ) {
             Row(

@@ -5,12 +5,12 @@ import com.sitaram.foodshare.features.dashboard.dashboardAdmin.users.data.UsersP
 import com.sitaram.foodshare.features.dashboard.home.data.FoodPojo
 import com.sitaram.foodshare.source.remote.pojo.ResponsePojo
 import com.sitaram.foodshare.features.login.domain.LoginModel
-import com.sitaram.foodshare.features.dashboard.dashboardAdmin.users.domain.UsersModelDAO
+import com.sitaram.foodshare.features.dashboard.dashboardAdmin.users.domain.RequestModelDAO
 import com.sitaram.foodshare.features.dashboard.dashboardDonor.donorHistory.data.DonorHistoryPojo
 import com.sitaram.foodshare.features.dashboard.dashboardDonor.post.domain.DonationModelDAO
 import com.sitaram.foodshare.features.dashboard.dashboardVolunteer.pending.data.pojo.PendingPojo
 import com.sitaram.foodshare.features.dashboard.dashboardVolunteer.pending.domain.ReportDTO
-import com.sitaram.foodshare.features.dashboard.dashboardVolunteer.updateFoodHistory.domain.HistoryCompletedDto
+import com.sitaram.foodshare.features.dashboard.dashboardVolunteer.donationRating.domain.FoodDonateRatingDto
 import com.sitaram.foodshare.features.dashboard.foodDetail.data.pojo.FoodUpdatePojo
 import com.sitaram.foodshare.features.dashboard.foodDetail.domain.FoodModelDAO
 import com.sitaram.foodshare.features.dashboard.history.data.pojo.FoodHistoryPojo
@@ -18,9 +18,12 @@ import com.sitaram.foodshare.features.dashboard.setting.manageAccount.domain.Del
 import com.sitaram.foodshare.features.dashboard.setting.manageAccount.domain.UpdatePassword
 import com.sitaram.foodshare.features.dashboard.profile.data.ProfilePojo
 import com.sitaram.foodshare.features.dashboard.profile.domain.ProfileModelDAO
+import com.sitaram.foodshare.features.dashboard.setting.ngoProfile.data.NgoProfilePojo
+import com.sitaram.foodshare.features.dashboard.setting.ngoProfile.data.NumberOfDataPojo
 import com.sitaram.foodshare.features.forgotpassword.domain.ForgotPasswordDAO
 import com.sitaram.foodshare.features.login.data.pojo.LoginAuthPojo
 import com.sitaram.foodshare.features.register.domain.RegisterModelDAO
+import com.sitaram.foodshare.utils.ApiUrl
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import retrofit2.http.Body
@@ -32,161 +35,169 @@ import retrofit2.http.Part
 import retrofit2.http.PartMap
 import retrofit2.http.Query
 
-
+/**
+ * This is the interface ApiService
+ * There have multiple function for room database API to server call
+ */
 interface ApiService {
 
-    /**
-     * Login page screen
-     */
-    // get authentication token
-    @POST("api/authenticate/token/")
+    // Login authentication
+    @POST(ApiUrl.LOGIN_USER)
     suspend fun getLoginUserAuth(@Body loginModel: LoginModel?): LoginAuthPojo?
 
-    @POST("api/register/user")
+    // Register user
+    @POST(ApiUrl.REGISTER_USER)
     suspend fun registerUser(@Body registerModelDAO: RegisterModelDAO?): ResponsePojo?
 
-    /**
-     * FoodDetails Donation page
-     */
+    @GET("api/logout/user")
+    suspend fun getLogOut(): ResponsePojo?
+
+    // GET Food Details
     @Multipart
-    @POST("api/food/new/add")
+    @POST(ApiUrl.NEW_FOOD_POST)
     suspend fun newFoodDonation(
         @PartMap dynamicParamsMap: Map<String, @JvmSuppressWildcards RequestBody>?,
         @Part imagePart: MultipartBody.Part?,
     ): ResponsePojo?
 
-    // get latest foods
-    @GET("api/food/new/get")
+    // Get latest foods
+    @GET(ApiUrl.GET_NEW_FOOD)
     suspend fun getNewFoodDetails(): FoodPojo?
 
-    /**
-     * History screen page
-     */
-    // get history
-    @GET("api/food/history/all")
+    // Get history
+    @GET(ApiUrl.GET_ALL_HISTORY)
     suspend fun getFoodHistory(): FoodHistoryPojo?
 
-    /**
-     * Profile screen
-     */
-    // get user profile
-    @GET("api/user/profile/")
+    // Get user profile
+    @GET(ApiUrl.USER_PROFILE)
     suspend fun getUserProfiles(): ProfilePojo?
 
-    // update the profile
-//    @Multipart
-    @PATCH("api/update/profile")
+    // Update profile
+    @PATCH(ApiUrl.UPDATE_PROFILE)
     suspend fun updateProfile(
         @Query("id") id: Int?,
         @Body request: ProfileModelDAO?,
     ): ProfilePojo?
 
+    // Update profile image
     @Multipart
-    @PATCH("api/update/profile/image/")
+    @PATCH(ApiUrl.UPDATE_PROFILE_IMAGE)
     suspend fun updateProfilePicture(
         @Part("id") id: RequestBody?,
         @Part image: MultipartBody.Part?,
     ): ProfilePojo?
 
-
-    /**
-     * All user page (Admin)
-     */
-    // update new user account verify
-    @POST("api/account/verify/")
-    suspend fun userAccountVerify(@Body request: UsersModelDAO?): UsersPojo?
+    // New user account verify
+    @POST(ApiUrl.USER_ACCOUNT_VERIFY)
+    suspend fun userAccountVerify(@Body request: RequestModelDAO?): UsersPojo?
 
     // Get All Users
-    @GET("api/all/types/user/")
+    @GET(ApiUrl.GET_ALL_USER)
     suspend fun getAllTypesOfUser(): UsersPojo?
 
-    /**
-     * Forgot password page
-     */
-    // email verify
-    @GET("api/email/verify/")
+    // Email verify
+    @GET(ApiUrl.EMAIL_VERIFY)
     suspend fun getVerifyEmail(
         @Query("query") email: String?,
     ): ResponsePojo?
 
-    // forgot password
-    @PATCH("api/update/password/")
+    // Forgot password
+    @PATCH(ApiUrl.UPDATE_PASSWORD)
     suspend fun forgotPassword(@Body request: ForgotPasswordDAO?): ResponsePojo?
 
-    /**
-     * Manage account page
-     */
-    // delete account
-    @PATCH("api/account/delete/")
+    // Delete/Deactivate account
+    @PATCH(ApiUrl.DELETE_ACCOUNT)
     suspend fun deleteAccount(@Body request: DeleteAccount?): ResponsePojo?
 
-    // change password
-    @PATCH("api/update/password/")
+    // Change password
+    @PATCH(ApiUrl.UPDATE_PASSWORD)
     suspend fun updatePassword(@Body request: UpdatePassword?): ResponsePojo?
 
-    // accept food
-    @POST("api/food/accept")
+    // Accept food
+    @POST(ApiUrl.ACCEPT_FOOD)
     suspend fun acceptFood(@Body foodModelDAO: FoodModelDAO?): ResponsePojo?
 
-    // get Pending food
-    @GET("api/food/history/status")
+    // Get pending food
+    @GET(ApiUrl.GET_PENDING_FOOD)
     suspend fun getPendingFood(
         @Query("user_id") userId: Int?,
         @Query("status") status: String?,
     ): PendingPojo?
 
-    // Pending food completed
-    @PATCH("api/food/donate/competed")
-    suspend fun completedDonation(
-        @Body historyCompletedDto: HistoryCompletedDto?,
+    // Food donation rating
+    @PATCH(ApiUrl.COMPLETED_FOOD_RATING)
+    suspend fun donationRating(
+        @Body foodDonateRatingDto: FoodDonateRatingDto?,
     ): ResponsePojo?
 
-    // Donor Donate history
-    @GET("api/food/donation/histories/donor")
+    // Donor history
+    @GET(ApiUrl.GET_HISTORY_OF_DONOR)
     suspend fun getDonorHistory(@Query("id") id: Int?): DonorHistoryPojo?
 
-    @PATCH("api/update/donate/food")
+    // Update food
+    @PATCH(ApiUrl.UPDATE_FOOD)
     suspend fun getUpdateDonateFoodDetails(
         @Query("food_id") foodId: Int?,
         @Body donationModelDAO: DonationModelDAO?,
     ): FoodUpdatePojo?
 
+    // Update food image
     @Multipart
-    @PATCH("api/update/food/image")
+    @PATCH(ApiUrl.UPDATE_FOOD_IMAGE)
     suspend fun getUpdateDonateFoodImage(
         @Part("id") id: RequestBody?,
         @Part image: MultipartBody.Part?,
     ): FoodUpdatePojo?
 
-    @PATCH("api/food/deleted")
+    // Delete food
+    @PATCH(ApiUrl.DELETE_FOOD)
     suspend fun getDeleteFood(
         @Query("food_id") id: Int?,
         @Query("username") username: String?,
     ): ResponsePojo?
 
-    // Complaint and reportDetails with admin
-    @POST("api/user/report")
+    // Complaint and report details with admin
+    @POST(ApiUrl.REPORT_USER)
     suspend fun getReportToUser(@Body reportDTO: ReportDTO?): ResponsePojo?
 
-    @GET("api/get/report")
+    // Get report/compliant
+    @GET(ApiUrl.GET_REPORT)
     suspend fun getReportDetails(): ReportPojo?
 
-    @PATCH("api/verify/report")
+    // Report/compliant verify
+    @PATCH(ApiUrl.VERIFY_REPORT)
     suspend fun setReportVerify(
-        @Query("id") id: Int?,
-        @Query("is_verify") isVerify: Boolean?,
+        @Body request: RequestModelDAO?
     ): ResponsePojo?
 
-    @PATCH("api/history/delete")
+    // Delete history
+    @PATCH(ApiUrl.DELETE_HISTORY)
     suspend fun getDeleteHistory(
         @Query("history_id") historyId: Int?,
         @Query("username") username: String?,
     ): ResponsePojo?
 
-    @POST("api/notifications/save/fcm/token")
+    // Device FCM token register
+    @POST(ApiUrl.REGISTER_FCM_DEVICE_TOKEN)
     suspend fun deviceFcmTokenSave(
         @Query("user_id") userId: Int?,
         @Query("token") fcmToken: String?,
         @Query("created_by") userName: String?,
     ): ResponsePojo?
+
+    // Ngo profile
+    @GET(ApiUrl.NGO_PROFILE)
+    suspend fun getNgoProfile(): NgoProfilePojo?
+
+    // Get the system data
+    @GET(ApiUrl.NUMBER_OF_DATA)
+    suspend fun getNumberOfData(@Query("role") role: String?): NumberOfDataPojo?
+
+    // Notifications
+//    @GET(ApiUrl.GET_NOTIFICATION)
+//    suspend fun getNotification(): NotificationPojo?
+
+    @PATCH(ApiUrl.VIEW_NOTIFICATION)
+    suspend fun viewNotification(): ResponsePojo?
+
 }

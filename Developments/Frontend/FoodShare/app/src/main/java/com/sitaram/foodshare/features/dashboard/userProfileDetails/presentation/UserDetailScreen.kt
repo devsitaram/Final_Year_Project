@@ -62,8 +62,8 @@ import com.sitaram.foodshare.theme.red
 import com.sitaram.foodshare.theme.textColor
 import com.sitaram.foodshare.theme.white
 import com.sitaram.foodshare.utils.NetworkObserver
-import com.sitaram.foodshare.utils.UserInterfaceUtil
 import com.sitaram.foodshare.utils.UserInterfaceUtil.Companion.getEmailSend
+import com.sitaram.foodshare.utils.UserInterfaceUtil.Companion.getPhoneCall
 import com.sitaram.foodshare.utils.compose.AsyncImageView
 import com.sitaram.foodshare.utils.compose.DisplayErrorMessageView
 import com.sitaram.foodshare.utils.compose.DividerView
@@ -263,7 +263,7 @@ fun UserDetailsViewScreen(
                                 verticalArrangement = Arrangement.Top,
                             ) {
                                 TextView(
-                                    text = "Contact Us",
+                                    text = stringResource(R.string.contact_us),
                                     textType = TextType.LARGE_TEXT_BOLD,
                                     color = black,
                                     textAlign = TextAlign.Start,
@@ -297,10 +297,7 @@ fun UserDetailsViewScreen(
                                         leadingIcon = Icons.Default.Call,
                                         onClickCall = {
                                             if (contactNumber.isNotEmpty() && contactNumber != "N/S") {
-                                                UserInterfaceUtil.getPhoneCall(
-                                                    contactNumber,
-                                                    context
-                                                )
+                                                getPhoneCall(contactNumber, context)
                                             }
                                         }
                                     )

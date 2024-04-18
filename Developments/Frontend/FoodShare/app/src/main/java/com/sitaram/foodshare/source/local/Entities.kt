@@ -5,6 +5,10 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.google.gson.annotations.SerializedName
 
+/**
+ * Entity of local database
+ * tables are: Food, Profile, History
+ */
 @Entity(tableName = "profile")
 class ProfileEntity(
     @PrimaryKey
@@ -43,9 +47,12 @@ class ProfileEntity(
     @ColumnInfo("email")
     val email: String? = null,
     @ColumnInfo("username")
-    val username: String? = null
+    val username: String? = null,
+    @SerializedName("ngo")
+    val ngo: Int? = null
 )
 
+// Food table
 @Entity(tableName = "foods")
 class FoodsEntity(
     @PrimaryKey
@@ -85,12 +92,15 @@ class FoodsEntity(
     var userId: Int? = null,
     @SerializedName("username")
     var username: String? = null,
+    @SerializedName("email")
+    var email: String? = null,
     @SerializedName("contact_number")
     var contactNumber: String? = null,
     @ColumnInfo("photo_url")
     val photoUrl: String? = null,
 )
 
+// History table
 @Entity(tableName = "history")
 class HistoryEntity(
     @PrimaryKey

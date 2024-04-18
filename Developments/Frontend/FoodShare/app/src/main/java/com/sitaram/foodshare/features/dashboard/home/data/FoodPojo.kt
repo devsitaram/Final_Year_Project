@@ -11,6 +11,8 @@ data class FoodPojo(
 	var isSuccess: Boolean? = null,
 	@SerializedName("status")
 	var status: Int? = null,
+	@SerializedName("notification")
+	var notification: Int? = null,
 	@SerializedName("foods")
 	var foods: List<Food?>? = null
 )
@@ -53,4 +55,6 @@ data class Food(
 	var user: Users? = null,
 	@SerializedName("user_id")
 	var userId: Int? = null,
+	@SerializedName("ngo")
+	val ngo: Int? = null
 )

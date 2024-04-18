@@ -1,6 +1,7 @@
 package com.sitaram.foodshare.features.dashboard.dashboardAdmin.adminHome.domain
 
 import com.sitaram.foodshare.features.dashboard.dashboardAdmin.adminHome.data.pojo.ReportPojo
+import com.sitaram.foodshare.features.dashboard.dashboardAdmin.users.domain.RequestModelDAO
 import com.sitaram.foodshare.helper.Resource
 import com.sitaram.foodshare.source.remote.pojo.ResponsePojo
 import kotlinx.coroutines.flow.Flow
@@ -22,17 +23,17 @@ class AdminHomeUseCase(private val adminHomeRepository: AdminHomeRepository) {
         }
     }
 
-    operator fun invoke(id: Int?, isVerify: Boolean?): Flow<Resource<ResponsePojo>> = flow {
+    operator fun invoke(request: RequestModelDAO?): Flow<Resource<ResponsePojo>> = flow {
         emit(Resource.Loading())
         try {
-            val result = adminHomeRepository.verifyReport(id, isVerify)
+            val result = adminHomeRepository.verifyReport(request)
             if (result?.isSuccess == true){
                 emit(Resource.Success(data = result))
             } else {
                 emit(Resource.Error(message = result?.message))
             }
         } catch (e: Exception){
-            emit(Resource.Error(message = "Not found!"))
+            emit(Resource.Error(message = "Unable to connect to the server"))
         }
     }
 }

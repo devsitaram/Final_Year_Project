@@ -50,4 +50,6 @@ data class Users(
 	var role: String? = null,
 	@SerializedName("username")
 	var username: String? = null,
+	@SerializedName("ngo")
+	val ngo: Int? = null
 )

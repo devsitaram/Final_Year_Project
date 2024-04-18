@@ -2,6 +2,7 @@ package com.sitaram.foodshare.features.dashboard.foodDetail.presentation
 
 import android.app.TimePickerDialog
 import android.content.Context
+import android.content.Intent
 import android.net.Uri
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
@@ -58,7 +59,6 @@ import com.sitaram.foodshare.theme.backgroundLayoutColor
 import com.sitaram.foodshare.theme.gray
 import com.sitaram.foodshare.theme.textColor
 import com.sitaram.foodshare.theme.white
-import com.sitaram.foodshare.utils.UserInterfaceUtil
 import com.sitaram.foodshare.utils.compose.UserCardView
 import com.sitaram.foodshare.utils.compose.DividerView
 import com.sitaram.foodshare.utils.compose.TextType
@@ -82,7 +82,9 @@ import com.sitaram.foodshare.utils.ConverterUtil.convertStringToDate
 import com.sitaram.foodshare.utils.ConverterUtil.convertUriToFile
 import com.sitaram.foodshare.utils.ConverterUtil.getChipColorByStatus
 import com.sitaram.foodshare.utils.NetworkObserver
+import com.sitaram.foodshare.utils.UserInterfaceUtil.Companion.getEmailSend
 import com.sitaram.foodshare.utils.UserInterfaceUtil.Companion.getPhoneCall
+import com.sitaram.foodshare.utils.UserInterfaceUtil.Companion.isLocationEnabled
 import com.sitaram.foodshare.utils.UserInterfaceUtil.Companion.showToast
 import com.sitaram.foodshare.utils.compose.AsyncImagePainter
 import com.sitaram.foodshare.utils.compose.AsyncImageView
@@ -95,13 +97,14 @@ import com.sitaram.foodshare.utils.compose.DisplayErrorMessageView
 import com.sitaram.foodshare.utils.compose.DropDownMenu
 import com.sitaram.foodshare.utils.compose.NetworkIsNotAvailableView
 import com.sitaram.foodshare.utils.compose.NormalTextView
-import com.sitaram.foodshare.utils.compose.ProcessingDialogView
+import com.sitaram.foodshare.utils.compose.ProgressIndicatorView
 import com.sitaram.foodshare.utils.compose.ViewLocationInMap
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
 import java.io.File
 import java.util.Calendar
+import android.provider.Settings
 
 @OptIn(ExperimentalCoroutinesApi::class)
 @Composable
@@ -117,6 +120,11 @@ fun FoodDetailsViewScreen(
     val connection by NetworkObserver.connectivityState()
     val isConnected = connection === NetworkObserver.ConnectionState.Available
 
+    // location check
+    val intent = Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS)
+    val locationSettingsLauncher = rememberLauncherForActivityResult(ActivityResultContracts.StartActivityForResult()) { _ ->
+    }
+
     val context = LocalContext.current
     val getFoodDetails = foodDetailViewModel.foodDetailState
     val interpolator = UserInterceptors(context)
@@ -128,15 +136,25 @@ fun FoodDetailsViewScreen(
     var isShowConfirmation by remember { mutableStateOf(false) }
     var fileImage by remember { mutableStateOf<File?>(null) }
 
-    LaunchedEffect(key1 = foodDetailViewModel, block = {
+    LaunchedEffect(key1 = Unit, block = {
         if (isConnected) {
             foodDetailViewModel.getFoodDetailState(id)
         }
     })
 
+    LaunchedEffect(key1 = getFoodDetails.data){
+        if (getFoodDetails.data == null){
+            foodDetailViewModel.getSwipeToRefresh()
+        }
+//        else {
+//            if (getFoodDetails.data.email == null) {
+//                foodDetailViewModel.getSwipeToRefresh()
+//            }
+//        }
+    }
 
     if (getFoodDetails.isLoading) {
-        ProcessingDialogView()
+        ProgressIndicatorView()
     }
 
     if (getFoodDetails.error != null) {
@@ -153,23 +171,30 @@ fun FoodDetailsViewScreen(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         TopAppBarView(
-            title = title ?: "Food Details",
+            title = getFoodDetails.data?.foodName ?: title ?: stringResource(R.string.food_details),
             color = textColor,
             backgroundColor = white,
             leadingIcon = Icons.Default.ArrowBackIosNew,
-            trailingIcon = if (userRole.lowercase() == "donor" && getFoodDetails.data?.userId == userId) Icons.Default.ModeEditOutline else null,
+            trailingIcon = if (userRole.lowercase() == "donor" && getFoodDetails.data?.userId == userId && !isUpdateDonateFood) Icons.Default.ModeEditOutline else null,
             modifier = Modifier
                 .shadow(4.dp)
                 .fillMaxWidth(),
-            onClickLeadingIcon = { navController.navigateUp() },
+            onClickLeadingIcon = {
+                if (isUpdateDonateFood){
+                    isUpdateDonateFood = false
+                } else {
+                    navController.navigateUp()
+                }
+            },
             onClickTrailingIcon = { isUpdateDonateFood = !isUpdateDonateFood }
         )
         DividerView(modifier = Modifier.fillMaxWidth(), thickness = 1.dp)
-        getFoodDetails.data.let { it ->
+        getFoodDetails.data.let {
             if (!isConnected) {
                 NetworkIsNotAvailableView()
             } else {
                 if (it == null){
+
                     DisplayErrorMessageView(
                         text = getFoodDetails.message ?: stringResource(R.string.food_not_found),
                         vectorIcon = if (foodDetailViewModel.isRefreshing) null else Icons.Default.Refresh,
@@ -181,7 +206,12 @@ fun FoodDetailsViewScreen(
                             food = it,
                             rating = rating,
                             onClickViewMap = {
-                                navController.navigate("GoogleMapView/${it.latitude.toString()}/${it.longitude.toString()}/${it.username}")
+                                if(isLocationEnabled(context)) {
+                                    navController.navigate("GoogleMapView/${it.latitude.toString()}/${it.longitude.toString()}/${it.username}")
+                                } else {
+                                    locationSettingsLauncher.launch(intent)
+                                    showToast(context, context.getString(R.string.please_enable_location_services))
+                                }
                             },
                             onClickViewProfile = {
                                 navController.navigate("UserDetailView/${it.userId}")
@@ -194,8 +224,7 @@ fun FoodDetailsViewScreen(
                             onClickFoodUpdate = { it1 ->
                                 // Update the donate food
                                 MainScope().launch {
-                                    foodDetailViewModel.getUpdateDonateFood(it.id, it1, context)
-                                    isUpdateDonateFood = false
+                                    foodDetailViewModel.getUpdateDonateFood(it.id, it1)
                                 }
                             },
                             onClickImageUpdate = { it1 ->
@@ -213,13 +242,12 @@ fun FoodDetailsViewScreen(
 
     if (isShowConfirmation) {
         ConfirmationDialogView(
-            title = "Change Image",
-            descriptions = "Are your sure you want to change food image!",
+            title = stringResource(R.string.update_image),
+            descriptions = stringResource(R.string.are_your_sure_you_want_to_change_food_image),
             onDismiss = { isShowConfirmation = false },
             onConfirm = {
                 MainScope().launch {
-                    foodDetailViewModel.getUpdateDonateFoodImage(foodId, fileImage, context)
-                    isUpdateDonateFood = false
+                    foodDetailViewModel.getUpdateDonateFoodImage(foodId, fileImage)
                     isShowConfirmation = false
                 }
             }
@@ -228,6 +256,7 @@ fun FoodDetailsViewScreen(
 
     LaunchedEffect(getFoodDetails.message){
         if (getFoodDetails.message != null){
+            isUpdateDonateFood = false
             showToast(context, getFoodDetails.message)
             foodDetailViewModel.clearMessage()
         }
@@ -247,11 +276,11 @@ fun ViewFoodDetails(
     onClickAcceptBtn: (() -> Unit)? = null,
     onClickCompletedBtn: (() -> Unit)? = null,
 ) {
+
     val chipColor = getChipColorByStatus(food.status?.lowercase()).copy(alpha = 0.70f)
     val getConvertDate = convertStringToDate(food.modifyDate ?: food.createdDate)
     val interceptors = UserInterceptors(context)
     val username = interceptors.getUserName()
-    val email = interceptors.getUserEmail()
 
     Column(
         modifier = Modifier
@@ -270,23 +299,17 @@ fun ViewFoodDetails(
             horizontalArrangement = Arrangement.End
         ) {
             TextView(
-                text = "Donation Info",
-                modifier = Modifier
-                    .weight(1f),
+                text = stringResource(R.string.donation_info),
+                modifier = Modifier.weight(1f),
                 textType = TextType.LARGE_TEXT_BOLD,
                 maxLines = 2,
                 overflow = TextOverflow.Ellipsis,
             )
-            Row(
-                modifier = Modifier.weight(1f),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.End
-            ) {
+
+            if (food.status?.lowercase() != "new") {
                 repeat(5) { index ->
                     VectorIconView(
-                        imageVector = if (index < (rating
-                                ?: 0)
-                        ) Icons.Default.Star else Icons.Default.StarBorder,
+                        imageVector = if (index < (rating ?: 0)) Icons.Default.Star else Icons.Default.StarBorder,
                         tint = if (index < (rating ?: 0)) yellow else lightGray,
                         modifier = Modifier
                             .size(20.dp)
@@ -299,7 +322,7 @@ fun ViewFoodDetails(
         // view map
         ViewLocationInMap(
             pickUpLocation = food.pickUpLocation ?: "Unknown",
-            description = "View Location in Map",
+            description = stringResource(R.string.view_location_in_map),
             onClickAction = {
                 onClickViewMap?.invoke()
             }
@@ -310,15 +333,15 @@ fun ViewFoodDetails(
             imageUrl = food.photoUrl,
             title = food.username,
             text = food.contactNumber,
-            userRole = if (food.username == username) "Self ($username)" else "Others",
-            email = email,
+            userRole = if (food.username == username) "Self ($username)" else stringResource(R.string.others),
+            email = food.email,
             color = cardColor,
             onClickCall = {
                 getPhoneCall(food.contactNumber, context)
             },
             onClickEmail = {
-                if (email.isNotEmpty() && email != "N/S") {
-                    UserInterfaceUtil.getEmailSend(email, context)
+                if (food.email != null && food.email != "N/S") {
+                    getEmailSend(food.email, context)
                 }
             },
             modifier = Modifier
@@ -338,7 +361,7 @@ fun ViewFoodDetails(
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
             TextView(
-                text = "Status",
+                text = stringResource(R.string.status),
                 textType = TextType.BASE_TEXT_SEMI_BOLD,
                 modifier = Modifier.weight(1f)
             )
@@ -445,7 +468,7 @@ fun ViewFoodDetails(
 
         // description
         TextView(
-            text = "Note",
+            text = stringResource(R.string.note),
             textType = TextType.BASE_TEXT_BOLD,
             textAlign = TextAlign.Start,
             modifier = Modifier
@@ -455,17 +478,22 @@ fun ViewFoodDetails(
         Card(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(vertical = 8.dp)
+                .padding(vertical = 8.dp),
+            shape = CardDefaults.elevatedShape,
+            colors = CardDefaults.cardColors(white)
         ) {
             TextView(
                 text = food.descriptions
                     ?: stringResource(R.string.we_donate_and_distribute_food_to_support),
                 textType = TextType.BASE_TEXT_REGULAR,
                 textAlign = TextAlign.Justify,
-                modifier = Modifier.padding(10.dp)
+                modifier = Modifier
+                    .background(white)
+                    .padding(10.dp)
             )
         }
         if (isBtnVisible == true) {
+
             if (status?.lowercase() == "new") {
                 ButtonView(
                     onClick = {
@@ -475,7 +503,9 @@ fun ViewFoodDetails(
                     modifier = Modifier.fillMaxWidth(),
                     buttonSize = ButtonSize.LARGE
                 )
-            } else {
+            }
+
+            if(status?.lowercase() == "pending"){
                 ButtonView(
                     onClick = {
                         onClickCompletedBtn?.invoke()
@@ -485,6 +515,7 @@ fun ViewFoodDetails(
                     buttonSize = ButtonSize.LARGE
                 )
             }
+
         }
         Spacer(modifier = Modifier.padding(vertical = 4.dp))
     }
@@ -500,7 +531,6 @@ fun ViewEditDonateFoodDetails(
 
     val user = UserInterceptors(context)
     var selectedItemIndex by remember { mutableIntStateOf(0) }
-    var expandedDropDownMenu by remember { mutableStateOf(false) }
 
     var foodName by remember { mutableStateOf(food.foodName) }
     var descriptions by remember { mutableStateOf(food.descriptions) }
@@ -551,7 +581,7 @@ fun ViewEditDonateFoodDetails(
         // View foodDetails image
         Spacer(modifier = Modifier.padding(top = 4.dp))
         TextView(
-            text = "Food Name",
+            text = stringResource(id = R.string.food_name),
             textType = TextType.BASE_TEXT_BOLD,
             modifier = Modifier.padding(start = 2.dp, top = 6.dp)
         )
@@ -561,7 +591,7 @@ fun ViewEditDonateFoodDetails(
             onValueChange = { foodName = it },
             placeholder = {
                 TextView(
-                    text = "Food Name",
+                    text = stringResource(id = R.string.food_name),
                     textType = TextType.INPUT_TEXT_VALUE,
                     color = gray
                 )
@@ -575,7 +605,7 @@ fun ViewEditDonateFoodDetails(
 
         // Descriptions
         TextView(
-            text = "Descriptions",
+            text = stringResource(id = R.string.descriptions),
             textType = TextType.BASE_TEXT_BOLD,
             modifier = Modifier.padding(start = 2.dp, top = 4.dp)
         )
@@ -584,7 +614,7 @@ fun ViewEditDonateFoodDetails(
             onValueChange = { descriptions = it },
             placeholder = {
                 TextView(
-                    text = "Descriptions",
+                    text = stringResource(id = R.string.descriptions),
                     textType = TextType.INPUT_TEXT_VALUE,
                     color = gray
                 )
@@ -599,25 +629,21 @@ fun ViewEditDonateFoodDetails(
         // FoodDetails Types
         Spacer(modifier = Modifier.padding(top = 8.dp))
         TextView(
-            text = "Food types",
+            text = stringResource(id = R.string.food_types),
             textType = TextType.BASE_TEXT_BOLD,
             modifier = Modifier.padding(horizontal = 2.dp, vertical = 4.dp)
         )
         DropDownMenu(
-            listOfArray = listOfFoods,
+            listOfItems = listOfFoods,
             selectedItemIndex = selectedItemIndex,
-            expanded = expandedDropDownMenu,
-            onExpandedChange = { expandedDropDownMenu = !expandedDropDownMenu },
-            onDismissRequest = { expandedDropDownMenu = false },
             onClickAction = { index ->
                 selectedItemIndex = index
-                expandedDropDownMenu = false
             }
         )
 
         Spacer(modifier = Modifier.padding(top = 18.dp))
         TextView(
-            text = "Quantity",
+            text = stringResource(R.string.quantity),
             textType = TextType.BASE_TEXT_BOLD,
             modifier = Modifier.padding(horizontal = 2.dp)
         )
@@ -649,7 +675,7 @@ fun ViewEditDonateFoodDetails(
         // expire data and time
         Spacer(modifier = Modifier.padding(top = 12.dp))
         TextView(
-            text = "Limited-Time",
+            text = stringResource(id = R.string.limited_time),
             textType = TextType.BASE_TEXT_BOLD,
             modifier = Modifier.padding(horizontal = 2.dp)
         )
@@ -671,11 +697,11 @@ fun ViewEditDonateFoodDetails(
                 )
             }
             // open the time dialog box
-            ClickableTextView(annotatedText = "Select",
+            ClickableTextView(
+                annotatedText = stringResource(id = R.string.select),
                 textType = TextType.SMALL_TEXT_BOLD,
                 onClick = { mTimePickerDialog.show() }
             )
-
         }
 
         // Address / pick up location
@@ -686,7 +712,7 @@ fun ViewEditDonateFoodDetails(
             horizontalArrangement = Arrangement.End
         ) {
             TextView(
-                text = "Pick-Up Location",
+                text = stringResource(id = R.string.pick_up_location),
                 textType = TextType.BASE_TEXT_BOLD,
                 modifier = Modifier
                     .padding(horizontal = 2.dp, vertical = 4.dp)
@@ -694,7 +720,7 @@ fun ViewEditDonateFoodDetails(
             )
             if (food.latitude != 0.0) {
                 TextView(
-                    text = "Verify",
+                    text = stringResource(id = R.string.verify),
                     textType = TextType.CAPTION_TEXT,
                     color = green
                 )
@@ -705,7 +731,7 @@ fun ViewEditDonateFoodDetails(
             onValueChange = { pickUpLocation = it },
             placeholder = {
                 TextView(
-                    text = "Pick up Location",
+                    text = stringResource(id = R.string.pick_up_location),
                     textType = TextType.INPUT_TEXT_VALUE,
                     color = gray
                 )
@@ -720,7 +746,7 @@ fun ViewEditDonateFoodDetails(
         // foodDetails image
         Spacer(modifier = Modifier.padding(top = 12.dp))
         TextView(
-            text = "Food's Image (Optional)",
+            text = stringResource(R.string.food_s_image_optional),
             textType = TextType.BASE_TEXT_BOLD,
             modifier = Modifier.padding(horizontal = 2.dp, vertical = 4.dp)
         )
@@ -738,14 +764,14 @@ fun ViewEditDonateFoodDetails(
             ) {
                 VectorIconView(imageVector = Icons.Default.Image, tint = gray)
                 TextView(
-                    text = "FoodDetails",
+                    text = stringResource(id = R.string.food_details),
                     textType = TextType.SMALL_TEXT_BOLD,
                     color = textColor,
                     modifier = Modifier.padding(horizontal = 6.dp)
                 )
             }
             ClickableTextView(
-                annotatedText = "Select",
+                annotatedText = stringResource(id = R.string.select),
                 textType = TextType.SMALL_TEXT_BOLD,
                 onClick = {
                     galleryLauncher.launch("image/*")

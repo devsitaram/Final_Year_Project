@@ -27,8 +27,8 @@ import com.sitaram.foodshare.features.dashboard.dashboardDonor.donorHistory.data
 import com.sitaram.foodshare.features.dashboard.dashboardDonor.donorHistory.domain.DonorHistoryRepository
 import com.sitaram.foodshare.features.dashboard.dashboardVolunteer.pending.data.DistributedHistoryRepoImpl
 import com.sitaram.foodshare.features.dashboard.dashboardVolunteer.pending.domain.DistributedHistoryRepository
-import com.sitaram.foodshare.features.dashboard.dashboardVolunteer.updateFoodHistory.data.UpdateFoodHistoryRepoImpl
-import com.sitaram.foodshare.features.dashboard.dashboardVolunteer.updateFoodHistory.domain.UpdateFoodHistoryRepository
+import com.sitaram.foodshare.features.dashboard.dashboardVolunteer.donationRating.data.DonationRatingRepoImpl
+import com.sitaram.foodshare.features.dashboard.dashboardVolunteer.donationRating.domain.DonationRatingRepository
 import com.sitaram.foodshare.features.dashboard.foodDetail.domain.FoodDetailRepository
 import com.sitaram.foodshare.features.dashboard.history.domain.HistoryRepository
 import com.sitaram.foodshare.features.dashboard.home.domain.HomeRepository
@@ -38,6 +38,10 @@ import com.sitaram.foodshare.features.forgotpassword.domain.ForgotPasswordReposi
 import com.sitaram.foodshare.features.dashboard.profile.domain.ProfileRepository
 import com.sitaram.foodshare.features.dashboard.googleMap.data.GoogleMapRepositoryImpl
 import com.sitaram.foodshare.features.dashboard.googleMap.domain.GoogleMapRepository
+import com.sitaram.foodshare.features.dashboard.setting.data.SettingRepoImpl
+import com.sitaram.foodshare.features.dashboard.setting.domain.SettingRepository
+import com.sitaram.foodshare.features.dashboard.setting.ngoProfile.data.NgoProfileRepoImpl
+import com.sitaram.foodshare.features.dashboard.setting.ngoProfile.domain.NgoProfileRepository
 import com.sitaram.foodshare.features.dashboard.userProfileDetails.domain.UserDetailRepository
 import com.sitaram.foodshare.features.register.domain.RegisterRepository
 import dagger.Module
@@ -84,6 +88,13 @@ object AppModule {
     @Singleton
     fun provideRegisterUserRepoImpl(apiService: ApiService): RegisterRepository {
         return RegisterRepositoryImpl(apiService)
+    }
+
+    // Log out
+    @Provides
+    @Singleton
+    fun provideLogOut(apiService: ApiService): SettingRepository {
+        return SettingRepoImpl(apiService)
     }
 
     //user authentication and profile
@@ -164,8 +175,8 @@ object AppModule {
 
     @Provides
     @Singleton
-    fun provideUpdateFoodHistoryRepoImpl(apiService: ApiService, roomDao: RoomDao): UpdateFoodHistoryRepository {
-        return UpdateFoodHistoryRepoImpl(apiService, roomDao)
+    fun provideUpdateFoodHistoryRepoImpl(apiService: ApiService, roomDao: RoomDao): DonationRatingRepository {
+        return DonationRatingRepoImpl(apiService, roomDao)
     }
 
     @Provides
@@ -179,4 +190,16 @@ object AppModule {
     fun provideAdminHomeRepoImpl(apiService: ApiService): AdminHomeRepository {
         return AdminHomeRepoImpl(apiService)
     }
+
+    @Provides
+    @Singleton
+    fun provideNgoProfileRepoImpl(apiService: ApiService): NgoProfileRepository {
+        return NgoProfileRepoImpl(apiService)
+    }
+
+//    @Provides
+//    @Singleton
+//    fun provideNotificationRepoImpl(apiService: ApiService): NotificationRepository {
+//        return NotificationRepoImpl(apiService)
+//    }
 }

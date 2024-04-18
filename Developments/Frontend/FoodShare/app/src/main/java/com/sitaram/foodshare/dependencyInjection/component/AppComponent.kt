@@ -21,8 +21,8 @@ import com.sitaram.foodshare.features.dashboard.dashboardDonor.donorHistory.doma
 import com.sitaram.foodshare.features.dashboard.dashboardDonor.donorHistory.domain.DonorHistoryUseCase
 import com.sitaram.foodshare.features.dashboard.dashboardVolunteer.pending.domain.DistributedHistoryRepository
 import com.sitaram.foodshare.features.dashboard.dashboardVolunteer.pending.domain.DistributedHistoryUseCase
-import com.sitaram.foodshare.features.dashboard.dashboardVolunteer.updateFoodHistory.domain.UpdateFoodHistoryRepository
-import com.sitaram.foodshare.features.dashboard.dashboardVolunteer.updateFoodHistory.domain.UpdateFoodHistoryUseCase
+import com.sitaram.foodshare.features.dashboard.dashboardVolunteer.donationRating.domain.DonationRatingRepository
+import com.sitaram.foodshare.features.dashboard.dashboardVolunteer.donationRating.domain.DonationRatingUseCase
 import com.sitaram.foodshare.features.dashboard.foodDetail.domain.FoodDetailUseCase
 import com.sitaram.foodshare.features.dashboard.history.domain.HistoryUseCase
 import com.sitaram.foodshare.features.dashboard.home.domain.HomeUseCase
@@ -32,6 +32,10 @@ import com.sitaram.foodshare.features.forgotpassword.domain.ForgotPasswordUseCas
 import com.sitaram.foodshare.features.dashboard.profile.domain.ProfileUseCase
 import com.sitaram.foodshare.features.dashboard.googleMap.domain.GoogleMapRepository
 import com.sitaram.foodshare.features.dashboard.googleMap.domain.GoogleMapUseCase
+import com.sitaram.foodshare.features.dashboard.setting.domain.SettingRepository
+import com.sitaram.foodshare.features.dashboard.setting.domain.SettingUseCase
+import com.sitaram.foodshare.features.dashboard.setting.ngoProfile.domain.NgoProfileRepository
+import com.sitaram.foodshare.features.dashboard.setting.ngoProfile.domain.NgoProfileUseCase
 import com.sitaram.foodshare.features.register.domain.RegisterUseCase
 import com.sitaram.foodshare.features.dashboard.userProfileDetails.domain.UserDetailUseCase
 import dagger.Module
@@ -63,6 +67,12 @@ class AppComponent {
     @Singleton
     fun provideRegisterUseCase(registerRepository: RegisterRepository): RegisterUseCase {
         return RegisterUseCase(registerRepository)
+    }
+
+    @Provides
+    @Singleton
+    fun provideSettingUseCase(settingRepository: SettingRepository): SettingUseCase{
+        return SettingUseCase(settingRepository)
     }
 
     @Provides
@@ -145,8 +155,8 @@ class AppComponent {
 
     @Provides
     @Singleton
-    fun provideUpdateFoodHistoryUseCase(updateFoodHistoryRepository: UpdateFoodHistoryRepository): UpdateFoodHistoryUseCase {
-        return UpdateFoodHistoryUseCase(updateFoodHistoryRepository)
+    fun provideDonationRatingUseCase(donationRatingRepository: DonationRatingRepository): DonationRatingUseCase {
+        return DonationRatingUseCase(donationRatingRepository)
     }
 
     @Provides
@@ -160,4 +170,18 @@ class AppComponent {
     fun provideAdminHomeUseCase(adminHomeRepository: AdminHomeRepository): AdminHomeUseCase {
         return AdminHomeUseCase(adminHomeRepository)
     }
+
+    // Ngo Profile
+    @Provides
+    @Singleton
+    fun provideNgoProfileUseCase(ngoProfileRepository: NgoProfileRepository): NgoProfileUseCase {
+        return NgoProfileUseCase(ngoProfileRepository)
+    }
+
+    // Notification
+//    @Provides
+//    @Singleton
+//    fun provideNotificationUseCase(notificationRepository: NotificationRepository): NotificationUseCase {
+//        return NotificationUseCase(notificationRepository)
+//    }
 }

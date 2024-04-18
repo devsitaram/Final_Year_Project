@@ -51,8 +51,12 @@ class ReportSerializer(serializers.ModelSerializer):
         model = Report
         fields = '__all__'
 
-class NotificationsSerializer(serializers.ModelSerializer):
+class NotificationSerializer(serializers.ModelSerializer):
     class Meta:
         model = Notification
         fields = '__all__'
 
+class DeviceSerializer(serializers.ModelSerializer):
+    class Meta: 
+        models = Device
+        fields = '_all_'

@@ -1,5 +1,6 @@
 package com.sitaram.foodshare.utils.compose
 
+import android.annotation.SuppressLint
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -14,6 +15,10 @@ import androidx.compose.material3.ExposedDropdownMenuDefaults
 import androidx.compose.material.TextFieldDefaults
 import androidx.compose.material3.ShapeDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Shape
@@ -27,20 +32,32 @@ import com.sitaram.foodshare.theme.lightGray
 import com.sitaram.foodshare.theme.primary
 import com.sitaram.foodshare.theme.textColor
 
+/**
+ * Composable function to display a drop-down menu.
+ *
+ * @param listOfItems The array of items to display in the drop-down menu.
+ * @param selectedItemIndex The index of the currently selected item.
+ * @param onClickAction Callback for when an item in the drop-down menu is clicked.
+ * expanded Whether the drop-down menu is expanded or not.
+ *  onExpandedChange Callback for when the expansion state of the drop-down menu changes.
+ *  onDismissRequest Callback for when the drop-down menu is dismissed.
+ */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DropDownMenu(
-    listOfArray: Array<String>,
+    listOfItems: List<String>,
     selectedItemIndex: Int,
-    expanded: Boolean,
-    onExpandedChange: () -> Unit,
-    onDismissRequest: () -> Unit,
-    onClickAction: (Int) -> Unit
+    onClickAction: (Int) -> Unit,
+    label: String? = null,
+    @SuppressLint("ModifierParameter") modifier: Modifier = Modifier
 ) {
+    var expanded by remember { mutableStateOf(false) }
     ExposedDropdownMenuBox(
         expanded = expanded,
-        onExpandedChange = { onExpandedChange.invoke() },
-        modifier = Modifier.fillMaxWidth().height(54.dp),
+        onExpandedChange = { expanded = !expanded },
+        modifier = modifier
+            .fillMaxWidth()
+            .height(54.dp),
     ) {
         Column(
             modifier = Modifier.fillMaxWidth(),
@@ -48,10 +65,15 @@ fun DropDownMenu(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             NormalTextView(
-                value = listOfArray[selectedItemIndex],
+                value = listOfItems[selectedItemIndex],
                 onValueChange = {},
                 readOnly = true,
                 textStyle = TextStyle(),
+                label = {
+                    if (label != null) {
+                        TextView(text = label, textType = TextType.INPUT_TEXT_LABEL)
+                    }
+                },
                 trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded) },
                 modifier = Modifier
                     .menuAnchor()
@@ -67,9 +89,9 @@ fun DropDownMenu(
             )
             ExposedDropdownMenu(
                 expanded = expanded,
-                onDismissRequest = { onDismissRequest.invoke() }
+                onDismissRequest = { expanded = false }
             ) {
-                listOfArray.forEachIndexed { index, item ->
+                listOfItems.forEachIndexed { index, item ->
                     DropdownMenuItem(
                         text = {
                             TextView(
@@ -80,6 +102,7 @@ fun DropDownMenu(
                         },
                         onClick = {
                             onClickAction(index)
+                            expanded = false
                         },
                         modifier = Modifier.fillMaxWidth()
                     )
@@ -89,6 +112,7 @@ fun DropDownMenu(
     }
 }
 
+// Text field in material 1
 @Composable
 fun NormalTextView(
     value: String,

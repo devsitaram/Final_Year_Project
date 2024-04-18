@@ -1,5 +1,7 @@
 package com.sitaram.foodshare.features.dashboard.dashboardVolunteer.acceptFood
 
+import android.content.Intent
+import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -25,7 +27,6 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import com.sitaram.foodshare.R
-import com.sitaram.foodshare.features.dashboard.foodDetail.presentation.FoodDetailViewModel
 import com.sitaram.foodshare.features.dashboard.foodDetail.presentation.ViewFoodDetails
 import com.sitaram.foodshare.features.navigations.BtnNavScreen
 import com.sitaram.foodshare.helper.UserInterceptors
@@ -33,6 +34,8 @@ import com.sitaram.foodshare.theme.backgroundLayoutColor
 import com.sitaram.foodshare.theme.textColor
 import com.sitaram.foodshare.theme.white
 import com.sitaram.foodshare.utils.NetworkObserver
+import com.sitaram.foodshare.utils.UserInterfaceUtil.Companion.isLocationEnabled
+import com.sitaram.foodshare.utils.UserInterfaceUtil.Companion.showToast
 import com.sitaram.foodshare.utils.compose.DisplayErrorMessageView
 import com.sitaram.foodshare.utils.compose.DividerView
 import com.sitaram.foodshare.utils.compose.NetworkIsNotAvailableView
@@ -43,6 +46,9 @@ import com.sitaram.foodshare.utils.compose.TopAppBarView
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
+import androidx.activity.result.contract.ActivityResultContracts
+import android.provider.Settings
+import com.sitaram.foodshare.features.navigations.NavScreen
 
 @OptIn(ExperimentalCoroutinesApi::class)
 @Composable
@@ -50,9 +56,8 @@ fun FoodAcceptViewScreen(
     foodId: Int,
     title: String?,
     email: String?,
-    navController: NavController,
     mainNavController: NavHostController,
-    foodDetailViewModel: FoodDetailViewModel = hiltViewModel(),
+    foodAcceptViewModel: FoodAcceptViewModel = hiltViewModel(),
 ) {
 
     // Check The Internet Connection
@@ -64,14 +69,22 @@ fun FoodAcceptViewScreen(
     val userId = interceptors.getUserId()
     val username = interceptors.getUserName()
 
-    LaunchedEffect(key1 = foodDetailViewModel, block = {
-        foodDetailViewModel.getFoodDetailState(foodId)
-    })
-
-    val getFoodDetails = foodDetailViewModel.foodDetailState
-    val getFoodAcceptState = foodDetailViewModel.foodAcceptState
+    val getFoodDetails = foodAcceptViewModel.foodDetailState
+    val getFoodAcceptState = foodAcceptViewModel.foodAcceptState
     var isSuccess by remember { mutableStateOf(false) }
     val isCompletedDonation by remember { mutableStateOf(true) }
+
+    // location check
+    val intent = Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS)
+    val locationSettingsLauncher = rememberLauncherForActivityResult(ActivityResultContracts.StartActivityForResult()) { _ ->
+    }
+
+    LaunchedEffect(key1 = foodAcceptViewModel, block = {
+        foodAcceptViewModel.getFoodDetailState(foodId)
+        if (getFoodDetails.data == null){
+            foodAcceptViewModel.getSwipeToRefresh()
+        }
+    })
 
     if (getFoodDetails.isLoading) {
         ProgressIndicatorView()
@@ -84,8 +97,8 @@ fun FoodAcceptViewScreen(
     if (getFoodDetails.error != null || getFoodAcceptState.error != null) {
         DisplayErrorMessageView(
             text = getFoodAcceptState.error ?: getFoodAcceptState.error ?: stringResource(R.string.food_not_found),
-            vectorIcon = if (foodDetailViewModel.isRefreshing) null else Icons.Default.Refresh,
-            onClick = { foodDetailViewModel.getSwipeToRefresh() }
+            vectorIcon = if (foodAcceptViewModel.isRefreshing) null else Icons.Default.Refresh,
+            onClick = { foodAcceptViewModel.getSwipeToRefresh() }
         )
     }
 
@@ -102,7 +115,7 @@ fun FoodAcceptViewScreen(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         TopAppBarView(
-            title = title ?: "Food Details",
+            title = title ?: stringResource(id = R.string.food_details),
             color = textColor,
             backgroundColor = white,
             leadingIcon = Icons.Default.ArrowBackIosNew,
@@ -110,7 +123,7 @@ fun FoodAcceptViewScreen(
                 .shadow(4.dp)
                 .fillMaxWidth(),
             onClickLeadingIcon = {
-                navController.navigateUp()
+                mainNavController.navigateUp()
             }
         )
         DividerView(modifier = Modifier.fillMaxWidth(), thickness = 1.dp)
@@ -124,14 +137,19 @@ fun FoodAcceptViewScreen(
                         modifier = Modifier
                             .fillMaxSize()
                             .background(backgroundLayoutColor)
-                            .padding(bottom = 56.dp),
+                            .padding(bottom = 4.dp),
                     ) {
                         ViewFoodDetails(
                             food = it,
                             context = context,
                             isBtnVisible = true,
                             onClickViewMap = {
-                                mainNavController.navigate("GoogleMapView/${it.latitude.toString()}/${it.longitude.toString()}/${it.username}")
+                                if(isLocationEnabled(context)) {
+                                    mainNavController.navigate("GoogleMapView/${it.latitude.toString()}/${it.longitude.toString()}/${it.username}")
+                                } else {
+                                    showToast(context, context.getString(R.string.please_enable_location_services))
+                                    locationSettingsLauncher.launch(intent)
+                                }
                             },
                             onClickViewProfile = {
                                 mainNavController.navigate("UserDetailView/${it.userId}")
@@ -139,11 +157,11 @@ fun FoodAcceptViewScreen(
                             status = it.status,
                             onClickAcceptBtn = {
                                 MainScope().launch {
-                                    foodDetailViewModel.getAcceptFood(foodId, "Pending", userId, username)
+                                    foodAcceptViewModel.getAcceptFood(foodId, "Pending", userId, username)
                                 }
                             },
                             onClickCompletedBtn = {
-                                mainNavController.navigate("CompetedFoodHistory/${foodId}/${it.foodName}/${email}")
+                                mainNavController.navigate("DonationRating/${foodId}/${it.foodName}/${email}")
                             }
                         )
                     }
@@ -157,8 +175,9 @@ fun FoodAcceptViewScreen(
             title = stringResource(R.string.food_accepted),
             descriptions = getFoodAcceptState.data?.message,
             onDismiss = {
+                mainNavController.navigate(NavScreen.VolunteerDashboardPage.route)
+                // navController.navigate(BtnNavScreen.Home.route)
                 isSuccess = false
-                navController.navigate(BtnNavScreen.Home.route)
             }
         )
     }

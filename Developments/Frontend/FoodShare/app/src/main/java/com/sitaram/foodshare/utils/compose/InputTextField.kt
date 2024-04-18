@@ -44,7 +44,7 @@ import com.sitaram.foodshare.theme.primary
 import com.sitaram.foodshare.theme.red
 import com.sitaram.foodshare.theme.textColor
 
-// input text field
+// Composable function to display an input text field.
 @OptIn(ExperimentalMaterial3Api::class)
 @SuppressLint("ModifierParameter")
 @Composable
@@ -54,7 +54,7 @@ fun InputTextFieldView(
     label: String? = null,
     enabled: Boolean = true,
     readOnly: Boolean = false,
-    leadingIcon: @Composable() (() -> Unit)? = null,
+    leadingIcon: @Composable (() -> Unit)? = null,
     modifier: Modifier = Modifier,
     placeholder: String? = null,
     isEmptyValue: Boolean = false,
@@ -151,7 +151,7 @@ fun InputTextFieldView(
     }
 }
 
-// password input text field
+// Password input text field
 @OptIn(ExperimentalMaterial3Api::class)
 @SuppressLint("ModifierParameter")
 @Composable
@@ -297,7 +297,7 @@ private fun showKeyboard(context: Context) {
     inputMethodManager?.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0)
 }
 
-// text field
+// Text field
 @OptIn(ExperimentalMaterial3Api::class)
 @SuppressLint("ModifierParameter")
 @Composable

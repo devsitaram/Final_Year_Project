@@ -90,6 +90,7 @@ import com.sitaram.foodshare.utils.compose.TextView
 import com.sitaram.foodshare.utils.compose.TopAppBarIconView
 import com.sitaram.foodshare.utils.compose.VectorIconView
 import com.sitaram.foodshare.features.dashboard.dashboardAdmin.users.presentation.state.move
+import com.sitaram.foodshare.utils.compose.DividerView
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.MainScope
@@ -145,17 +146,18 @@ fun UsersViewScreenNgo(
                 .pullRefresh(pullRefreshState),
             contentAlignment = Alignment.TopCenter
         ) {
-            Column(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(bottom = 50.dp),
-                verticalArrangement = Arrangement.Top,
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
+
 
                 if (!isConnected) {
                     NetworkIsNotAvailableView()
                 } else {
+                    Column(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(bottom = 50.dp),
+                        verticalArrangement = Arrangement.Top,
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
 
                     if (getAllUsers.error != null) {
                         DisplayErrorMessageView(
@@ -214,6 +216,7 @@ fun UsersViewScreenNgo(
                                     .padding(bottom = 8.dp, start = 16.dp, end = 8.dp)
                                     .height(56.dp)
                             )
+                            DividerView()
                         }
 
                         if (updatedList.isEmpty()) {
@@ -252,13 +255,15 @@ fun UsersViewScreenNgo(
                                         )
                                     }
                                     .fillMaxSize()
-                                    .padding(horizontal = 16.dp).padding(bottom = 4.dp),
+                                    .padding(horizontal = 16.dp)
+                                    .padding(bottom = 4.dp, top = 8.dp),
                                 state = dragDropListState.lazyListState
                             ) {
                                 itemsIndexed(updatedList) { index, item ->
                                     var checked by remember { mutableStateOf(item?.isActive) }
                                     Column(
                                         modifier = Modifier
+                                            .padding(bottom = 4.dp)
                                             .composed {
                                                 val offsetOrNull =
                                                     dragDropListState.elementDisplacement.takeIf {
@@ -289,31 +294,32 @@ fun UsersViewScreenNgo(
                                                         usersViewModel.saveUserProfile(
                                                             profile = ProfileEntity(
                                                                 id = item?.id ?: 0,
-                                                                role = item?.role ?: "N/S",
-                                                                address = item?.address ?: "N/S",
+                                                                role = item?.role,
+                                                                address = item?.address ?: "N/A",
                                                                 isActive = item?.isActive,
-                                                                gender = item?.gender ?: "N/S",
+                                                                gender = item?.gender ?: "N/A",
                                                                 lastLogin = item?.lastLogin
-                                                                    ?: "N/S",
+                                                                    ?: "N/A",
                                                                 dateOfBirth = item?.dateOfBirth
-                                                                    ?: "N/S",
-                                                                modifyBy = item?.modifyBy ?: "N/S",
+                                                                    ?: "N/A",
+                                                                modifyBy = item?.modifyBy ?: "N/A",
                                                                 createdBy = item?.createdBy
-                                                                    ?: "N/S",
+                                                                    ?: "N/A",
                                                                 contactNumber = item?.contactNumber
-                                                                    ?: "N/S",
+                                                                    ?: "N/A",
                                                                 isDelete = item?.isDelete,
                                                                 isAdmin = item?.isAdmin,
                                                                 aboutsUser = item?.aboutsUser
-                                                                    ?: "N/S",
-                                                                photoUrl = item?.photoUrl ?: "N/S",
+                                                                    ?: "N/A",
+                                                                photoUrl = item?.photoUrl,
                                                                 createdDate = item?.createdDate
-                                                                    ?: "N/S",
+                                                                    ?: "N/A",
                                                                 modifyDate = item?.modifyDate
-                                                                    ?: "N/S",
-                                                                email = item?.email ?: "N/S",
+                                                                    ?: "N/A",
+                                                                email = item?.email,
                                                                 username = item?.username
-                                                                    ?: "Unknown"
+                                                                    ?: "Unknown",
+                                                                ngo = item?.ngo ?: 0
                                                             )
                                                         )
                                                     }.job

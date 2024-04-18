@@ -37,6 +37,7 @@ import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.PersonOutline
 import androidx.compose.material.icons.filled.PersonPin
 import androidx.compose.material.icons.filled.PhoneInTalk
+import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material.icons.filled.VerifiedUser
 import androidx.compose.material.pullrefresh.pullRefresh
 import androidx.compose.material.pullrefresh.rememberPullRefreshState
@@ -70,6 +71,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.google.gson.Gson
 import com.sitaram.foodshare.R
+import com.sitaram.foodshare.features.dashboard.dashboardDonor.post.presentation.listOfFoods
 import com.sitaram.foodshare.features.dashboard.profile.data.Profile
 import com.sitaram.foodshare.features.dashboard.profile.domain.ProfileModelDAO
 import com.sitaram.foodshare.utils.ApiUrl
@@ -86,7 +88,7 @@ import com.sitaram.foodshare.theme.skyBlue
 import com.sitaram.foodshare.theme.textColor
 import com.sitaram.foodshare.theme.transparent
 import com.sitaram.foodshare.theme.white
-import com.sitaram.foodshare.utils.ConverterUtil
+import com.sitaram.foodshare.utils.ConverterUtil.convertStringToDate
 import com.sitaram.foodshare.utils.ConverterUtil.convertUriToFile
 import com.sitaram.foodshare.utils.NetworkObserver
 import com.sitaram.foodshare.utils.UserInterfaceUtil.Companion.showToast
@@ -96,9 +98,10 @@ import com.sitaram.foodshare.utils.compose.AsyncImageView
 import com.sitaram.foodshare.utils.compose.ButtonSize
 import com.sitaram.foodshare.utils.compose.ButtonView
 import com.sitaram.foodshare.utils.compose.ConfirmationDialogView
+import com.sitaram.foodshare.utils.compose.DisplayErrorMessageView
+import com.sitaram.foodshare.utils.compose.DropDownMenu
 import com.sitaram.foodshare.utils.compose.NetworkIsNotAvailableView
 import com.sitaram.foodshare.utils.compose.PainterImageView
-import com.sitaram.foodshare.utils.compose.ProgressIndicatorView
 import com.sitaram.foodshare.utils.compose.ProcessingDialogView
 import com.sitaram.foodshare.utils.compose.TextType
 import com.sitaram.foodshare.utils.compose.TextView
@@ -116,28 +119,20 @@ import java.io.File
 fun ProfileViewScreen(profileViewModel: ProfileViewModel = hiltViewModel()) {
 
     // Check The Internet Connection
+    val context = LocalContext.current
     val connection by NetworkObserver.connectivityState()
     val isConnected = connection === NetworkObserver.ConnectionState.Available
+    val instance = UserInterceptors(context)
+    val auth = instance.getAuthenticate()
 
-    val context = LocalContext.current
     val userProfileData = profileViewModel.profileState
+    val scope = rememberCoroutineScope()
+    val scaffoldState = rememberBottomSheetScaffoldState()
     var isBottomSheetExpanded by remember { mutableStateOf(false) }
     var isShowConfirmation by remember { mutableStateOf(false) }
 
     if (userProfileData.isLoading) {
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .background(lightGray),
-            contentAlignment = Alignment.Center
-        ) {
-            ProgressIndicatorView(
-                modifier = Modifier
-                    .wrapContentSize()
-                    .align(Alignment.Center),
-                color = primary
-            )
-        }
+        ProcessingDialogView()
     }
 
     val pullRefreshState = rememberPullRefreshState(
@@ -145,12 +140,9 @@ fun ProfileViewScreen(profileViewModel: ProfileViewModel = hiltViewModel()) {
         onRefresh = { profileViewModel.getSwipeToRefresh() }
     )
 
-    if (userProfileData.isProgress) {
+    if (userProfileData.isLoading) {
         ProcessingDialogView()
     }
-
-    val scope = rememberCoroutineScope()
-    val scaffoldState = rememberBottomSheetScaffoldState()
 
     LaunchedEffect(key1 = Unit, block = {
         scaffoldState.bottomSheetState.collapse()
@@ -159,6 +151,13 @@ fun ProfileViewScreen(profileViewModel: ProfileViewModel = hiltViewModel()) {
     LaunchedEffect(key1 = scaffoldState.bottomSheetState.isExpanded, block = {
         isBottomSheetExpanded = scaffoldState.bottomSheetState.isExpanded
     })
+
+    LaunchedEffect(userProfileData.message){
+        if (userProfileData.message != null){
+            showToast(context, userProfileData.message)
+            profileViewModel.clearMessage()
+        }
+    }
 
     // checkbox action
     val isOnClickButtonSheet: () -> Unit = {
@@ -172,7 +171,6 @@ fun ProfileViewScreen(profileViewModel: ProfileViewModel = hiltViewModel()) {
     }
 
     var userId by remember { mutableIntStateOf(0) }
-
     var getNewProfileImg by remember { mutableStateOf<Uri?>(null) }
     var imageFile by remember { mutableStateOf<File?>(null) }
 
@@ -194,10 +192,14 @@ fun ProfileViewScreen(profileViewModel: ProfileViewModel = hiltViewModel()) {
             descriptions = stringResource(R.string.are_your_sure_you_want_to_change_your_profile_picture),
             onDismiss = { isShowConfirmation = false },
             onConfirm = {
-                isOnClickButtonSheet.invoke()
-                isShowConfirmation = false
                 MainScope().launch {
-                    profileViewModel.updateProfilePicture(userId, imageFile)
+                    if (imageFile != null) {
+                        profileViewModel.updateProfilePicture(userId, imageFile)
+                    } else {
+                        showToast(context, "Image is null")
+                    }
+                    isOnClickButtonSheet.invoke()
+                    isShowConfirmation = false
                 }
             }
         )
@@ -213,7 +215,6 @@ fun ProfileViewScreen(profileViewModel: ProfileViewModel = hiltViewModel()) {
                 modifier = Modifier.fillMaxWidth(),
                 colors = CardDefaults.cardColors(white)
             ) {
-
                 UpdateProfileButtonSheetField(
                     isOnClickButtonSheet = {
                         isOnClickButtonSheet.invoke()
@@ -228,17 +229,15 @@ fun ProfileViewScreen(profileViewModel: ProfileViewModel = hiltViewModel()) {
                         }.job
                     },
                     userProfileData = userProfileData.data?.userProfile,
-                    getNewProfileImg = getNewProfileImg // ?: ApiUrl.PROFILE_URL.toUri()
+                    getNewProfileImg = getNewProfileImg
                 )
             }
         }
     ) {
         // this is the screen
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .verticalScroll(rememberScrollState())
-        ) {
+        Column(modifier = Modifier
+            .fillMaxSize()
+            .verticalScroll(rememberScrollState())) {
             TopAppBarIconView(
                 title = stringResource(R.string.profile),
                 modifier = Modifier.shadow(1.5.dp),
@@ -270,50 +269,45 @@ fun ProfileViewScreen(profileViewModel: ProfileViewModel = hiltViewModel()) {
                                     .padding(16.dp),
                                 tint = gray,
                             )
-                            TextView(
-                                text = userProfileData.error, //, "User profile is empty!",
-                                textType = TextType.LARGE_TEXT_REGULAR,
-                                color = textColor,
+                            DisplayErrorMessageView(
+                                text = userProfileData.error,
+                                vectorIcon = if (profileViewModel.isRefreshing) null else Icons.Default.Refresh,
+                                onClick = { profileViewModel.getSwipeToRefresh() }
                             )
                         }
                     } else {
                         userProfileData.data?.userProfile?.let { it ->
                             userId = it.id ?: 0
-
-                            val inter = UserInterceptors(context)
-                            val auth = inter.getAuthenticate()
                             // Update only the desired fields
-                            auth?.apply {
-                                if (it.username?.isNotEmpty() == true) {
+                            val updateAuth = auth?.apply {
+                                if (it.username != null) {
                                     username = it.username
                                 }
-                                if (it.photoUrl?.isNotEmpty() == true){
+                                if (it.photoUrl != null){
                                     profile = it.photoUrl
                                 }
                             }
 
-                            // Save the modified Authentication object back to SharedPreferences
-                            val editor = inter.getPreInstEditor()
-                            editor.putString("authentication", Gson().toJson(auth))
+                            // Save the modified Authentication object back to Shared Preferences
+                            val editor = instance.getPreInstEditor()
+                            editor.putString("authentication", Gson().toJson(updateAuth))
                             editor.apply()
 
                             Column(
-                                modifier = Modifier
-                                    .fillMaxSize()
-                                    .background(cardColor),
+                                modifier = Modifier.fillMaxSize().background(cardColor),
                                 verticalArrangement = Arrangement.Top,
                                 horizontalAlignment = Alignment.CenterHorizontally
                             ) {
                                 ViewProfileDetails(
                                     userId = userId,
-                                    role = it.role ?: "N/S",
+                                    role = it.role ?: "",
                                     username = it.username ?: "User",
                                     email = it.email,
-                                    address = it.address?.takeIf { it != "null" } ?: "N/S",
-                                    contactNo = it.contactNumber?.takeIf { it != "null" } ?: "N/S",
-                                    gender = it.gender?.takeIf { it != "null" } ?: "N/S",
-                                    dateOfBirth = it.dateOfBirth ?: "N/S",
-                                    aboutsUser = it.aboutsUser?.takeIf { it != "null" } ?: "N/S",
+                                    address = it.address?.takeIf { it != "null" } ?: "N/A",
+                                    contactNo = it.contactNumber?.takeIf { it != "null" } ?: "N/A",
+                                    gender = it.gender?.takeIf { it != "null" } ?: "N/A",
+                                    dateOfBirth = it.dateOfBirth ?: "N/A",
+                                    aboutsUser = it.aboutsUser?.takeIf { it != "null" } ?: "N/A",
                                     profileUrl = it.photoUrl
                                 )
                             }
@@ -324,12 +318,10 @@ fun ProfileViewScreen(profileViewModel: ProfileViewModel = hiltViewModel()) {
         }
 
         if (isBottomSheetExpanded) {
-            Box(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .background(black.copy(alpha = 0.5f))
-                    .clickable(onClick = { isOnClickButtonSheet.invoke() })
-            )
+            Box(modifier = Modifier
+                .fillMaxSize()
+                .background(black.copy(alpha = 0.5f))
+                .clickable(onClick = { isOnClickButtonSheet.invoke() }))
         }
     }
 }
@@ -347,7 +339,7 @@ fun ViewProfileDetails(
     aboutsUser: String? = null,
     profileUrl: String? = null
 ) {
-    val convertDate = ConverterUtil.convertStringToDate(dateOfBirth)
+    val convertDate = convertStringToDate(dateOfBirth)
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -536,13 +528,17 @@ fun UpdateProfileButtonSheetField(
     getNewProfileImg: Uri?,
 ) {
 
+    var selectedItemIndex by remember { mutableIntStateOf(0) }
+    val listOfGender = listOf("Male", "Female")
+    var isValidPhoneNumber by remember { mutableStateOf(false) }
+
     userProfileData?.let {
-        var username by remember { mutableStateOf(userProfileData.username ?: "N/S") }
-        var address by remember { mutableStateOf(userProfileData.address ?: "N/S") }
-        var contactNum by remember { mutableStateOf(userProfileData.contactNumber ?: "N/S") }
-        var gender by remember { mutableStateOf(userProfileData.gender ?: "N/S") }
-        var dateOfBirth by remember { mutableStateOf(userProfileData.dateOfBirth ?: "N/S") }
-        var aboutsUser by remember { mutableStateOf(userProfileData.aboutsUser ?: "N/S") }
+        var username by remember { mutableStateOf(userProfileData.username ?: "") }
+        var address by remember { mutableStateOf(userProfileData.address ?: "") }
+        var contactNum by remember { mutableStateOf(userProfileData.contactNumber ?: "") }
+        val gender by remember { mutableStateOf(listOfFoods[selectedItemIndex]) }
+        var dateOfBirth by remember { mutableStateOf(userProfileData.dateOfBirth ?: "") }
+        var aboutsUser by remember { mutableStateOf(userProfileData.aboutsUser ?: "") }
         val profile by remember { mutableStateOf(userProfileData.photoUrl) }
 
         Column(
@@ -566,7 +562,7 @@ fun UpdateProfileButtonSheetField(
                     )
                 }
                 TextView(
-                    text = "Update your profile details",
+                    text = stringResource(R.string.update_your_profile),
                     textType = TextType.TITLE4,
                     color = textColor,
                     textAlign = TextAlign.Start,
@@ -661,7 +657,12 @@ fun UpdateProfileButtonSheetField(
 
                 InputTextFieldView(
                     value = contactNum,
-                    onValueChange = { contactNum = it },
+                    onValueChange = {
+                        if (it.length <= 10 || it.length < contactNum.length) {
+                            contactNum = it
+                            isValidPhoneNumber = true
+                        }
+                    },
                     leadingIcon = {
                         VectorIconView(
                             imageVector = Icons.Default.PhoneInTalk,
@@ -672,7 +673,7 @@ fun UpdateProfileButtonSheetField(
                     placeholder = stringResource(R.string.enter_phone_no),
                     isEmptyValue = false,
                     errorColor = red,
-                    isInvalidValue = isValidPhoneNumber(contactNum),
+                    isInvalidValue = if (contactNum.length == 10) false else isValidPhoneNumber,
                     invalidMessage = stringResource(R.string.invalid_contact_number),
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Phone),
                     modifier = Modifier
@@ -681,26 +682,14 @@ fun UpdateProfileButtonSheetField(
                         .height(58.dp)
                 )
 
-                InputTextFieldView(
-                    value = gender,
-                    onValueChange = {
-                        gender = it
-                    },
-                    leadingIcon = {
-                        VectorIconView(
-                            imageVector = Icons.Default.Person,
-                            modifier = Modifier.size(20.dp)
-                        )
-                    },
+                Spacer(modifier = Modifier.padding(top = 4.dp))
+                DropDownMenu(
+                    listOfItems = listOfGender,
+                    selectedItemIndex = selectedItemIndex,
                     label = stringResource(R.string.gender),
-                    placeholder = stringResource(R.string.enter_gender),
-                    isEmptyValue = false,
-                    errorColor = red,
-                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(vertical = 4.dp)
-                        .height(58.dp)
+                    onClickAction = { index ->
+                        selectedItemIndex = index
+                    }
                 )
 
                 InputTextFieldView(
@@ -749,11 +738,11 @@ fun UpdateProfileButtonSheetField(
                     onClick = {
                         val profileDTO = ProfileModelDAO(
                             username = username.trim(),
-                            address = address.trim(),
-                            contactNum = if (contactNum != "N/S") contactNum.trim() else null,
+                            address = address.trim().ifEmpty { null },
+                            contactNum = if (isValidPhoneNumber(contactNum)) contactNum else null,
                             gender = gender.trim(),
-                            dob = dateOfBirth.trim(),
-                            aboutsUser = aboutsUser.trim(),
+                            dob = dateOfBirth.trim().ifEmpty { null },
+                            aboutsUser = aboutsUser.trim().ifEmpty { null },
                         )
                         onClickUpdateProfile.invoke(profileDTO)
                     },

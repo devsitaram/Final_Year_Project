@@ -24,7 +24,7 @@ class ManageAccountViewModel @Inject constructor(private val manageAccountUseCas
     // update password
     fun updatePassword(email: String, newPassword: String) {
         // second way
-        manageAccountUseCase(email.trim(), newPassword.trim()).onEach { result ->
+        manageAccountUseCase.invoke(email.trim(), newPassword.trim()).onEach { result ->
             _updateAccountState = when (result) {
                 is Resource.Loading -> {
                     UpdateAccountState(isLoading = true)

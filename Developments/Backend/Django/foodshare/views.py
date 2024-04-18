@@ -41,7 +41,7 @@ class NgoProfile(APIView):
             return Response({"message": "Sorry, something went wrong on our end. Please try again later.", "s_success": False, "status": 500})
 
 # Save the device to FCM token
-class NotificationDeviceToken(APIView):
+class DeviceTokenView(APIView):
     authentication_classes = [TokenAuthentication]
     permission_classes = [AllowAny]
 
@@ -51,22 +51,21 @@ class NotificationDeviceToken(APIView):
             device_token = request.query_params.get("token")
             created_by = request.query_params.get("created_by")
 
-            # Check if user_id already exists in the database
-            notification = Notification.objects.filter(user_id=user_id).first()
-            print(device_token)
-            # If user_id exists, update the device_token
-            if notification:
-                notification.token = device_token
-                notification.save()
-                return Response({'message': 'update device token success', 'is_success': True, 'status': 200})
+            # Check if user id already exists in the database
+            devices = Device.objects.filter(user_id=user_id).first()
+
+            # If user_id exists, update the device_token if the token creation date is over 100 days
+            if devices:
+                devices.token = device_token
+                devices.save()
+                return Response({'message': 'Updated device token successfully', 'is_success': True, 'status': 200})
 
             # If user_id does not exist, create a new entry
             else:
-                Notification.objects.create(user_id=user_id, token=device_token, created_by=created_by)
+                Device.objects.create(user_id=user_id, token=device_token, created_by=created_by)
                 return Response({'message': 'New device token saved', 'is_success': True, 'status': 200})
         except Exception as e:
             return Response({"message": "Sorry, something went wrong on our end. Please try again later.", 'is_success': False, 'status': 500})
-
 
 '''
 login authentication
@@ -138,7 +137,7 @@ class RegisterUser(APIView):
                     Users.objects.create_user(email=email, username=username, role=role, password=password)
                     return Response({'message': 'User registered successfully', 'is_success': True, 'status': 200})
                 except Exception as e:
-                    return Response({'message': str(e), 'is_success': False, 'status': 500})
+                    return Response({'message': "Invali user", 'is_success': False, 'status': 500})
             else:
                 return Response({'message': 'Enter a valid email address!', 'is_success': False, 'status': 400})
         except Exception as e:
@@ -171,6 +170,18 @@ class AllFoodDetails(APIView):
         serializer = FoodSerializer(foods, many=True)  # Serialize queryset
         return Response({"foods": serializer.data})
 
+# Get All Notification
+class GetNotifications(APIView):
+    permission_classes = [AllowAny]
+
+    def get(self, request):
+        notifications = Notification.objects.all()
+        if notifications.exists():
+            serializer = NotificationSerializer(notifications, many=True)
+            return Response({"message": "Success", "is_success": True, "status": 200, "notifications": serializer.data})
+        else:
+            return Response({"message": "Notifications are not available", "is_success": False, "status": 404})
+        
 '''
 Profile:->
 get user profile details
@@ -240,32 +251,31 @@ class UpdateProfilePicture(APIView):
             profile = request.FILES.get('image')
 
             if not user_id:
-                return Response({"message": "No user ID provided", "is_success": False, "status":400})
+                return Response({"message": "No user Id provided", "is_success": False, "status":400})
 
             user = Users.objects.filter(id=user_id).first()
             if not user:
                 return Response({"message": "User not found", "is_success": False, "status":404})
 
-            # Update the profile image
             if profile:
-                # Save the image file to the desired directory
+                # Save the profile file to the desired directory
                 file_path = os.path.join(settings.MEDIA_ROOT, 'user_images', profile.name)
                 with open(file_path, 'wb') as destination:
                     for chunk in profile.chunks():
                         destination.write(chunk)
 
-                user.modify_by = user.username
+                user.modify_by = "Self"
                 user.modify_date = datetime.now().strftime('%Y-%m-%d')
                 user.photo_url = file_path
-
                 user.save()
-                serialized_user = UserSerializer(user)
+
+                serialized_user = UserSerializer(user).data
 
             return Response({
                 "message": "Profile image is updated",
                 "is_success": True,
                 "status": 200,
-                "user_profile": serialized_user.data
+                "user_profile": serialized_user
             })
 
         except Exception as e:
@@ -434,30 +444,56 @@ class AddNewFoodView(APIView):
         try:
             serializer = FoodSerializer(data=request.data)
             
-            # Retrieve FCM tokens from Notification model
-            
+            # Retrieve FCM tokens from divice model
             if serializer.is_valid():
                 food_instance = serializer.save()
                 title = food_instance.food_name
                 body = food_instance.descriptions 
-                
-                return Response({"message": "Donation successful", "is_success": True, "status": 200})
-                # Get FCM Token and Send notifications to all users
-                # fcm_tokens = Notification.objects.all().values_list('token', flat=True)
-                # list_of_tokens = list(fcm_tokens)
+                created_by = food_instance.created_by
+                user_id = food_instance.donor
 
-                # result = send_notifications(title=title, body=body, list_of_tokens=list_of_tokens)
-                
-                # # Check if notifications were sent successfully
-                # if result.status_code == 200:
-                #     return Response({"message": "Donation successful", "is_success": True, "status": 200})
-                # else:
-                #     return Response({"message": "Failed to send notifications", "is_success": False, "status": 400})
+                # Get FCM Token and send notifications to all users
+                fcm_devices_token = Device.objects.exclude(user_id=user_id).values_list('token', flat=True)
+                list_of_tokens = list(fcm_devices_token)
+                print(list_of_tokens)
+
+                result = send_notifications(title=title, body=body, list_of_tokens=list_of_tokens)
+                # Create a new Notification instance
+                Notification.objects.create(
+                    title=food_instance.food_name,
+                    descriptions=food_instance.descriptions,
+                    created_by=food_instance.created_by,
+                    food=food_instance
+                )
+                # # # Check if notifications were sent successfully
+                if result.status_code == 200:
+                    return Response({"message": "Donation successful", "is_success": True, "status": 200})
+                else:
+                    return Response({"message": "Failed to send notifications", "is_success": False, "status": 400})
             else:
                 return Response({"message": 'Enter the valid data', "is_success": False, "status": 400})
         except Exception as e:
             return Response({"message": "Sorry, something went wrong on our end. Please try again later.", 'is_success': False, 'status': 500})
         
+
+class GetNewToken(APIView):
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [AllowAny]
+
+    def get(self, request):
+        try:
+            user_id = 13
+            # Retrieve tokens for all users except the one with ID 13
+            fcm_devices_token = Device.objects.exclude(user_id=user_id).values_list('token', flat=True)
+            list_of_tokens = list(fcm_devices_token)
+            if list_of_tokens:
+                return Response({"message": "FCM tokens retrieved successfully", "is_success": True, "status": 200, "data": list_of_tokens})
+            else:
+                return Response({"message": "No FCM tokens found for any users except user with ID 13", "is_success": False, "status": 404})
+        except Exception as e:
+            return Response({"message": "An error occurred", "is_success": False, "status": 500})
+
+
 '''
 Get new donate food with notification
 '''
@@ -479,12 +515,13 @@ class GetNewFoods(APIView):
             
             # Serialize food data along with associated user details
             food_data = []
+            notification_num = Notification.objects.filter(status=False).count()
             for food in foods:
                 food_dict = FoodSerializer(food).data
                 user_data = UserSerializer(food.donor).data
                 food_dict['donor'] = user_data
                 food_data.append(food_dict)
-            return Response({"message": "New donation food details", "is_success": True, "status": 200, "foods": food_data})
+            return Response({"message": "New donation food details", "is_success": True, "status": 200, "notification":notification_num,  "foods": food_data})
         except Exception:
             return Response({"message": "Sorry, something went wrong on our end. Please try again later.", 'is_success': False, 'status': status.HTTP_500_INTERNAL_SERVER_ERROR})
 
@@ -779,9 +816,9 @@ class DonateFoodUpdate(APIView):
             if serializer.is_valid():
                 food.modify_date = datetime.now().strftime('%Y-%m-%d')
                 serializer.save()
-            print(serializer.data)
+
             return Response({
-                "message": "Donate food is updated",
+                "message": "Updated Successful.",
                 "is_success": True,
                 "status": 200,
                 "food": serializer.data
@@ -1019,7 +1056,7 @@ class GetAllNumberOfDataView(APIView):
 
             # Check if user role is specified
             if role == "admin":
-                device_count = Notification.objects.count()
+                device_count = Device.objects.count()
                 data['device'] = device_count
 
             return Response({"message": "Success", "is_success": True, "status": 200, "data": data})

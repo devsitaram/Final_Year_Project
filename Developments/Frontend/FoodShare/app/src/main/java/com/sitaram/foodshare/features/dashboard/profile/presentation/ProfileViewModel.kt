@@ -9,7 +9,6 @@ import com.sitaram.foodshare.helper.Resource
 import com.sitaram.foodshare.features.dashboard.profile.domain.ProfileUseCase
 import com.sitaram.foodshare.features.dashboard.profile.domain.ProfileModelDAO
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
@@ -20,7 +19,7 @@ import javax.inject.Inject
 @HiltViewModel
 class ProfileViewModel @Inject constructor(private val profileUseCase: ProfileUseCase): ViewModel() {
 
-    var isRefreshing: Boolean = false
+    var isRefreshing by mutableStateOf(false)
 
     private var _profileState by mutableStateOf(ProfileState())
     val profileState: ProfileState get() = _profileState
@@ -32,7 +31,7 @@ class ProfileViewModel @Inject constructor(private val profileUseCase: ProfileUs
     private fun getUserProfileDetails() {
         _profileState = ProfileState(isLoading = true)
         viewModelScope.launch {
-            profileUseCase().onEach { result ->
+            profileUseCase.invoke().onEach { result ->
                 _profileState = when (result) {
                     is Resource.Loading -> {
                         ProfileState(isLoading = true)
@@ -49,38 +48,38 @@ class ProfileViewModel @Inject constructor(private val profileUseCase: ProfileUs
     }
 
     fun updateProfileDetails(userId: Int?, profileModelDAO: ProfileModelDAO?) {
-        _profileState = ProfileState(isProgress = true, data = _profileState.data)
-        profileUseCase(userId, profileModelDAO).onEach { result ->
+        _profileState = _profileState.copy(isLoading = true)
+        profileUseCase.invoke(userId, profileModelDAO).onEach { result ->
             _profileState = when (result) {
                 is Resource.Loading -> {
-                    ProfileState(isProgress = true, data = _profileState.data)
+                    _profileState.copy(isLoading = true)
                 }
 
                 is Resource.Success -> {
-                    ProfileState(data = result.data)
+                    ProfileState(data = result.data, isLoading = false, message = result.data?.message)
                 }
 
                 is Resource.Error -> {
-                    ProfileState(error = result.message)
+                    _profileState.copy(error = result.message, isLoading = false)
                 }
             }
         }.launchIn(viewModelScope)
     }
 
     fun updateProfilePicture(userId: Int, imageFile: File?) {
-        _profileState = ProfileState(isProgress = true, data = _profileState.data)
+        _profileState = _profileState.copy(isLoading = true)
         profileUseCase.invoke(userId, imageFile).onEach { result ->
             _profileState = when (result) {
                 is Resource.Loading -> {
-                    ProfileState(isProgress = true, data = _profileState.data)
+                    _profileState.copy(isLoading = true)
                 }
 
                 is Resource.Success -> {
-                    ProfileState(data = result.data)
+                    ProfileState(data = result.data, message = result.data?.message)
                 }
 
                 is Resource.Error -> {
-                    ProfileState(error = result.message)
+                    _profileState.copy(error = result.message, isLoading = false)
                 }
             }
         }.launchIn(viewModelScope)
@@ -88,24 +87,26 @@ class ProfileViewModel @Inject constructor(private val profileUseCase: ProfileUs
 
     fun getSwipeToRefresh() {
         isRefreshing = true
-        profileUseCase().onEach { result ->
-            delay(1000)
-            repeat(3) {
+        profileUseCase.invoke().onEach { result ->
                 when (result) {
                     is Resource.Loading -> {
                         isRefreshing = true
                     }
 
                     is Resource.Success -> {
-                        _profileState = ProfileState(data = result.data)
+                        _profileState = _profileState.copy(data = result.data)
+                        isRefreshing = false
                     }
 
                     is Resource.Error -> {
-                        _profileState = ProfileState(error = result.message)
+                        _profileState = _profileState.copy(error = result.message)
+                        isRefreshing = false
                     }
                 }
-            }
-            isRefreshing = false
         }.launchIn(viewModelScope)
+    }
+
+    fun clearMessage() {
+        _profileState = _profileState.copy(message = null)
     }
 }

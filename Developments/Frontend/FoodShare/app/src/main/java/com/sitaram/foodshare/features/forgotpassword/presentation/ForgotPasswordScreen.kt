@@ -2,8 +2,10 @@ package com.sitaram.foodshare.features.forgotpassword.presentation
 
 import android.Manifest
 import android.content.pm.PackageManager
+import android.os.Build
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -51,7 +53,7 @@ import com.sitaram.foodshare.theme.primary
 import com.sitaram.foodshare.theme.red
 import com.sitaram.foodshare.theme.textColor
 import com.sitaram.foodshare.theme.white
-import com.sitaram.foodshare.utils.UserInterfaceUtil.Companion.showNotification
+import com.sitaram.foodshare.utils.UserInterfaceUtil.Companion.showLocalNotification
 import com.sitaram.foodshare.utils.Validators.isValidEmailAddress
 import com.sitaram.foodshare.utils.compose.ButtonSize
 import com.sitaram.foodshare.utils.compose.ButtonView
@@ -63,6 +65,7 @@ import com.sitaram.foodshare.utils.compose.VectorIconView
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
 
+@RequiresApi(Build.VERSION_CODES.TIRAMISU)
 @Composable
 fun ForgotPasswordViewScreen(
     navController: NavHostController,
@@ -93,7 +96,6 @@ fun ForgotPasswordViewScreen(
             notificationPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
         }
     })
-
 
     var isVerifyEmail by remember { mutableStateOf(false) }
     var passwordMatch by remember { mutableStateOf(false) }
@@ -133,22 +135,22 @@ fun ForgotPasswordViewScreen(
         }
 
         if (updatePasswordResult.isLoading) {
-            ProcessingDialogView(title = stringResource(R.string.email_verifying))
+            ProcessingDialogView(title = stringResource(R.string.update_password))
         }
 
-        LaunchedEffect(key1 = verifyEmailResult, key2 = updatePasswordResult) {
-            if (!verifyEmailResult.isError.isNullOrEmpty()) {
-                descriptions = "This $email has been suited but" + verifyEmailResult.isError // Not found
+        LaunchedEffect(key1 = verifyEmailResult.isError, key2 = updatePasswordResult.isError) {
+            if (verifyEmailResult.isError != null) {
+                descriptions = "This '$email' has been suited. " + verifyEmailResult.isError // Not found
                 showErrorDialogBox = true
             }
 
-            if (!updatePasswordResult.isError.isNullOrEmpty()) {
+            if (updatePasswordResult.isError != null) {
                 descriptions = updatePasswordResult.isError
                 showErrorDialogBox = true
             }
         }
 
-        LaunchedEffect(key1 = verifyEmailResult, block = {
+        LaunchedEffect(key1 = verifyEmailResult.data, block = {
             if (verifyEmailResult.data?.isSuccess == true) {
                 isVerifyEmail = true
             }
@@ -167,7 +169,9 @@ fun ForgotPasswordViewScreen(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.Start
             ) {
-                IconButton(onClick = { navController.navigateUp() }) {
+                IconButton(onClick = {
+                        navController.navigateUp()
+                }) {
                     Icon(
                         imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                         contentDescription = null
@@ -238,7 +242,7 @@ fun ForgotPasswordViewScreen(
                 ButtonView(
                     onClick = {
                         emailEmptyValue = isEmailEmpty
-                        if (!isEmailEmpty) {
+                        if (!isEmailEmpty && isValidEmailAddress(email)) {
                             onClickResetPassword.invoke()
                         } else {
                             emailErrorValue = false
@@ -256,7 +260,7 @@ fun ForgotPasswordViewScreen(
     } else {
         verifyEmailResult.data?.let {
 
-            LaunchedEffect(key1 = updatePasswordResult, block = {
+            LaunchedEffect(key1 = updatePasswordResult.data, block = {
                 if (updatePasswordResult.data?.isSuccess == true) {
                     showSuccessDialogBox = true
                 }
@@ -286,11 +290,10 @@ fun ForgotPasswordViewScreen(
                     horizontalArrangement = Arrangement.Start
                 ) {
                     IconButton(
-                        onClick = { isVerifyEmail = false }
+                        onClick = { navController.navigateUp() }
                     ) {
-                        Icon(
+                        VectorIconView(
                             imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                            contentDescription = null
                         )
                     }
                 }
@@ -410,7 +413,7 @@ fun ForgotPasswordViewScreen(
             descriptions = stringResource(R.string.your_password_update_has_been_confirmed),
             onDismiss = {
                 showSuccessDialogBox = false
-                showNotification(context, context.getString(R.string.reset_password),
+                showLocalNotification(context, context.getString(R.string.reset_password),
                     context.getString(
                         R.string.currently_your_password_has_been_updated
                     )

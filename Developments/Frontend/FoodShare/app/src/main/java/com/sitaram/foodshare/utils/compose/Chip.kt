@@ -18,6 +18,21 @@ import com.sitaram.foodshare.theme.lightGray
 import com.sitaram.foodshare.theme.transparent
 import com.sitaram.foodshare.theme.white
 
+/**
+ * Composable function to display a chip view.
+ *
+ * @param text The text to display in the chip.
+ * @param textColor The color of the text.
+ * @param textType The type of text style to apply.
+ * @param modifier The modifier for the chip.
+ * @param colors The colors for the chip.
+ * @param onClick Callback for when the chip is clicked.
+ * @param enabled Whether the chip is enabled or not.
+ * @param interactionSource The interaction source for the chip.
+ * @param shape The shape of the chip.
+ * @param border The border stroke of the chip.
+ * @param leadingIcon The leading icon of the chip.
+ */
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun ChipView(

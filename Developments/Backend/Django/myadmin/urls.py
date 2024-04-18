@@ -5,7 +5,7 @@ from foodshare.views import *
 urlpatterns = [
     # apis for web admin page
     path('', admin_login, name='admin_login'),
-    path('api/register/user', register_user, name='get_register_user'),
+    path('api/add/user', register_user, name='get_register_user'),
     path('reset_password/', reset_password, name='reset_password'),
     path('logout/', logout_view, name='logout'),
     path('api/user/profile', UserProfile.as_view(), name='get_user_profile'),
