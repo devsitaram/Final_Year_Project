@@ -13,5 +13,3 @@ Install MySQL Server for establishing the database connection.
 ngrok (tools):
 
 Use ngrok to convert localhost from http://127.0.0.1:8000/ to https://....api/. This is necessary for developing the Android app securely in the production phase. If you have any alternative approach, you can try it.
-Overal description How to Download the android stuidio, MySql Database, VS Code, and Ngrok
-https://drive.google.com/drive/folders/1dkiU_il-efSh6IAu_N8Wl9sqP_3GY1PF
