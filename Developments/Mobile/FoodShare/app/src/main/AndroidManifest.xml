@@ -16,8 +16,6 @@
         tools:ignore="PermissionImpliesUnsupportedChromeOsHardware" />
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
 
-    <!--        Firebase_API_Key= AAAAw-NCzFM:APA91bHGq2kIJh4m9wBnNEFWIdMfwI_jSCcBxOCSPWDi0Sgvr_A2B8LyQVpPaA5baBVYmGV2ld5Q8osOTDOoJVfECNvjkue9cOVqf7TlKHpz6mS0MrNxXfoWU11_79TOAOnNGqzXMdUa-->
-
     <application
         android:name=".BaseApplication"
         android:allowBackup="true"
@@ -34,7 +32,7 @@
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"
-            android:value="AIzaSyDup0LWYQ71XybzV172L5-esHMiDCVCvEI" />
+            android:value="GOOGLE_MAP_KEY" />
 
         <meta-data
             android:name="com.google.firebase.messaging.default_notification_icon"

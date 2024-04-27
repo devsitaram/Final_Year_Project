@@ -85,6 +85,7 @@ class ApiUrl {
         const val PROFILE_URL = "/media/util_images/male_profile.jpg"
         const val MALE_PROFILE_URL = "/media/util_images/male_profile.jpg"
         const val FEMALE_PROFILE_URL = "/media/util_images/female_profile.jpg"
+        const val KEY = "AIzaSyDup0LWYQ71XybzV172L5-esHMiDCVCvEI"
         const val FOOD_URL = "https://prints.ultracoloringpages.com/42bab3c21f818f0062fd0e9b56d499ec.png"
     }
 }
