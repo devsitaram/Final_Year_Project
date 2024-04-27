@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # Food Donation System
 
 Welcome to the Food Donation project (Waste Food Donation System and Food Share App)! This system facilitates the donation and distribution of food to those in need. Below are the instructions on how to open and run the project.
@@ -58,3 +59,20 @@ https://drive.google.com/file/d/1lg1bI-V5_UZj_JgQ4GbvJUQun7R1rAiV/view?usp=shari
 -> Donate food with food details and donor profile details
 -> View History
 -> Donation Rating
+=======
+Welcome to the Food Donation System project! This system facilitates the donation and distribution of food to those in need. Below are the instructions on how to open and run the project.
+
+Installation
+Android Studio (Jellyfish 2023.3.1):
+
+Install the latest version for debugging and running the mobile application.
+Visual Studio Code:
+
+Use it to run the backend server and the web application.
+MySQL Server (MySQL Installer 8.0.36):
+
+Install MySQL Server for establishing the database connection.
+ngrok (tools):
+
+Use ngrok to convert localhost from http://127.0.0.1:8000/ to https://....api/. This is necessary for developing the Android app securely in the production phase. If you have any alternative approach, you can try it.
+>>>>>>> c3f6082f6765ba48a0ccca10645dd78cce2d6cf5
