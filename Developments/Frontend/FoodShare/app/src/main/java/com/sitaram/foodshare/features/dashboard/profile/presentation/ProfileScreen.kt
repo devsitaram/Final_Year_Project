@@ -761,3 +761,40 @@ fun UpdateProfileButtonSheetField(
         }
     }
 }
+
+//val sheetState = rememberModalBottomSheetState()
+//val scope = rememberCoroutineScope()
+//var showBottomSheet by remember { mutableStateOf(false) }
+//Scaffold(
+//bottomBar = {
+//    MstButton(
+//        text = "Show Button",
+//        onClick = {
+//            scope.launch {
+//                sheetState.show()
+//                showBottomSheet = true
+//            }
+//        }
+//    )
+//},
+//) {
+//    if (showBottomSheet) {
+//        ModalBottomSheet(
+//            onDismissRequest = {
+//                showBottomSheet = false
+//            },
+//            sheetState = sheetState
+//        ) {
+//            // Sheet content
+//            MstLargeButton(
+//                text = "Hide bottom sheet",
+//                onClick = {
+//                    scope.launch { sheetState.hide() }.invokeOnCompletion {
+//                        if (!sheetState.isVisible) {
+//                            showBottomSheet = false
+//                        }
+//                    }
+//                })
+//        }
+//    }
+//}

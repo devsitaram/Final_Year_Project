@@ -1,0 +1,143 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<head>
+  <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+  <script type="text/javascript">
+    google.charts.load('current', {'packages':['corechart']});
+    google.charts.setOnLoadCallback(fetchAndDrawChart);
+
+    function fetchAndDrawChart() {
+      fetch('http://127.0.0.1:8000/api/data/count?role=admin')
+        .then(response => response.json())
+        .then(data => {
+          var chartData = [
+            ['Task', 'Count'],
+            ['User', data.data.user],
+            ['Report', data.data.report],
+            ['History', data.data.history],
+            ['Food', data.data.food],
+            ['Device', data.data.device]
+          ];
+
+          drawChart(chartData);
+        })
+        .catch(error => {
+          console.error('Error fetching data:', error);
+        });
+    }
+
+    function drawChart(data) {
+      var chartData = google.visualization.arrayToDataTable(data);
+
+      var options = {
+        title: 'Food Share System Latest Data'
+      };
+
+      var chart = new google.visualization.PieChart(document.getElementById('piechart'));
+
+      chart.draw(chartData, options);
+    }
+  </script>
+</head>
+
+<div class="main">
+  <div style="width: 100%; white-space: nowrap; display: flex;">
+
+      <!-- Left content -->
+      <div style="width: 20%; height: 100%; background-color: whitesmoke; display: inline-block; vertical-align: top;">
+        <div class="app-accounts module">
+          <caption style="background: linear-gradient(to right, #fff, #fff);">
+            <h2 style="background: linear-gradient(to right, #fff, #fff); font-size: 16px; color: black; font-weight: bold; padding-top: 16px; padding-bottom: 16px;">Food Share Tables</h2>
+          <table>
+              <tbody>
+                  {% for table_name in list_of_table %}
+                  {% if not table_name|slice:":6" == 'django' and not table_name|slice:":5" == 'auth_' and not table_name|slice:":10" == 'authtoken_' %}
+                  {% with trimmed_table_name=table_name|cut:"foodshare_" %}
+                  <tr class="model-{{ table_name }}">
+                      <th scope="row" style="text-transform: uppercase;">
+                          <a href="{% url 'view_data' table_name=table_name %}">{{ trimmed_table_name }}</a>
+                      </th>
+                      {% if trimmed_table_name == "users" %}
+                          <td>
+                              <a href="{% url 'add_new_user' table_name=table_name %}">Add</a> {% comment %} class="addlink" {% endcomment %}
+                          </td>
+                      {% else %}
+                          <td>
+                          </td>
+                      {% endif %}
+                  </tr>
+                  {% endwith %}
+                  {% endif %}
+                  {% endfor %}
+              </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Right content -->
+      <div style="width: 80%; height: 100%; background-color: white; display: inline-block; vertical-align: top;">
+          <div id="piechart" style="width: 100%; height: 500px;"></div>
+        </div>
+      </div>
+      
+  </div>
+</div>
+
+<style>
+  /* Add styles for the profile card */
+  .profile-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: absolute;
+    top: 50px; /* Adjust as needed */
+    right: 10px; /* Adjust as needed */
+    background: white;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    z-index: 999; /* Ensure the profile card appears above other elements */
+    text-align: center; /* Center align all content */
+  }
+
+  /* Style the profile image to be circular */
+  .profile-card img {
+      border-radius: 50%;
+      width: 100px; /* Set width and height to maintain aspect ratio */
+      height: 100px;
+      object-fit: cover; /* Ensure the image covers the entire area */
+      margin-bottom: 10px; /* Add margin at the bottom for spacing */
+  }
+  
+    .table {
+        width: 100%;
+        border-collapse: collapse;
+        border: 1px solid #ddd;
+    }
+
+    th, td {
+        padding: 8px;
+        text-align: left;
+        border-bottom: 1px solid #ddd;
+    }
+
+    th {
+        background-color: #f2f2f2;
+    }
+
+    .addlink {
+        text-decoration: none;
+        color: #fff;
+        padding: 5px 10px;
+        border-radius: 3px;
+    }
+
+    .addlink:hover {
+        background-color: #0056b3;
+    }
+</style>
+
+{% endblock %}
