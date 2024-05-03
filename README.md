@@ -3,7 +3,7 @@
 
 Welcome to the Food Donation project (Waste Food Donation System and Food Share App)! This system facilitates the donation and distribution of food to those in need. Below are the instructions on how to open and run the project.
 
-## Installation
+## Installation new
 
 1. Android Studio (Jellyfish 2023.3.1):
    - Install the latest version for debugging and running the mobile application.
