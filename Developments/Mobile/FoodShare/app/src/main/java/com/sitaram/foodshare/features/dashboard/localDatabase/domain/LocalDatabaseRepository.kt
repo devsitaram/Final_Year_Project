@@ -9,7 +9,7 @@ interface LocalDatabaseRepository {
     suspend fun saveFoodDetails(food: FoodsEntity)
     suspend fun saveUserProfile(profile: ProfileEntity)
     suspend fun saveHistoryDetail(history: HistoryEntity)
-    suspend fun getFoodDetailById(foodId: Int?): FoodsEntity?
+    suspend fun getFoodDetailById(foodId: Int): FoodsEntity?
 
     suspend fun getAllNotification(): List<NotificationEntity>?
     suspend fun saveNotificationDetail(notification: NotificationEntity)

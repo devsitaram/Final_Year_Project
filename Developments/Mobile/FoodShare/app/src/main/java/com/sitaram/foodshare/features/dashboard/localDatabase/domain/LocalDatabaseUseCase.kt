@@ -51,7 +51,8 @@ class LocalDatabaseUseCase(private val localDatabaseRepository: LocalDatabaseRep
         }
     }
 
-    operator fun invoke(foodId: Int?): Flow<Resource<FoodsEntity?>> = flow {
+    // Get Food Details
+    operator fun invoke(foodId: Int): Flow<Resource<FoodsEntity?>> = flow {
         emit(Resource.Loading())
         try {
             emit(Resource.Success(data = localDatabaseRepository.getFoodDetailById(foodId)))

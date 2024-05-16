@@ -61,7 +61,7 @@ android {
 
 dependencies {
 
-    implementation("androidx.core:core-ktx:1.12.0")
+    implementation("androidx.core:core-ktx:1.13.0")
     implementation(platform("androidx.compose:compose-bom:2023.03.00"))
     implementation("androidx.compose.ui:ui")
     implementation("androidx.compose.ui:ui-graphics")
@@ -88,15 +88,15 @@ dependencies {
     implementation("androidx.navigation:navigation-compose:2.7.7") // floating action button bar
 
     // compose
-    implementation("androidx.compose.material:material:1.6.5")
-    debugImplementation("androidx.compose.ui:ui-tooling:1.6.5")
-    implementation("androidx.compose.ui:ui-tooling-preview:1.6.5")
-    implementation("androidx.compose.runtime:runtime-livedata:1.6.5")
+    implementation("androidx.compose.material:material:1.6.6")
+    debugImplementation("androidx.compose.ui:ui-tooling:1.6.6")
+    implementation("androidx.compose.ui:ui-tooling-preview:1.6.6")
+    implementation("androidx.compose.runtime:runtime-livedata:1.6.6")
     implementation("androidx.navigation:navigation-fragment-ktx:2.7.7")
     implementation("androidx.navigation:navigation-ui-ktx:2.7.7")
 
     // activity
-    implementation("androidx.activity:activity-compose:1.8.2")
+    implementation("androidx.activity:activity-compose:1.9.0")
 
     // Lifecycle
     implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.7.0")
@@ -116,11 +116,11 @@ dependencies {
     implementation("io.coil-kt:coil-compose:2.4.0")
 
     // coroutines threading
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.1")
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.1")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.3")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3")
 
     // defaults icons
-    implementation("androidx.compose.material:material-icons-extended-android:1.6.5")
+    implementation("androidx.compose.material:material-icons-extended-android:1.6.6")
 
     // splash screen
     implementation("androidx.core:core-splashscreen:1.0.1")
@@ -133,7 +133,7 @@ dependencies {
     implementation("com.squareup.okhttp3:logging-interceptor:5.0.0-alpha.10")
 
     // Dependency Injection Dagger hilt and kapt
-    implementation("com.google.dagger:hilt-android:2.48")
+    implementation("com.google.dagger:hilt-android:2.49")
     implementation("androidx.hilt:hilt-work:1.2.0")
     implementation("androidx.work:work-runtime-ktx:2.9.0")
     implementation("androidx.hilt:hilt-navigation-compose:1.2.0")
@@ -161,7 +161,7 @@ dependencies {
 
     // lottie
     implementation("com.airbnb.android:lottie-compose:4.0.0")
-    implementation("androidx.compose.foundation:foundation:1.6.5")
+    implementation("androidx.compose.foundation:foundation:1.6.6")
     implementation("androidx.viewpager2:viewpager2:1.0.0")
 
     // moshi alternative used for json

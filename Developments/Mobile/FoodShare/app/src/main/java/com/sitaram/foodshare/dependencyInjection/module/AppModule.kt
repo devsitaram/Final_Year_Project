@@ -139,15 +139,15 @@ object AppModule {
 
     @Provides
     @Singleton
-    fun provideUserDetailRepoImpl(roomDao: RoomDao): UserDetailRepository {
-        return UserDetailRepositoryImpl(roomDao)
+    fun provideUserDetailRepoImpl(roomDao: RoomDao, apiService: ApiService): UserDetailRepository {
+        return UserDetailRepositoryImpl(roomDao, apiService)
     }
 
     // foodDetails details
     @Provides
     @Singleton
-    fun provideFoodDetailRepoImpl(apiService: ApiService): FoodDetailRepository {
-        return FoodDetailRepositoryImpl(apiService)
+    fun provideFoodDetailRepoImpl(apiService: ApiService, roomDao: RoomDao): FoodDetailRepository {
+        return FoodDetailRepositoryImpl(apiService, roomDao)
     }
 
     @Provides
@@ -171,8 +171,8 @@ object AppModule {
 
     @Provides
     @Singleton
-    fun provideLocalDatabaseRepoImpl(roomDao: RoomDao): LocalDatabaseRepository {
-        return LocalDatabaseRepoImpl(roomDao)
+    fun provideLocalDatabaseRepoImpl(roomDao: RoomDao, apiService: ApiService): LocalDatabaseRepository {
+        return LocalDatabaseRepoImpl(roomDao, apiService)
     }
 
     @Provides

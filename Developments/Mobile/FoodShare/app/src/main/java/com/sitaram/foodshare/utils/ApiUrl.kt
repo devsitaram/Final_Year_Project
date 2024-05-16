@@ -15,7 +15,7 @@ class ApiUrl {
 
         // Base Url
         const val LOCAL_DATABASE_NAME = "FoodShare"
-        const val API_BASE_URL = "https://1017-27-34-12-12.ngrok-free.app/"
+        const val API_BASE_URL = "https://2171-2400-1a00-b040-999e-ac35-85a8-44b-5c1f.ngrok-free.app/"
 
         // API PATH
         const val LOGIN_USER = "api/authenticate/token"
@@ -26,6 +26,7 @@ class ApiUrl {
         const val USER_PROFILE = "api/user/profile"
         const val UPDATE_PROFILE = "api/update/profile"
         const val UPDATE_PROFILE_IMAGE = "api/update/profile/image"
+        const val GET_USER = "api/user"
 
         // USERS
         const val GET_ALL_USER = "api/all/types/user"
@@ -50,6 +51,7 @@ class ApiUrl {
         const val GET_ALL_HISTORY = "api/food/history/all"
         const val DELETE_FOOD = "api/food/deleted"
         const val DELETE_HISTORY = "api/history/delete"
+        const val GET_FOOD = "api/food"
 
         // COMPLAIN TO USER
         const val REPORT_USER = "api/user/report"
@@ -85,7 +87,6 @@ class ApiUrl {
         const val PROFILE_URL = "/media/util_images/male_profile.jpg"
         const val MALE_PROFILE_URL = "/media/util_images/male_profile.jpg"
         const val FEMALE_PROFILE_URL = "/media/util_images/female_profile.jpg"
-        const val KEY = "AIzaSyDup0LWYQ71XybzV172L5-esHMiDCVCvEI"
         const val FOOD_URL = "https://prints.ultracoloringpages.com/42bab3c21f818f0062fd0e9b56d499ec.png"
     }
 }

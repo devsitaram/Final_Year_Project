@@ -11,6 +11,7 @@ import com.sitaram.foodshare.features.dashboard.dashboardDonor.post.domain.Donat
 import com.sitaram.foodshare.features.dashboard.dashboardVolunteer.pending.data.pojo.PendingPojo
 import com.sitaram.foodshare.features.dashboard.dashboardVolunteer.pending.domain.ReportDTO
 import com.sitaram.foodshare.features.dashboard.dashboardVolunteer.donationRating.domain.FoodDonateRatingDto
+import com.sitaram.foodshare.features.dashboard.foodDetail.data.pojo.FoodDetailsPojo
 import com.sitaram.foodshare.features.dashboard.foodDetail.data.pojo.FoodUpdatePojo
 import com.sitaram.foodshare.features.dashboard.foodDetail.domain.FoodModelDAO
 import com.sitaram.foodshare.features.dashboard.history.data.pojo.FoodHistoryPojo
@@ -62,7 +63,7 @@ interface ApiService {
         @Part imagePart: MultipartBody.Part?,
     ): ResponsePojo?
 
-    // Get latest foods
+    // Get latest foodDetail
     @GET(ApiUrl.GET_NEW_FOOD)
     suspend fun getNewFoodDetails(): FoodPojo?
 
@@ -199,7 +200,13 @@ interface ApiService {
     @GET(ApiUrl.GET_NOTIFICATION)
     suspend fun getNotification(): NotificationPojo?
 
-    @PATCH(ApiUrl.VIEW_NOTIFICATION)
-    suspend fun viewNotification(): ResponsePojo?
+//    @PATCH(ApiUrl.VIEW_NOTIFICATION)
+//    suspend fun viewNotification(): ResponsePojo?
+
+    @GET(ApiUrl.GET_USER)
+    suspend fun getUserById(@Query("id") userId: Int): ProfilePojo?
+
+    @GET(ApiUrl.GET_FOOD)
+    suspend fun getFoodDetails(@Query("id") foodId: Int?): FoodDetailsPojo?
 
 }

@@ -23,7 +23,8 @@ urlpatterns = [
     path('api/update/profile', UpdateProfile.as_view(), name='set_update_profile'),
     path('api/update/profile/image', UpdateProfilePicture.as_view(), name='set_update_profile'),
     path('api/fcm/device/token/save', DeviceTokenView.as_view(), name='set_device_details'),
-
+    path('api/user', GetUserById.as_view(), name='get_user_by_id'),
+    
     # NGOs api
     path('api/ngo/profile', NgoProfile.as_view(), name='get_ngo_profile'),
     path('api/register/ngo', AddNgoView.as_view(), name="add_ngo_profile"),
@@ -43,6 +44,7 @@ urlpatterns = [
     path('api/food/new/get', GetNewFoods.as_view(), name='get_food_details_new'),
     path('api/food/details/history', GetFoodHistorys.as_view(), name='get_food_details_history'),
     path('api/food/history/all', HistoryDetails.as_view(), name='get_history_details'),
+    path('api/food/', GetFoodById.as_view(), name='get_food_by_id'),
 
     # Donor side
     path('api/food/donation/histories/donor', DonationHistory.as_view(), name="get_donor_history"),

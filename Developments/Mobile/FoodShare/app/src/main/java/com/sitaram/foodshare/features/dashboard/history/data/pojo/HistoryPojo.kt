@@ -6,7 +6,7 @@ import androidx.annotation.Keep
 
 @Keep
 data class FoodHistoryPojo(
-    @SerializedName("foods")
+    @SerializedName("foodDetail")
     var foods: List<History>? = listOf(),
     @SerializedName("is_success")
     var isSuccess: Boolean? = false,

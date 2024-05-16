@@ -21,6 +21,8 @@ from datetime import timedelta
 from django.utils import timezone
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
+from rest_framework_simplejwt.views import TokenObtainPairView
 # model
 from foodshare.models import *
 from foodshare.serializer import *
@@ -73,9 +75,24 @@ class DeviceTokenView(APIView):
         except Exception as e:
             return Response({"message": "Sorry, something went wrong on our end. Please try again later.", 'is_success': False, 'status': 500})
 
+
+# Custom Token Serializer
+class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
+    @classmethod
+    def get_token(cls, user):
+        token = super().get_token(user)
+        
+        # Add custom claims
+        token['username'] = user.username
+        token['email'] = user.email
+        token['role'] = user.role
+        token['profile'] = user.photo_url.url if user.photo_url else None
+        
+        return token
+
 # login authentication
 class LoginUser(APIView):
-    authentication_classes = [TokenAuthentication]
+    authentication_classes = []
     permission_classes = [AllowAny]
 
     def post(self, request):
@@ -88,21 +105,14 @@ class LoginUser(APIView):
                 if auth_user:
                     user = Users.objects.filter(email=email).first()
                     if auth_user.is_active and not user.is_delete:  # Fix the condition
-                        refresh = RefreshToken.for_user(auth_user)
-                        access_token = str(refresh.access_token)
-
-                        serializer = UserSerializer(user)
-                        profile = user.photo_url.url if user.photo_url else None
-
-                        response_auth = {
-                            'id': serializer.data['id'],
-                            'username': serializer.data['username'],
-                            'email': serializer.data['email'],
-                            'profile': profile,
-                            'role': serializer.data['role'],
-                            'access_token': access_token,
-                        }
-                        return Response({'message': 'Login successful', 'is_success': True, 'status': 200, "auth": response_auth})
+                        serializer = CustomTokenObtainPairSerializer()
+                        token = serializer.get_token(auth_user)
+                        return Response({
+                            'message': 'Login successful',
+                            'is_success': True,
+                            'status': 200,
+                            'access_token': str(token.access_token),
+                        })
                     else:
                         return Response({'message': 'Your account is not activate', 'is_success': False, 'status': 401})
                 else:
@@ -111,6 +121,45 @@ class LoginUser(APIView):
                 return Response({'message': 'Please provide email and password', 'is_success': False, 'status': 400})
         except Exception as e:
             return Response({"message": "Sorry, something went wrong on our end. Please try again later.", 'is_success': False, 'status': 500})
+        
+# # login authentication
+# class LoginUser(APIView):
+#     authentication_classes = [TokenAuthentication]
+#     permission_classes = [AllowAny]
+
+#     def post(self, request):
+#         try:
+#             email = request.data.get('email')
+#             password = request.data.get('password')
+
+#             if email and password:
+#                 auth_user = authenticate(request, username=email, password=password)
+#                 if auth_user:
+#                     user = Users.objects.filter(email=email).first()
+#                     if auth_user.is_active and not user.is_delete:  # Fix the condition
+#                         refresh = RefreshToken.for_user(auth_user)
+#                         access_token = str(refresh.access_token)
+
+#                         serializer = UserSerializer(user)
+#                         profile = user.photo_url.url if user.photo_url else None
+
+#                         response_auth = {
+#                             'id': serializer.data['id'],
+#                             'username': serializer.data['username'],
+#                             'email': serializer.data['email'],
+#                             'profile': profile,
+#                             'role': serializer.data['role'],
+#                             'access_token': access_token,
+#                         }
+#                         return Response({'message': 'Login successful', 'is_success': True, 'status': 200, "auth": response_auth})
+#                     else:
+#                         return Response({'message': 'Your account is not activate', 'is_success': False, 'status': 401})
+#                 else:
+#                     return Response({'message': 'The account does not have authentication permission.', 'is_success': False, 'status': 401})
+#             else:
+#                 return Response({'message': 'Please provide email and password', 'is_success': False, 'status': 400})
+#         except Exception as e:
+#             return Response({"message": "Sorry, something went wrong on our end. Please try again later.", 'is_success': False, 'status': 500})
 
 # Register user
 class RegisterUser(APIView):
@@ -180,9 +229,25 @@ class UserProfile(APIView):
             serialized_user = UserSerializer(user)  # Serialize the user data
             return Response({"message": "Success", "is_success": True, "status": 200, "user_profile": serialized_user.data})
         except AuthenticationFailed as ex:
-            return Response({"message": "Token is invalid or expired", "is_success": False, 'status': 401})
+            return Response({"message": "You are not authenticated user", "is_success": False, 'status': 401})
         except Exception as ex:
-            return Response({"message": "User not authenticated", "is_success": False, 'status': 400})
+            return Response({"message": "Sorry, something went wrong on our end. Please try again later.", "is_success": False, "status": 500})
+        
+# get user by id
+class GetUserById(APIView):
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated]
+    permission_classes = [AllowAny]
+    def get(self, request):
+        try:
+            user_id = request.query_params.get('id')
+            user = Users.objects.get(id=user_id)  # Get user by ID
+            serialized_user = UserSerializer(user)  # Serialize the user data
+            return Response({"message": "Success", "is_success": True, "status": 200, "user_profile": serialized_user.data})
+        except Users.DoesNotExist:
+            return Response({"message": "User not found", "is_success": False, "status": 404})
+        except Exception as ex:
+            return Response({"message": "Sorry, something went wrong on our end. Please try again later.", "is_success": False, "status": 500})
 
 # update user profile     
 class UpdateProfile(APIView):
@@ -483,6 +548,32 @@ class GetNewFoods(APIView):
         except Exception:
             return Response({"message": "Sorry, something went wrong on our end. Please try again later.", 'is_success': False, 'status': status.HTTP_500_INTERNAL_SERVER_ERROR})
 
+# Get Food By Id
+class GetFoodById(APIView):
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [AllowAny]
+
+    def get(self, request):
+        try:
+            food_id = request.query_params.get('id')
+            # Calculate the date 24 hours ago
+            
+            foods = Food.objects.filter(id=food_id, is_delete=False)
+
+            if not foods:
+                return Response({"message": "Food is not found!", "is_success": False, "status": 400})
+            
+            # Serialize food data along with associated user details
+            food_data = []
+            for food in foods:
+                food_dict = FoodSerializer(food).data
+                user_data = UserSerializer(food.donor).data
+                food_dict['user'] = user_data
+                food_data.append(food_dict)
+                
+            return Response({"message": "Food details", "is_success": True, "status": 200, "foods": food_dict})
+        except Exception:
+            return Response({"message": "Sorry, something went wrong on our end. Please try again later.", 'is_success': False, 'status': status.HTTP_500_INTERNAL_SERVER_ERROR})
 
 # Delete Food
 class FoodDelete(APIView):

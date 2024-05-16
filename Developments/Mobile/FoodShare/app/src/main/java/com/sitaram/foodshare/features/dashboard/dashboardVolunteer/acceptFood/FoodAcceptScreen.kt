@@ -24,11 +24,9 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import com.sitaram.foodshare.R
 import com.sitaram.foodshare.features.dashboard.foodDetail.presentation.ViewFoodDetails
-import com.sitaram.foodshare.features.navigations.BtnNavScreen
 import com.sitaram.foodshare.helper.UserInterceptors
 import com.sitaram.foodshare.theme.backgroundLayoutColor
 import com.sitaram.foodshare.theme.textColor
@@ -49,6 +47,7 @@ import kotlinx.coroutines.launch
 import androidx.activity.result.contract.ActivityResultContracts
 import android.provider.Settings
 import com.sitaram.foodshare.features.navigations.NavScreen
+import com.sitaram.foodshare.utils.compose.ImageDialogView
 
 @OptIn(ExperimentalCoroutinesApi::class)
 @Composable
@@ -73,6 +72,7 @@ fun FoodAcceptViewScreen(
     val getFoodAcceptState = foodAcceptViewModel.foodAcceptState
     var isSuccess by remember { mutableStateOf(false) }
     val isCompletedDonation by remember { mutableStateOf(true) }
+    var isViewImage by remember { mutableStateOf(false) }
 
     // location check
     val intent = Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS)
@@ -143,6 +143,9 @@ fun FoodAcceptViewScreen(
                             food = it,
                             context = context,
                             isBtnVisible = true,
+                            onClickViewImage = {
+                                isViewImage = !isViewImage
+                            },
                             onClickViewMap = {
                                 if(isLocationEnabled(context)) {
                                     mainNavController.navigate("GoogleMapView/${it.latitude.toString()}/${it.longitude.toString()}/${it.username}")
@@ -169,7 +172,13 @@ fun FoodAcceptViewScreen(
             }
         }
     }
-    
+
+    if (isViewImage){
+        ImageDialogView(streamUrl = getFoodDetails.data?.streamUrl){
+            isViewImage = false
+        }
+    }
+
     if (isSuccess){
         SuccessMessageDialogBox(
             title = stringResource(R.string.food_accepted),

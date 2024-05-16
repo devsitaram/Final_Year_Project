@@ -54,7 +54,7 @@ class ProfileEntity(
 )
 
 // Food table
-@Entity(tableName = "foods")
+@Entity(tableName = "foodDetail")
 class FoodsEntity(
     @PrimaryKey
     @SerializedName("id")

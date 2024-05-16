@@ -1,14 +1,10 @@
 package com.sitaram.foodshare.features.dashboard.foodDetail.presentation
 
-import android.content.Context
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.room.ColumnInfo
-import com.google.gson.annotations.SerializedName
-import com.sitaram.foodshare.R
 import com.sitaram.foodshare.features.dashboard.dashboardDonor.post.domain.DonationModelDAO
 import com.sitaram.foodshare.helper.Resource
 import com.sitaram.foodshare.features.dashboard.foodDetail.domain.FoodDetailUseCase
@@ -27,7 +23,7 @@ class FoodDetailViewModel @Inject constructor(
 ) : ViewModel() {
 
     var isRefreshing by mutableStateOf(false)
-    private var foodId: Int? = 0
+    private var foodId: Int = 0
     var username: String? = null
     var email: String? = null
     var contactNumber: String? = null

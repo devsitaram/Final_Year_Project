@@ -35,7 +35,7 @@ interface RoomDao {
     suspend fun getUserProfileById(userId: Int): ProfileEntity?
 
     // get foodDetails details by id
-    @Query("SELECT * FROM foods WHERE id=:foodId")
+    @Query("SELECT * FROM foodDetail WHERE id=:foodId")
     suspend fun getFoodDetailsById(foodId: Int?): FoodsEntity?
 
     // Get History By Id

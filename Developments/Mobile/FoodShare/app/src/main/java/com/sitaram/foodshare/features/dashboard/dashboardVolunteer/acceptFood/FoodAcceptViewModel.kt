@@ -25,7 +25,7 @@ class FoodAcceptViewModel @Inject constructor(
     private val localDatabase: LocalDatabaseUseCase,
 ) : ViewModel() {
     var isRefreshing by mutableStateOf(false)
-    private var foodId: Int? = 0
+    private var foodId: Int = 0
     private var _foodDetailState by mutableStateOf(FoodDetailState())
     val foodDetailState: FoodDetailState get() = _foodDetailState
 

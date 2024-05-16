@@ -6,14 +6,13 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from firebase_admin import messaging
 
-
 # Test the notification
 class SendNotificationView(APIView):
     permission_classes = [AllowAny]
     
     def post(self, request):
         list_of_tokens = [
-            'device key',
+            'eeQP7mrtRz2yqkVJJtJ4Jc:APA91bFYbMobbmFtbsuRqUUk7xdhl9F-fJDHV7N5aat0TQbkR_YK7Zy0pdT6uMkK91nyMxImX7fwFV5U5cOt6-ILtvdPIf0SAakuCazBIZc-y1I2DdwqcZn9DWJU_7dSWH-N3pXXlHvA',
         ]
         title = 'Title 4 Food Donation'
         body = 'The food is available for donation. Please pick up the food for distribution.'
@@ -34,7 +33,7 @@ def send_notifications(title, body, list_of_tokens):
         # Define headers
         headers = {
             'Content-Type': 'application/json',
-            'Authorization': 'Replace YOUR_SERVER_KEY with your actual FCM server key'
+            'Authorization': 'AAAAw-NCzFM:APA91bHGq2kIJh4m9wBnNEFWIdMfwI_jSCcBxOCSPWDi0Sgvr_A2B8LyQVpPaA5baBVYmGV2ld5Q8osOTDOoJVfECNvjkue9cOVqf7TlKHpz6mS0MrNxXfoWU11_79TOAOnNGqzXMdUa'  # Replace YOUR_SERVER_KEY with your actual FCM server key
         }
         messaging.send_multicast(message) # send message for multi device
         return Response({'message': 'Notifications sent to all devices', 'is_success': True, 'status': 200})

@@ -261,7 +261,7 @@ fun HomeViewScreen(
                                                     if (food.status?.lowercase() == "pending") {
                                                         showToast(
                                                             context,
-                                                            context.getString(R.string.fooddetails_already_accepted_thanks_you)
+                                                            context.getString(R.string.food_details_already_accepted_thanks_you)
                                                         )
                                                     } else {
                                                         val role =

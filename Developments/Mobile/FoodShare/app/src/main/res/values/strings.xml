@@ -168,7 +168,7 @@
     <string name="location_settings_were_not_updated">Location settings were not updated</string>
     <string name="please_allow_location_access">Please allow location access.</string>
     <string name="choose">Choose</string>
-    <string name="fooddetails_already_accepted_thanks_you">FoodDetails already accepted. Thanks You!</string>
+    <string name="food_details_already_accepted_thanks_you">FoodDetails already accepted. Thanks You!</string>
     <string name="rating">Rating</string>
     <string name="distributed_info">Distributed Info</string>
     <string name="stars">Stars</string>

@@ -133,7 +133,7 @@ fun HistoryViewScreen(
                                             status = it.food?.status,
                                             onClick = {
                                                 MainScope().launch {
-                                                    // foods
+                                                    // foodDetail
                                                     it.food?.let { food ->
                                                         FoodsEntity(
                                                             id = food.id,
