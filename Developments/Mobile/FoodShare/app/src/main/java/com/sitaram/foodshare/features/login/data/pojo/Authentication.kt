@@ -10,7 +10,7 @@ data class Authentication(
     var accessToken: String? = null,
     @SerializedName("email")
     var email: String? = null,
-    @SerializedName("id")
+    @SerializedName("user_id")
     var id: Int? = null,
     @SerializedName("profile")
     var profile: String? = null,

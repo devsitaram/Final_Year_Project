@@ -149,7 +149,7 @@ fun SettingViewScreen(
             ) {
                 ProfileView(
                     profileUrl = auth?.profile,
-                    username = auth?.username ?: "User",
+                    username = auth?.username ?: stringResource(id = R.string.user),
                     email = auth?.email ?: "user@gmail.com",
                     onClick = {
                         navController.navigate(BtnNavScreen.Profile.route) {
@@ -226,12 +226,14 @@ fun SettingViewScreen(
                 confirmBtnText = stringResource(id = R.string.yes),
                 onDismiss = { showDialogBox = false },
                 onConfirm = {
-                    mainNavController.navigate(NavScreen.LoginPage.route) {
-                        popUpTo(BtnNavScreen.Setting.route) {
-                            inclusive = true
+                    if (clearLocalStorage(context)) {
+                        mainNavController.navigate(NavScreen.LoginPage.route) {
+                            popUpTo(BtnNavScreen.Setting.route) {
+                                inclusive = true
+                            }
+//                            clearLocalStorage(context)
+                            showToast(context, context.getString(R.string.logout_successful))
                         }
-                        clearLocalStorage(context)
-                        showToast(context, context.getString(R.string.logout_successful))
                     }
                 }
             )

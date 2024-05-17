@@ -15,7 +15,7 @@ class ApiUrl {
 
         // Base Url
         const val LOCAL_DATABASE_NAME = "FoodShare"
-        const val API_BASE_URL = "https://2171-2400-1a00-b040-999e-ac35-85a8-44b-5c1f.ngrok-free.app/"
+        const val API_BASE_URL = "https://6f0f-110-34-1-113.ngrok-free.app/"
 
         // API PATH
         const val LOGIN_USER = "api/authenticate/token"
@@ -64,7 +64,7 @@ class ApiUrl {
         // DEVICE FCM TOKEN
         const val REGISTER_FCM_DEVICE_TOKEN = "api/fcm/device/token/save"
         const val GET_NOTIFICATION = "api/get/all/notification"
-        const val VIEW_NOTIFICATION = "api/view/notification"
+        // const val VIEW_NOTIFICATION = "api/view/notification"
 
         // VIDEO KEY
         const val YOUTUBE_VIDEO_KEY = "AUJRuouwtGs"

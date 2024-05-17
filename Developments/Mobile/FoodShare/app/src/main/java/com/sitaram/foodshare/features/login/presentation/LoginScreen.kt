@@ -62,6 +62,7 @@ import com.sitaram.foodshare.theme.red
 import com.sitaram.foodshare.theme.white
 import com.sitaram.foodshare.theme.yellow
 import com.sitaram.foodshare.utils.NetworkObserver
+import com.sitaram.foodshare.utils.UserInterfaceUtil.Companion.extractUserDetailsFromToken
 import com.sitaram.foodshare.utils.UserInterfaceUtil.Companion.showToast
 import com.sitaram.foodshare.utils.Validators.isValidEmailAddress
 import com.sitaram.foodshare.utils.compose.ClickableTextView
@@ -158,21 +159,14 @@ fun LoginViewScreen(
         }
     })
 
+    // Use extracted user details
     LaunchedEffect(
         key1 = userLoginResult.data,
         block = {
             userLoginResult.data?.let { response ->
                 if (response.isSuccess == true) {
-                    response.authentication.let { auth ->
-                        val userAuthResponse = Authentication(
-                            id = auth?.id,
-                            username = auth?.username,
-                            email = auth?.email,
-                            role = auth?.role,
-                            accessToken = auth?.accessToken,
-                            profile = auth?.profile,
-                        )
-                        when (auth?.role?.lowercase()) {
+                    extractUserDetailsFromToken(response.accessToken)?.let { auth ->
+                        when (auth.role?.lowercase()) {
                             "donor" -> {
                                 // navigate the Donor dashboard
                                 navController.navigate(NavScreen.DonorDashboardPage.route) {
@@ -201,13 +195,21 @@ fun LoginViewScreen(
                             }
                         }
                         // save the user authentication
+                        val userAuthResponse = Authentication(
+                            id = auth.id,
+                            username = auth.username,
+                            email = auth.email,
+                            role = auth.role,
+                            accessToken = response.accessToken,
+                            profile = auth.profile
+                        )
                         editor.putString("authentication", Gson().toJson(userAuthResponse)).apply()
                         showToast(context, response.message)
                         if (deviceToken.isEmpty()) {
                             logInViewModel.setDeviceFcmToken(
-                                userId = auth?.id,
+                                userId = auth.id,
                                 fcmToken = fcmDeviceToken.result,
-                                userName = auth?.username
+                                userName = auth.username
                             )
                             editor.putString("fcmDeviceToken", deviceToken).apply()
                         }
@@ -221,6 +223,70 @@ fun LoginViewScreen(
             }
         }
     )
+
+//    LaunchedEffect(
+//        key1 = userLoginResult.data,
+//        block = {
+//            userLoginResult.data?.let { response ->
+//                if (response.isSuccess == true) {
+//                    response.authentication.let { auth ->
+//                        val userAuthResponse = Authentication(
+//                            id = auth?.id,
+//                            username = auth?.username,
+//                            email = auth?.email,
+//                            role = auth?.role,
+//                            accessToken = auth?.accessToken,
+//                            profile = auth?.profile,
+//                        )
+//                        when (auth?.role?.lowercase()) {
+//                            "donor" -> {
+//                                // navigate the Donor dashboard
+//                                navController.navigate(NavScreen.DonorDashboardPage.route) {
+//                                    popUpTo(NavScreen.LoginPage.route) {
+//                                        inclusive = true
+//                                    }
+//                                }
+//                            }
+//
+//                            "admin" -> {
+//                                // navigate the Admin dashboard
+//                                navController.navigate(NavScreen.AdminDashboardPage.route) {
+//                                    popUpTo(NavScreen.LoginPage.route) {
+//                                        inclusive = true
+//                                    }
+//                                }
+//                            }
+//
+//                            // navigate the Volunteer dashboard
+//                            else -> {
+//                                navController.navigate(NavScreen.VolunteerDashboardPage.route) {
+//                                    popUpTo(NavScreen.LoginPage.route) {
+//                                        inclusive = true
+//                                    }
+//                                }
+//                            }
+//                        }
+//                        // save the user authentication
+//                        editor.putString("authentication", Gson().toJson(userAuthResponse)).apply()
+//                        showToast(context, response.message)
+//                        if (deviceToken.isEmpty()) {
+//                            logInViewModel.setDeviceFcmToken(
+//                                userId = auth?.id,
+//                                fcmToken = fcmDeviceToken.result,
+//                                userName = auth?.username
+//                            )
+//                            editor.putString("fcmDeviceToken", deviceToken).apply()
+//                        }
+//                    }
+//
+//                    // Notification permission
+//                    if (!hasNotificationPermission) {
+//                        notificationPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
+//                    }
+//                }
+//            }
+//        }
+//    )
 
 
     Box(modifier = Modifier.fillMaxSize()) {

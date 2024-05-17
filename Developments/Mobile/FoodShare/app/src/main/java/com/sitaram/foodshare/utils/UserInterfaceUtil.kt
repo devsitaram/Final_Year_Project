@@ -20,18 +20,50 @@ import com.auth0.jwt.exceptions.JWTVerificationException
 import com.auth0.jwt.interfaces.DecodedJWT
 import com.sitaram.foodshare.MainActivity
 import com.sitaram.foodshare.R
+import com.sitaram.foodshare.features.login.data.pojo.Authentication
 import com.sitaram.foodshare.helper.UserInterceptors
 import com.sitaram.foodshare.source.local.DatabaseHelper
 import com.sitaram.foodshare.utils.ApiUrl.Companion.CHANNEL_ID
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import java.util.Date
+import android.util.Base64
+import com.google.gson.Gson
+import java.nio.charset.StandardCharsets
+
 /**
  * Utility class for common user interface-related operations.
  */
 class UserInterfaceUtil {
 
     companion object {
+
+        // Deserialize payload to data class
+//        fun extractUserDetailsFromToken(token: String): Authentication? {
+//            val jsonPayload = decodeJwtToken(token)
+//            return Gson().fromJson(jsonPayload, Authentication::class.java)
+//        }
+        // Deserialize payload to data class
+        fun extractUserDetailsFromToken(token: String?): Authentication? {
+            return if (token == null){
+                null
+            } else {
+                val jsonPayload = decodeJwtToken(token)
+                Gson().fromJson(jsonPayload, Authentication::class.java)
+            }
+        }
+
+        // Extract payload from token
+        private fun decodeJwtToken(token: String): String {
+            val parts = token.split(".")
+            return if (parts.size == 3) {
+                val payload = parts[1]
+                val decodedBytes = Base64.decode(payload, Base64.URL_SAFE)
+                String(decodedBytes, StandardCharsets.UTF_8)
+            } else {
+                ""
+            }
+        }
 
         // Show toast message
         fun showToast(context: Context?, message: String?) {
@@ -134,7 +166,7 @@ class UserInterfaceUtil {
                 val getPreferenceInstance = getSharedPreferences.getPreferenceInstance()
                 val editor = getPreferenceInstance.edit()
                 editor?.putString("authentication", "")?.apply()
-//                editor.putString("fcmDeviceToken", "").apply()
+                editor.putString("fcmDeviceToken", "").apply()
                 DatabaseHelper.clearDatabase(context)
                 true
             } catch (e: Exception){

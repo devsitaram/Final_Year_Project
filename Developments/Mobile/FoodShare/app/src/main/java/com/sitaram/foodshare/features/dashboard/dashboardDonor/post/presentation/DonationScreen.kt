@@ -317,10 +317,11 @@ fun DonationViewScreen(
 
     Scaffold(
         floatingActionButton = {
-            ExtendedFloatingActionButton(
-                onClick = {
-                    if (expandedFab) {
-                        val donationFoodDetails = DonationModelDAO(
+            if (isConnected) {
+                ExtendedFloatingActionButton(
+                    onClick = {
+                        if (expandedFab) {
+                            val donationFoodDetails = DonationModelDAO(
                                 foodName = foodName.trim(),
                                 foodTypes = foodType.trim(),
                                 quantity = quantities,
@@ -332,31 +333,38 @@ fun DonationViewScreen(
                                 status = "New".trim(),
                                 expireTime = expireTime,
                                 donor = user.getUserId(),
-                        )
-                        MainScope().launch {
-                            if (file != null) {
-                                donationViewModel.setDonationFoodDetail(file, donationFoodDetails)
-                            } else {
-                                showToast(context, context.getString(R.string.please_select_a_food_image))
+                            )
+                            MainScope().launch {
+                                if (file != null) {
+                                    donationViewModel.setDonationFoodDetail(
+                                        file,
+                                        donationFoodDetails
+                                    )
+                                } else {
+                                    showToast(
+                                        context,
+                                        context.getString(R.string.please_select_a_food_image)
+                                    )
+                                }
                             }
                         }
-                    }
-                },
-                expanded = expandedFab,
-                icon = {
-                    VectorIconView(
-                        Icons.Filled.Add,
-                        tint = if (expandedFab) darkGray else lightGray
-                    )
-                },
-                text = {
-                    TextView(
-                        text = stringResource(R.string.post),
-                        textType = TextType.TITLE4,
-                        color = if (expandedFab) darkGray else lightGray
-                    )
-                },
-            )
+                    },
+                    expanded = expandedFab,
+                    icon = {
+                        VectorIconView(
+                            Icons.Filled.Add,
+                            tint = if (expandedFab) darkGray else lightGray
+                        )
+                    },
+                    text = {
+                        TextView(
+                            text = stringResource(R.string.post),
+                            textType = TextType.TITLE4,
+                            color = if (expandedFab) darkGray else lightGray
+                        )
+                    },
+                )
+            }
         },
         floatingActionButtonPosition = FabPosition.End,
         modifier = Modifier

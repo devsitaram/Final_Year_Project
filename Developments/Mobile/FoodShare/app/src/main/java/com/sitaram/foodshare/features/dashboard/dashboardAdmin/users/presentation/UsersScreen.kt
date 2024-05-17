@@ -169,8 +169,7 @@ fun UsersViewScreenNgo(
 
                     getAllUsers.data?.users?.let { allUsers ->
                         var filteredUsersToShow by remember { mutableStateOf<List<Users?>?>(null) }
-                        val updatedList =
-                            filteredUsersToShow?.toMutableList() ?: allUsers.toMutableStateList()
+                        val updatedList = filteredUsersToShow?.toMutableList() ?: allUsers.toMutableStateList()
                         val overScrollJob by remember { mutableStateOf<Job?>(null) }
                         val lazyListState = rememberLazyListState()
                         val dragDropListState = remember {

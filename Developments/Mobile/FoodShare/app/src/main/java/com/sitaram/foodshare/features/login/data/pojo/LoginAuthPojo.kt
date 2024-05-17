@@ -6,8 +6,8 @@ import androidx.annotation.Keep
 
 @Keep
 data class LoginAuthPojo(
-    @SerializedName("auth")
-    var authentication: Authentication? = null,
+    @SerializedName("access_token")
+    var accessToken: String? = null,
     @SerializedName("is_success")
     var isSuccess: Boolean? = null,
     @SerializedName("message")

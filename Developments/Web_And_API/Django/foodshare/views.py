@@ -6,7 +6,6 @@ from django.conf import settings
 from rest_framework import viewsets, status
 from rest_framework.permissions import IsAuthenticated, IsAdminUser, AllowAny
 from rest_framework_simplejwt.tokens import RefreshToken
-from rest_framework.response import Response
 from rest_framework.parsers import MultiPartParser, FormParser
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.authtoken.models import Token
@@ -88,6 +87,8 @@ class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
         token['role'] = user.role
         token['profile'] = user.photo_url.url if user.photo_url else None
         
+        # Set token expiration time to 24 hours
+        token.set_exp(86400)
         return token
 
 # login authentication
