@@ -16,23 +16,24 @@
                     <table>
                         <thead>
                             {% for table_name in list_of_table %}
-                            {% if not table_name|slice:":6" == 'django' and not table_name|slice:":5" == 'auth_' and not table_name|slice:":10" == 'authtoken_' %}
-                            {% with trimmed_table_name=table_name|cut:"foodshare_" %}
-                            <tr class="model-{{ table_name }}">
-                                <th scope="row" style="text-transform: uppercase;">
-                                    <a href="{% url 'view_data' table_name=table_name %}", style="font-size: 15px; padding-top: 8px;">{{ trimmed_table_name }}</a>
-                                </th>
-                                {% if trimmed_table_name == "users" %}
-                                    <td>
-                                        <a href="{% url 'add_new_user' table_name=table_name %}" class="addlink">Add</a>
-                                    </td>
-                                {% else %}
-                                    <td>
-                                    </td>
+                                {% if not table_name|slice:":6" == 'django' and not table_name|slice:":5" == 'auth_' and not table_name|slice:":10" == 'authtoken_' %}
+                                    {% with trimmed_table_name=table_name|cut:"foodshare_" %}
+                                        <tr class="model-{{ table_name }}">
+                                            <th scope="row" style="text-transform: uppercase;">
+                                                <a href="{% url 'view_data' table_name=table_name %}", style="font-size: 15px; padding-top: 8px;">{{ trimmed_table_name }}</a>
+                                            </th>
+                                            {% if trimmed_table_name == "users" %}
+                                                <td>
+                                                    <a href="{% url 'add_new_user' table_name=table_name %}" class="addlink">Add</a>
+                                                </td>
+                                            {% else %}
+                                                <td>
+
+                                                </td>
+                                            {% endif %}
+                                        </tr>
+                                    {% endwith %}
                                 {% endif %}
-                            </tr>
-                            {% endwith %}
-                            {% endif %}
                             {% endfor %}
                         </thead>
                     </table>
@@ -76,13 +77,11 @@
                                 {% endfor %}
 
                                 {% with trimmed_table_name=table_name|cut:"foodshare_" %}
-                                {% if trimmed_table_name == "users" %}
-                                    <th style="width: 70px;">Activate</th>
-                                {% endif %}
-                                    
+                                    {% if trimmed_table_name == "users" %}
+                                        <th style="width: 70px;">Activate</th>
+                                    {% endif %}
                                 {% endwith %}
-                                
-                                {% comment %} <th style="width: 70px;">Update</th> {% endcomment %}
+                                <th style="width: 70px;">Update</th>
                                 <th style="width: 70px;">Delete</th>
                             </tr>
                         </thead>
@@ -94,9 +93,21 @@
                                         <td>{{ value }}</td>
                                     {% endfor %}
                                     {% if table_name == "foodshare_users" %}
-                                    <td><button class="activate-btn"><a href="{% url "activate" row.0 %}" class="user-id">Activate</a></button></td>
+                                        <td><button class="activate-btn">
+                                            <a href="{% url "activate" row.0 %}" class="user-id">
+                                                {% if row.13 == 1 %}
+                                                    Active
+                                                {% else %}
+                                                    Deactive
+                                                {% endif %}
+                                            </a>
+                                        </button></td>
                                     {% endif %}
-                                    {% comment %} <td><button class="update-btn">Update</button></td> {% endcomment %}
+                                    <td>
+                                        <button class="update-btn">
+                                            Update
+                                        </button>
+                                    </td>
                                     <td>
                                         <button class="delete-btn">
                                             <a href="{% url 'delete' table_name=table_name id=row.0 %}" class="user-id">Delete</a>
@@ -215,7 +226,7 @@
             padding: 10px 20px;
             font-size: 12px;
             font-weight: 700;
-            color: #fff;
+            color: #ffffff;
             border-radius: 5px;
             transition: all ease 0.1s;
             box-shadow: 0px 5px 0px 0px #a29bfe;
@@ -229,7 +240,7 @@
             padding: 10px 20px;
             font-size: 12px;
             font-weight: 700;
-            color: #ffff;
+            color: #ffffff;
             border-radius: 5px;
             transition: all ease 0.1s;
             box-shadow: 0px 5px 0px 0px #a29bfe;
@@ -255,7 +266,7 @@
             padding: 10px 20px;
             font-size: 12px;
             font-weight: 700;
-            color: #fff;
+            color: #ffffff;
             border-radius: 5px;
             transition: all ease 0.1s;
             box-shadow: 0px 5px 0px 0px #a29bfe;

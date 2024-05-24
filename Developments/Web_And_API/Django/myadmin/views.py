@@ -123,7 +123,10 @@ def add_new_user(request, table_name):
 # new user account verify
 def activate(request, id=None):
     user = get_object_or_404(Users, id=id)
-    user.is_active = True
+    if user.is_active == True:
+        user.is_active = False
+    else:
+        user.is_active = True
     user.save()
     table_name = "foodshare_users"
     return redirect("view_data", table_name=table_name)
@@ -139,3 +142,13 @@ def delete_user(request, table_name, id=None):
     obj.is_delete = True
     obj.save()
     return redirect("view_data", table_name=table_name)
+
+
+# def update_data(request, table_name, id=None):
+#     patch method
+#     model_name = table_name.replace("foodshare_", "").capitalize()
+#     # Get the model class using apps.get_model
+#     model_class = apps.get_model(app_label='foodshare', model_name=model_name)
+#     model = DinamicForm(model_class)
+#     ??? opent the 
+#     how to make the dinamicly update the date for any modle where the update form is onen to update_data.html 

@@ -15,7 +15,7 @@ class ApiUrl {
 
         // Base Url
         const val LOCAL_DATABASE_NAME = "FoodShare"
-        const val API_BASE_URL = "https://6f0f-110-34-1-113.ngrok-free.app/"
+        const val API_BASE_URL = "https://8ef1-110-34-1-113.ngrok-free.app/"
 
         // API PATH
         const val LOGIN_USER = "api/authenticate/token"

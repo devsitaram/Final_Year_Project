@@ -57,6 +57,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.zIndex
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.sitaram.foodshare.R
@@ -265,11 +266,12 @@ fun UsersViewScreenNgo(
                                         modifier = Modifier
                                             .padding(bottom = 4.dp)
                                             .composed {
-                                                val offsetOrNull =
-                                                    dragDropListState.elementDisplacement.takeIf {
+                                                val offsetOrNull = dragDropListState.elementDisplacement.takeIf {
                                                         index == dragDropListState.currentIndexOfDraggedItem
                                                     }
-                                                Modifier.graphicsLayer(
+                                                Modifier
+                                                    .zIndex(1f)
+                                                    .graphicsLayer(
                                                     translationY = offsetOrNull ?: 0f,
                                                     shadowElevation = offsetOrNull ?: 0f,
                                                     ambientShadowColor = lightGray

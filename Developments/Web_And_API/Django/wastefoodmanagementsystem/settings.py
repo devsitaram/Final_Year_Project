@@ -35,10 +35,10 @@ ALLOWED_HOSTS = [
     '10.13.0.174', 
     '192.168.1.72',
     '127.0.0.1:8000',
-    '6f0f-110-34-1-113.ngrok-free.app',
+    '8ef1-110-34-1-113.ngrok-free.app',
 ]
 
-# Application definition 'f7ea-110-34-5-16.ngrok-free.app',
+# Application definition
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
