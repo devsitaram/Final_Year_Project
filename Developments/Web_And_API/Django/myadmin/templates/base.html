@@ -24,99 +24,23 @@
                 <h1 id="site-name" style="color: white;"> <b><a href="{%url 'home' %}">Home</a></b> | <b>Weast Food Management System</b></h1>
             </div>
             <div>
-                <button class="Btn" id="profile-button">Profile</button>
+                <button class="Btn" id="profile-button">
+                    <a href="{% url 'logout' %}" style="text-decoration: none; color: white;">Log out</a>
+                </button>
             </div>
         </div>
-        <!-- END Header -->
-
-        <!-- Add the profile card -->
-        <div id="profile-card" class="profile-card">
-            <div>
-                <img id="profile-image" src="" alt="Profile Image">
-            </div>
-            <div style="text-align: left;">
-                <p id="profile-role">Role: </p>
-                <p id="profile-name">Name: </p>
-                <p id="profile-email">Email: </p>
-                <p id="profile-contact">Contact: </p>
-                <p id="profile-address">Address: </p>
-                <p>
-                    <a href="{% url 'logout' %}" style="text-decoration: none; color: red;">Log out</a>
-                </p>
-            </div>
-        </div>
-
-
         <!-- Main Content -->
-        {% block content %}
-        <!-- Contents here -->
-        {% endblock %}
+        <div style="height: 100%;">
+            {% block content %}
+                <!-- Contents -->
+            {% endblock %}
+        </div>
         <!-- END Main Content -->
 
-        <footer style="background-color: #333; color: white; text-align: center; padding: 12px;">
+        {% comment %} <footer style="background-color: #333; color: white; text-align: center; padding: 12px;">
             <p>&copy; 2024 Weast Food Management System. All rights reserved.</p>
-        </footer>
+        </footer> {% endcomment %}
     </div>
-
-    <script>
-        document.addEventListener("DOMContentLoaded", function() {
-            // Fetch user profile data
-            fetchUserProfile();
-    
-            // Add click event listener to profile button
-            var profileButton = document.getElementById("profile-button");
-            var profileCard = document.getElementById("profile-card");
-    
-            profileButton.addEventListener("click", function(event) {
-                // Toggle the display of the profile card
-                if (profileCard.style.display === "none" || profileCard.style.display === "") {
-                    profileCard.style.display = "block";
-                } else {
-                    profileCard.style.display = "none";
-                }
-            });
-    
-            // Listen for clicks outside of the profile card to hide it
-            document.addEventListener("click", function(event) {
-                if (!profileCard.contains(event.target) && event.target !== profileButton) {
-                    profileCard.style.display = "none";
-                }
-            });
-        });
-    
-        function fetchUserProfile() {
-            fetch('/api/user/profile', {
-                    method: 'GET',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': 'Bearer ' + localStorage.getItem('token') // Assuming you are using JWT token for authentication
-                    }
-                })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.is_success) {
-                        // Populate profile card with user profile data
-                        var profileRole = document.getElementById("profile-role");
-                        var profileImage = document.getElementById("profile-image");
-                        var profileName = document.getElementById("profile-name");
-                        var profileEmail = document.getElementById("profile-email");
-                        var profileContact = document.getElementById("profile-contact");
-                        var profileAddress = document.getElementById("profile-address");
-    
-                        profileRole.textContent += data.user_profile.role;
-                        profileImage.src = data.user_profile.photo_url; 
-                        profileName.textContent += data.user_profile.username;
-                        profileEmail.textContent += data.user_profile.email;
-                        profileContact.textContent += data.user_profile.contact_number;
-                        profileAddress.textContent += data.user_profile.address;
-    
-                    } else {
-                        console.error(data.message);
-                    }
-                })
-                .catch(error => console.error('Error:', error));
-        }
-    </script>
 
     <style>
         .Btn {
@@ -125,7 +49,7 @@
             display: flex;
             align-items: center;
             justify-content: flex-start;
-            width: 58px;
+            width: 70px;
             height: 30px;
             border: none;
             border-radius: 5px;

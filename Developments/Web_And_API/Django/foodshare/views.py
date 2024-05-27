@@ -117,54 +117,15 @@ class LoginUser(APIView):
                     else:
                         return Response({'message': 'Your account is not activate', 'is_success': False, 'status': 401})
                 else:
-                    return Response({'message': 'The account does not have authentication permission.', 'is_success': False, 'status': 401})
+                    return Response({'message': 'The account does not have login authentication permission.', 'is_success': False, 'status': 401})
             else:
                 return Response({'message': 'Please provide email and password', 'is_success': False, 'status': 400})
         except Exception as e:
             return Response({"message": "Sorry, something went wrong on our end. Please try again later.", 'is_success': False, 'status': 500})
         
-# # login authentication
-# class LoginUser(APIView):
-#     authentication_classes = [TokenAuthentication]
-#     permission_classes = [AllowAny]
-
-#     def post(self, request):
-#         try:
-#             email = request.data.get('email')
-#             password = request.data.get('password')
-
-#             if email and password:
-#                 auth_user = authenticate(request, username=email, password=password)
-#                 if auth_user:
-#                     user = Users.objects.filter(email=email).first()
-#                     if auth_user.is_active and not user.is_delete:  # Fix the condition
-#                         refresh = RefreshToken.for_user(auth_user)
-#                         access_token = str(refresh.access_token)
-
-#                         serializer = UserSerializer(user)
-#                         profile = user.photo_url.url if user.photo_url else None
-
-#                         response_auth = {
-#                             'id': serializer.data['id'],
-#                             'username': serializer.data['username'],
-#                             'email': serializer.data['email'],
-#                             'profile': profile,
-#                             'role': serializer.data['role'],
-#                             'access_token': access_token,
-#                         }
-#                         return Response({'message': 'Login successful', 'is_success': True, 'status': 200, "auth": response_auth})
-#                     else:
-#                         return Response({'message': 'Your account is not activate', 'is_success': False, 'status': 401})
-#                 else:
-#                     return Response({'message': 'The account does not have authentication permission.', 'is_success': False, 'status': 401})
-#             else:
-#                 return Response({'message': 'Please provide email and password', 'is_success': False, 'status': 400})
-#         except Exception as e:
-#             return Response({"message": "Sorry, something went wrong on our end. Please try again later.", 'is_success': False, 'status': 500})
-
 # Register user
 class RegisterUser(APIView):
-    authentication_classes = [TokenAuthentication]  # Ensure TokenAuthentication is included
+    authentication_classes = []
     permission_classes = [AllowAny]
 
     def post(self, request):
@@ -190,7 +151,6 @@ class RegisterUser(APIView):
 
 # Log out and token expire
 class LogoutView(APIView):
-    authentication_classes = [TokenAuthentication]
     permission_classes = [AllowAny]
 
     def get(self, request):
@@ -205,6 +165,7 @@ class LogoutView(APIView):
 
 # NOtification        
 class GetNotifications(APIView):
+    authentication_classes = [TokenAuthentication]
     permission_classes = [AllowAny]
 
     def get(self, request):
@@ -237,7 +198,6 @@ class UserProfile(APIView):
 # get user by id
 class GetUserById(APIView):
     authentication_classes = [TokenAuthentication]
-    permission_classes = [IsAuthenticated]
     permission_classes = [AllowAny]
     def get(self, request):
         try:
@@ -252,9 +212,7 @@ class GetUserById(APIView):
 
 # update user profile     
 class UpdateProfile(APIView):
-    authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated]
-    permission_classes = [AllowAny]
 
     def patch(self, request):
         try:
@@ -291,9 +249,7 @@ class UpdateProfile(APIView):
 
 # Update User Profile Image
 class UpdateProfilePicture(APIView):
-    authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated]
-    permission_classes = [AllowAny]
     parser_classes = (MultiPartParser, FormParser)  # Add MultiPartParser and FormParser
 
     def patch(self, request):
@@ -334,8 +290,10 @@ class UpdateProfilePicture(APIView):
 
 # email verify
 class EmailVerify(APIView):
+
     authentication_classes = [TokenAuthentication]
-    permission_classes = [AllowAny] 
+    permission_classes = [AllowAny]
+    
     def get(self, request):
         try:
             email = request.query_params.get('query')
@@ -351,7 +309,6 @@ class EmailVerify(APIView):
                     return Response({"message": "Email verify is successful", "is_success": True, 'status': 200})
                 else:
                     return Response({"message": "This user is deactived.", "is_success": False, 'status': 400})
-            
             else:
                 return Response({"message": "Email does not exist. Pleasse provide the correct email address!", 'status': 404})
 
@@ -391,9 +348,8 @@ class UpdatePassword(APIView):
 
 # New user account verify ro activate
 class GetAllUsersView(APIView):
-    # permission_classes = [IsAdminUser]
-    authentication_classes = [TokenAuthentication]  # Ensure TokenAuthentication is included
-    permission_classes = [AllowAny]
+    permission_classes = [IsAdminUser]
+
     def get(self, request):
         try:
             users = Users.objects.exclude(role='admin').order_by('-created_date')
@@ -410,6 +366,7 @@ class GetAllUsersView(APIView):
 # account activate
 class UserAccountActivateView(APIView):
     permission_classes = [IsAdminUser]
+
     def post(self, request):
         try:
             user_id = request.data.get('id')
@@ -444,8 +401,8 @@ Manage Account:->
 '''
 # account verify
 class DeleteAccount(APIView):
-    authentication_classes = [TokenAuthentication]  # Ensure TokenAuthentication is included
-    permission_classes = [AllowAny]
+    permission_classes = [IsAuthenticated]
+
     def patch(self, request):
         try:
             email = request.data.get('email')
@@ -476,10 +433,9 @@ class DeleteAccount(APIView):
         except Exception as e:
             return Response({"message": "Sorry, something went wrong on our end. Please try again later.", 'is_success': False, 'status': 500})
 
-
 # Donate food
 class AddNewFoodView(APIView):
-    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated]
     permission_classes = [AllowAny]
     parser_classes = [MultiPartParser, FormParser]
 
@@ -578,8 +534,7 @@ class GetFoodById(APIView):
 
 # Delete Food
 class FoodDelete(APIView):
-    authentication_classes = [TokenAuthentication]
-    permission_classes = [AllowAny]
+    permission_classes = [IsAuthenticated]
 
     def patch(self, request):
         try:
@@ -598,14 +553,9 @@ class FoodDelete(APIView):
         except Exception as e:
             return Response({"message": "Sorry, something went wrong on our end. Please try again later.", 'is_success': False, 'status': 500 })
 
-
-'''
-Get history details by donor
-'''
-# History
+# Get history details by donor
 class GetFoodHistorys(APIView):
-    authentication_classes = [TokenAuthentication]
-    permission_classes = [AllowAny]
+    permission_classes = [IsAuthenticated]
 
     def get(self, request):
         histories = []
@@ -614,7 +564,7 @@ class GetFoodHistorys(APIView):
             if volunteer:
                 history_details = History.objects.filter(volunteer=volunteer, is_delete=False).all()
                 if not history_details:
-                    return Response({"is_success": True, "message": "No history found for this volunteer.", "histories": []})
+                    return Response({"is_success": True, "message": "No history was found.", "histories": []})
 
                 for entry in history_details:
                     food_data = FoodSerializer(entry.food).data
@@ -654,12 +604,11 @@ class GetFoodHistorys(APIView):
 Get all histories
 '''
 class HistoryDetails(APIView):
-    authentication_classes = [TokenAuthentication]
     permission_classes = [AllowAny]
 
     def get(self, request):
         try:
-            foods = Food.objects.all()
+            foods = Food.objects.filter(is_delete=False).all()
             if not foods:
                 return Response({"message": "No food found", "is_success": False, "status": 400})
 
@@ -682,8 +631,7 @@ class HistoryDetails(APIView):
             return Response({"message": "Sorry, something went wrong on our end. Please try again later.", "is_success": False, "status": 500})
 
 class AddNgoView(APIView):
-    authentication_classes = [TokenAuthentication]
-    permission_classes = [AllowAny]
+    permission_classes = [IsAdminUser]
     parser_classes = (MultiPartParser, FormParser)  # Add MultiPartParser and FormParser
 
     def post(self, request):
@@ -706,16 +654,15 @@ class AddNgoView(APIView):
                     f.write(chunk)
 
             # Create the Ngos instance with only the ngo_stream_url field set
-            ngo_instance = Ngo.objects.create(ngo_stream_url=image_filename)
+            Ngo.objects.create(ngo_stream_url=image_filename)
 
             return Response({"message": "NGO profile created successfully", "is_success": True, "status":404})
         except Exception:
             return Response({"message": "Sorry, something went wrong on our end. Please try again later.", 'is_success': False, 'status': status.HTTP_500_INTERNAL_SERVER_ERROR})
 
 # Accept the donation food
-class AcceptFood(APIView):
-    authentication_classes = [TokenAuthentication]
-    permission_classes = [AllowAny]
+class AcceptFood(APIView): 
+    permission_classes = [IsAuthenticated]
 
     def post(self, request):
         try:
@@ -763,9 +710,7 @@ class AcceptFood(APIView):
 
 # get pending
 class GetHistoryFoodDetails(APIView):
-
-    authentication_classes = [TokenAuthentication]
-    permission_classes = [AllowAny]
+    permission_classes = [IsAuthenticated]
 
     def get(self, request):
         try:
@@ -792,18 +737,18 @@ class GetHistoryFoodDetails(APIView):
 
                 return Response({"message": "Success", "is_success": True, 'status': 200, "history": pending_history})
             else:
-                return Response({"message": "History is found", "is_success": False, 'status': 400})
+                message = "Pending history is found" if status == 'Pending' else "History is found"
+                return Response({"message": message, "is_success": False, 'status': 400})
 
         except Exception:
             return Response({"message": "Sorry, something went wrong on our end. Please try again later.", "is_success": False, "status": 500})
 
 class DonationHistory(APIView):
-    authentication_classes = [TokenAuthentication]
-    permission_classes = [AllowAny]
+    permission_classes = [IsAuthenticated]
 
     def get(self, request):
         try:
-            donor_id = request.query_params.get("id")  # Using query_params to get the donor_id
+            donor_id = request.query_params.get("id")
 
             # Query to get all foods donated by the donor
             donated_foods = Food.objects.filter(donor_id=donor_id, is_delete=False).order_by('-created_date')
@@ -814,19 +759,18 @@ class DonationHistory(APIView):
             donation_entries = []
             # Loop through each donated food
             for food in donated_foods:
-                food_data = FoodSerializer(food).data  # Serialize the food data
+                food_data = FoodSerializer(food).data 
                 donor_data = UserSerializer(food.donor).data
 
                 # Get the history for the current food item
                 history = History.objects.filter(food=food).first()
 
                 if history:
-                    history_data = HistorySerializer(history).data  # Serialize the history data
-                    volunteer_data = UserSerializer(history.volunteer).data  # Serialize the volunteer data
+                    history_data = HistorySerializer(history).data
+                    volunteer_data = UserSerializer(history.volunteer).data
                 else:
-                    history_data = {}  # Empty dictionary if history is not available
-                    volunteer_data = {}  # Empty dictionary if history is not available
-
+                    history_data = {}  
+                    volunteer_data = {}  
                 # Constructing the donation entry
                 donation_entry = {
                     'foods': food_data,
@@ -845,8 +789,7 @@ class DonationHistory(APIView):
 
 # UPdate the donate food
 class DonateFoodUpdate(APIView):
-    authentication_classes = [TokenAuthentication]
-    permission_classes = [AllowAny]
+    permission_classes = [IsAuthenticated]
 
     def patch(self, request):
         try:
@@ -877,9 +820,7 @@ class DonateFoodUpdate(APIView):
             return Response({"message": "Sorry, something went wrong on our end. Please try again later.", "is_success": False, "status": 500 })
 
 class UpdateDonateFoodImage(APIView):
-    authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated]
-    permission_classes = [AllowAny]
     parser_classes = (MultiPartParser, FormParser)  # Add MultiPartParser and FormParser
 
     def patch(self, request):
@@ -921,9 +862,7 @@ class UpdateDonateFoodImage(APIView):
 
 #Delete food history 
 class DeleteHistoryFood(APIView):
-    authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated]
-    permission_classes = [AllowAny]
 
     def patch(self, request):
         try:
@@ -947,7 +886,6 @@ class DeleteHistoryFood(APIView):
 # Report or complaint for user
 class ReportToUser(APIView):
     authentication_classes = [TokenAuthentication]
-    permission_classes = [IsAuthenticated]
     permission_classes = [AllowAny]
 
     def post(self, request):
@@ -979,9 +917,7 @@ class ReportToUser(APIView):
 
 # Update User Profile Image
 class DonationCompletedRating(APIView):
-    authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated]
-    permission_classes = [AllowAny]
 
     def patch(self, request):
         try:
@@ -1019,10 +955,9 @@ class DonationCompletedRating(APIView):
         except Exception as e:
             return Response({"message": "Sorry, something went wrong on our end. Please try again later.", 'is_success': False, 'status': 500})
         
+# View Report detaild        
 class GetReportView(APIView):
-    authentication_classes = [TokenAuthentication]
-    permission_classes = [IsAuthenticated]
-    permission_classes = [AllowAny]
+    permission_classes = [IsAdminUser]
 
     def get(self, request):
         try:
@@ -1057,9 +992,7 @@ class GetReportView(APIView):
 
 # Report or complant verify
 class VerifyReportView(APIView):
-    authentication_classes = [TokenAuthentication]
-    permission_classes = [IsAuthenticated]
-    permission_classes = [AllowAny]
+    permission_classes = [IsAdminUser]
 
     def patch(self, request):
     
@@ -1082,7 +1015,6 @@ class VerifyReportView(APIView):
 
 # All number of data in databse
 class GetAllNumberOfDataView(APIView):
-    authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated]
     permission_classes = [AllowAny]
 

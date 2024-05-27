@@ -13,9 +13,11 @@ class ApiUrl {
         const val CHANNEL_ID = "notification_channel"
         const val CHANNEL_NAME = "com.sitaram.foodshare"
 
-        // Base Url
+        // LOCAL DATABASE NAME
         const val LOCAL_DATABASE_NAME = "FoodShare"
-        const val API_BASE_URL = "https://8ef1-110-34-1-113.ngrok-free.app/"
+
+        // API BASE URL
+        const val API_BASE_URL = "https://f3c5-103-41-172-194.ngrok-free.app/"
 
         // API PATH
         const val LOGIN_USER = "api/authenticate/token"
@@ -79,7 +81,6 @@ class ApiUrl {
         const val FOOD_NAME = "food_name"
         const val USER_ROLE = "user_role"
         const val FOOD_RATING = "food_rating"
-
         const val LOG_OUT = "api/logout/user"
 
         // DEFAULT IMAGE

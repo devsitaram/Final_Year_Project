@@ -4,7 +4,7 @@ package com.sitaram.foodshare.features.dashboard.dashboardDonor.donorHistory.dat
 import com.google.gson.annotations.SerializedName
 import androidx.annotation.Keep
 import com.sitaram.foodshare.features.dashboard.dashboardAdmin.users.data.Users
-import com.sitaram.foodshare.features.dashboard.history.data.pojo.FoodHistory
+import com.sitaram.foodshare.features.dashboard.dashboardAdmin.history.data.pojo.FoodHistory
 
 @Keep
 data class DonorHistoryPojo(

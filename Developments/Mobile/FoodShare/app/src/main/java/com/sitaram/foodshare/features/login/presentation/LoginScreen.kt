@@ -2,11 +2,8 @@ package com.sitaram.foodshare.features.login.presentation
 
 import android.Manifest
 import android.content.pm.PackageManager
-import android.os.Build
-import android.util.Log
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -46,7 +43,6 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.google.gson.Gson
 import com.sitaram.foodshare.R
-import com.sitaram.foodshare.features.dashboard.pushNotification.FcmDeviceToken
 import com.sitaram.foodshare.features.dashboard.pushNotification.MyFirebaseMessagingService
 import com.sitaram.foodshare.features.login.data.pojo.Authentication
 import com.sitaram.foodshare.helper.UserInterceptors
@@ -78,7 +74,6 @@ import com.sitaram.foodshare.utils.compose.TextView
 import com.sitaram.foodshare.utils.compose.VectorIconView
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 
-@RequiresApi(Build.VERSION_CODES.TIRAMISU)
 @OptIn(ExperimentalCoroutinesApi::class)
 @Composable
 fun LoginViewScreen(

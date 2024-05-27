@@ -18,7 +18,8 @@ class ManageAccountUseCase(private val  manageAccountRepository: ManageAccountRe
     operator fun invoke(email: String): Flow<Resource<ResponsePojo?>> = flow {
         emit(Resource.Loading())
         try {
-            emit(Resource.Success(data = manageAccountRepository.getDeleteAccount(email)))
+            emit(Resource.Success(data = manageAccountRepository.
+            getDeleteAccount(email)))
         } catch (e: Exception) {
             emit(Resource.Error(message = "Unable to connect to the server."))
         }

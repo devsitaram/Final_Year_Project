@@ -10,7 +10,7 @@ import com.sitaram.foodshare.features.dashboard.dashboardDonor.post.data.Donatio
 import com.sitaram.foodshare.features.dashboard.dashboardDonor.post.domain.DonationRepository
 import com.sitaram.foodshare.features.dashboard.dashboardAdmin.users.data.UsersRepositoryImpl
 import com.sitaram.foodshare.features.dashboard.foodDetail.data.FoodDetailRepositoryImpl
-import com.sitaram.foodshare.features.dashboard.history.data.HistoryRepositoryImpl
+import com.sitaram.foodshare.features.dashboard.dashboardAdmin.history.data.HistoryRepositoryImpl
 import com.sitaram.foodshare.features.dashboard.home.data.HomeRepositoryImpl
 import com.sitaram.foodshare.source.remote.api.ApiRetrofitInstance.Companion.getRetrofitInstance
 import com.sitaram.foodshare.source.remote.api.ApiService
@@ -30,7 +30,7 @@ import com.sitaram.foodshare.features.dashboard.dashboardVolunteer.pending.domai
 import com.sitaram.foodshare.features.dashboard.dashboardVolunteer.donationRating.data.DonationRatingRepoImpl
 import com.sitaram.foodshare.features.dashboard.dashboardVolunteer.donationRating.domain.DonationRatingRepository
 import com.sitaram.foodshare.features.dashboard.foodDetail.domain.FoodDetailRepository
-import com.sitaram.foodshare.features.dashboard.history.domain.HistoryRepository
+import com.sitaram.foodshare.features.dashboard.dashboardAdmin.history.domain.HistoryRepository
 import com.sitaram.foodshare.features.dashboard.home.domain.HomeRepository
 import com.sitaram.foodshare.features.login.domain.LoginRepository
 import com.sitaram.foodshare.features.dashboard.setting.manageAccount.domain.ManageAccountRepository

@@ -156,7 +156,11 @@ fun RegisterViewScreen(
     LaunchedEffect(key1 = userRegisterResult.data, block = {
         if (userRegisterResult.data?.isSuccess == true) {
             showToast(context, "${userRegisterResult.data.message}")
-            navController.navigate(NavScreen.LoginPage.route)
+            navController.navigate(NavScreen.LoginPage.route){
+                popUpTo(NavScreen.RegisterPage.route) {
+                    inclusive = true
+                }
+            }
             if (systemToken.isEmpty()) {
                 editor.putString("systemToken", userRegisterResult.data.systemToken).apply()
             }
@@ -167,8 +171,7 @@ fun RegisterViewScreen(
         scaffoldState = scaffoldState,
         sheetPeekHeight = 0.dp,
         sheetShape = ShapeDefaults.ExtraLarge,
-        modifier = Modifier
-            .fillMaxWidth(),
+        modifier = Modifier.fillMaxWidth(),
         sheetContent = {
             Card(
                 modifier = Modifier
@@ -317,7 +320,9 @@ fun RegisterViewScreen(
                     IconButton(
                         onClick = {
                             navController.navigate(NavScreen.LoginPage.route) {
-                                popUpTo(NavScreen.RegisterPage.route) { inclusive = true }
+                                popUpTo(NavScreen.RegisterPage.route) {
+                                    inclusive = true
+                                }
                             }
                         }
                     ) {
@@ -534,7 +539,11 @@ fun RegisterViewScreen(
                         color = primary,
                         textType = TextType.BASE_TEXT_SEMI_BOLD,
                         onClick = {
-                            navController.navigate(NavScreen.LoginPage.route) // "Login/${selectedText}"
+                            navController.navigate(NavScreen.LoginPage.route) {
+                                popUpTo(NavScreen.RegisterPage.route) {
+                                    inclusive = true
+                                }
+                            }
                         },
                         modifier = Modifier
                             .wrapContentSize()

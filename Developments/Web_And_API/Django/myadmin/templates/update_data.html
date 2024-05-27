@@ -1,6 +1,43 @@
+<!-- update_data.html -->
 {% extends 'base.html' %}
 
 {% block content %}
-
-
+    <div class="update-container">
+        <h2 class="update-heading" style="margin: 1.5%;">Update {{ table_name|slice:"10:" }}</h2>
+        <form method="post" enctype="multipart/form-data" style="margin: 2%;">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <input type="hidden" name="_method" value="PATCH">
+            <div class="button-row" style="margin-bottom: 1%;">
+                <button class="update-button" type="submit" style="width: 10%;">Confirm</button>
+                <a class="cancel-link" href="{% url 'view_data' table_name=table_name %}" style="width: 10%;">Cancel</a>
+            </div>
+        </form>
+        {% comment %} <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            {{ form.as_p }} -> date: 2024-04-16 (i need this typess of date)
+            
+            {% for field in form %} -> data: May 1, 2024 (not this types of date so change) 
+                <div class="form-row" style="margin-bottom: 15px;">
+                    <label style="margin-left: 30px; margin-right: 30px;" for="{{ field.id_for_label }}">{{ field.label }} :</label>
+                    <div class="form-field">
+                        {% if field.field.choices %}
+                            <select name="{{ field.name }}" id="{{ field.id_for_label }}" style="width: 100%;">
+                                {% for choice in field.field.choices %}
+                                    <option value="{{ choice.0 }}" {% if choice.0 == field.value %}selected{% endif %}>{{ choice.1 }}</option>
+                                {% endfor %}
+                            </select>
+                        {% else %}
+                            <input type="text" name="{{ field.name }}" id="{{ field.id_for_label }}" value="{{ field.value }}" style="width: 100%;">
+                        {% endif %}
+                    </div>
+                </div>
+            {% endfor %}
+            <input type="hidden" name="_method" value="PATCH">
+            <div class="button-row">
+                <button class="update-button" type="submit">Save</button>
+                <a class="cancel-link" href="{% url 'view_data' table_name=table_name %}">Cancel</a>
+            </div>
+        </form> {% endcomment %}
+    </div>
 {% endblock %}

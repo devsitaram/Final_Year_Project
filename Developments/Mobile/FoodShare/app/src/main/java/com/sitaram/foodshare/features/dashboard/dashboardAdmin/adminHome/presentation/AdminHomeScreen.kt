@@ -89,8 +89,6 @@ import kotlinx.coroutines.launch
 @OptIn(ExperimentalMaterialApi::class, ExperimentalCoroutinesApi::class)
 @Composable
 fun AdminHomeViewScreen(
-    navController: NavHostController,
-    mainNavController: NavHostController,
     adminHomeViewModel: AdminHomeViewModel = hiltViewModel(),
 ) {
 
@@ -147,6 +145,7 @@ fun AdminHomeViewScreen(
             ) {
                 showSnackBar.invoke()
             }
+            DividerView()
 
             if (getHomeState.isLoading) {
                 ProgressIndicatorView()
@@ -156,7 +155,7 @@ fun AdminHomeViewScreen(
                 modifier = Modifier
                     .fillMaxSize()
                     .pullRefresh(pullRefreshState)
-                    .background(backgroundLayoutColor),
+                    .background(white),
                 contentAlignment = Alignment.TopCenter
             ) {
 

@@ -28,6 +28,7 @@ urlpatterns = [
     # NGOs api
     path('api/ngo/profile', NgoProfile.as_view(), name='get_ngo_profile'),
     path('api/register/ngo', AddNgoView.as_view(), name="add_ngo_profile"),
+
     # users
     path('api/all/types/user', GetAllUsersView.as_view(), name='get_users_by_search'),
     path('api/account/activate', UserAccountActivateView.as_view(), name='set_account_activate'),
@@ -44,7 +45,7 @@ urlpatterns = [
     path('api/food/new/get', GetNewFoods.as_view(), name='get_food_details_new'),
     path('api/food/details/history', GetFoodHistorys.as_view(), name='get_food_details_history'),
     path('api/food/history/all', HistoryDetails.as_view(), name='get_history_details'),
-    path('api/food/', GetFoodById.as_view(), name='get_food_by_id'),
+    path('api/food', GetFoodById.as_view(), name='get_food_by_id'),
 
     # Donor side
     path('api/food/donation/histories/donor', DonationHistory.as_view(), name="get_donor_history"),

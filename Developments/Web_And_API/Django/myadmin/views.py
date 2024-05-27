@@ -4,7 +4,8 @@ from django.shortcuts import redirect, render
 from django.contrib.auth import authenticate, logout, login as auth_login
 from django.db import connection
 from django.apps import apps
-from .forms import UserForm
+from .forms import UserForm, DynamicForm
+from django.http import JsonResponse
 from rest_framework.authtoken.models import Token
 from rest_framework_simplejwt.tokens import RefreshToken
 from django.shortcuts import redirect, get_object_or_404
@@ -143,12 +144,30 @@ def delete_user(request, table_name, id=None):
     obj.save()
     return redirect("view_data", table_name=table_name)
 
+# Update the data
+def update_data(request, table_name, id):
+    # Get the model class using apps.get_model
+    model_name = table_name.replace("foodshare_", "").capitalize()
+    model_class = apps.get_model(app_label='foodshare', model_name=model_name)
 
-# def update_data(request, table_name, id=None):
-#     patch method
-#     model_name = table_name.replace("foodshare_", "").capitalize()
-#     # Get the model class using apps.get_model
-#     model_class = apps.get_model(app_label='foodshare', model_name=model_name)
-#     model = DinamicForm(model_class)
-#     ??? opent the 
-#     how to make the dinamicly update the date for any modle where the update form is onen to update_data.html 
+    # Get the instance to update
+    instance = get_object_or_404(model_class, id=id)
+
+    # Create a form instance with the data
+    form_class = DynamicForm(model_class)
+
+    if request.method == 'POST':
+        if request.POST.get('_method') == 'PATCH':
+            # PATCH request - partial update
+            data = request.POST.copy()
+            files = request.FILES
+            form = form_class(data, files, instance=instance)
+            if form.is_valid():
+                form.save()
+                return redirect('view_data', table_name=table_name)
+            else:
+                return JsonResponse({'status': 'error', 'errors': form.errors}, status=400)
+
+    # For non-POST requests, simply display the form
+    form = form_class(instance=instance)
+    return render(request, 'update_data.html', {'form': form, 'table_name': table_name})

@@ -2,7 +2,7 @@
 
 {% block content %}
 <body>
-    <div class="main">
+    <div class="main", style="height: 100%;">
         <div style="width: 100%; white-space: nowrap;">
             <!-- Left content -->
             <div style="width: 20%; height: 100%; background-color: whitesmoke; display: inline-block; vertical-align: top;">
@@ -105,7 +105,7 @@
                                     {% endif %}
                                     <td>
                                         <button class="update-btn">
-                                            Update
+                                            <a href="{% url 'update' table_name=table_name id=row.0 %}" class="user-id">Update</a>
                                         </button>
                                     </td>
                                     <td>

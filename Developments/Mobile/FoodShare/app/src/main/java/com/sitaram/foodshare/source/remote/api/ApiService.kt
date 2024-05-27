@@ -14,7 +14,7 @@ import com.sitaram.foodshare.features.dashboard.dashboardVolunteer.donationRatin
 import com.sitaram.foodshare.features.dashboard.foodDetail.data.pojo.FoodDetailsPojo
 import com.sitaram.foodshare.features.dashboard.foodDetail.data.pojo.FoodUpdatePojo
 import com.sitaram.foodshare.features.dashboard.foodDetail.domain.FoodModelDAO
-import com.sitaram.foodshare.features.dashboard.history.data.pojo.FoodHistoryPojo
+import com.sitaram.foodshare.features.dashboard.dashboardAdmin.history.data.pojo.FoodHistoryPojo
 import com.sitaram.foodshare.features.dashboard.notification.data.NotificationPojo
 import com.sitaram.foodshare.features.dashboard.setting.manageAccount.domain.DeleteAccount
 import com.sitaram.foodshare.features.dashboard.setting.manageAccount.domain.UpdatePassword

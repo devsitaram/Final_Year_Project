@@ -8,11 +8,10 @@ class UserForm(forms.ModelForm):
         fields = ["email", "username", "role"]
 
 
-# # dinamic
-# class DinamicForm(forms.ModelForm, model):
-    
-#     class Meta:
-#         model = model
-#         fields = "__all__"
-# )
-# ????
+# dinamic
+def DynamicForm(model_class):
+    class Meta:
+        model = model_class
+        fields = "__all__"
+
+    return type('DynamicForm', (forms.ModelForm,), {'Meta': Meta})

@@ -23,7 +23,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.sitaram.foodshare.features.dashboard.dashboardAdmin.adminHome.presentation.AdminHomeViewScreen
-import com.sitaram.foodshare.features.dashboard.history.presentation.HistoryViewScreen
+import com.sitaram.foodshare.features.dashboard.dashboardAdmin.history.presentation.HistoryViewScreen
 import com.sitaram.foodshare.features.dashboard.dashboardAdmin.users.presentation.UsersViewScreenNgo
 import com.sitaram.foodshare.features.dashboard.profile.presentation.ProfileViewScreen
 import com.sitaram.foodshare.features.dashboard.setting.presentation.SettingViewScreen
@@ -134,7 +134,7 @@ fun AdminNavHostScreen(navController: NavHostController, mainNavController: NavH
         contentAlignment = Alignment.Center
     ) {
         composable(BtnNavScreen.Home.route) {
-            AdminHomeViewScreen(navController, mainNavController)
+            AdminHomeViewScreen()
         }
 
         composable(BtnNavScreen.AllUser.route) {

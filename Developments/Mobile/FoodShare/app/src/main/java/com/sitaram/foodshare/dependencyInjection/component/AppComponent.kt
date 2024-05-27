@@ -8,7 +8,7 @@ import com.sitaram.foodshare.features.dashboard.dashboardDonor.post.domain.Donat
 import com.sitaram.foodshare.features.dashboard.dashboardDonor.post.domain.DonationUseCase
 import com.sitaram.foodshare.features.dashboard.dashboardAdmin.users.domain.UsersRepository
 import com.sitaram.foodshare.features.dashboard.foodDetail.domain.FoodDetailRepository
-import com.sitaram.foodshare.features.dashboard.history.domain.HistoryRepository
+import com.sitaram.foodshare.features.dashboard.dashboardAdmin.history.domain.HistoryRepository
 import com.sitaram.foodshare.features.dashboard.home.domain.HomeRepository
 import com.sitaram.foodshare.features.login.domain.LoginRepository
 import com.sitaram.foodshare.features.dashboard.setting.manageAccount.domain.ManageAccountRepository
@@ -24,7 +24,7 @@ import com.sitaram.foodshare.features.dashboard.dashboardVolunteer.pending.domai
 import com.sitaram.foodshare.features.dashboard.dashboardVolunteer.donationRating.domain.DonationRatingRepository
 import com.sitaram.foodshare.features.dashboard.dashboardVolunteer.donationRating.domain.DonationRatingUseCase
 import com.sitaram.foodshare.features.dashboard.foodDetail.domain.FoodDetailUseCase
-import com.sitaram.foodshare.features.dashboard.history.domain.HistoryUseCase
+import com.sitaram.foodshare.features.dashboard.dashboardAdmin.history.domain.HistoryUseCase
 import com.sitaram.foodshare.features.dashboard.home.domain.HomeUseCase
 import com.sitaram.foodshare.features.login.domain.LoginUseCase
 import com.sitaram.foodshare.features.dashboard.setting.manageAccount.domain.ManageAccountUseCase
